@@ -3,7 +3,17 @@ import { supabaseAdmin } from "@/lib/supabase-admin";
 
 const GITHUB_API = "https://api.github.com/graphql";
 
-export async function GET() {
+export async function GET(request: Request) {
+
+  // ✅ Added protection at top of GET
+  if (process.env.NODE_ENV === "production") {
+    const authHeader = new URL(request.url).searchParams.get("secret");
+
+    if (authHeader !== process.env.CRON_SECRET) {
+      return new Response("Unauthorized", { status: 401 });
+    }
+  }
+
   const query = `
     query {
       user(login: "ChetanGadhiya017") {
@@ -44,10 +54,15 @@ export async function GET() {
   );
 
   // Clear old GitHub records
-  await supabaseAdmin.from("activity_logs").delete().eq("platform", "github");
+  await supabaseAdmin
+    .from("activity_logs")
+    .delete()
+    .eq("platform", "github");
 
   // Insert new
-  await supabaseAdmin.from("activity_logs").insert(days);
+  await supabaseAdmin
+    .from("activity_logs")
+    .insert(days);
 
   return NextResponse.json({
     message: "GitHub activity synced",
