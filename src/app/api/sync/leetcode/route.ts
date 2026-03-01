@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 
+export const dynamic = "force-dynamic";
+
 const LEETCODE_API = "https://leetcode.com/graphql";
 
 export async function GET() {
