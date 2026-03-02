@@ -9,6 +9,10 @@ import {
   getMonth,
 } from "date-fns";
 
+import PlatformPieChart from "./PlatformPieChart";
+import MonthlyActivityChart from "./MonthlyActivityChart";
+import CountUp from "react-countup";
+
 type Activity = {
   activity_date: string;
   intensity: number;
@@ -16,9 +20,17 @@ type Activity = {
 
 export default function ActivityHeatmap() {
   const [data, setData] = useState<Activity[]>([]);
+  const [platformStats, setPlatformStats] = useState<any>({});
+
+  const totalPlatformContributions = Object.values(platformStats)
+    .reduce((sum: number, val: any) => sum + val, 0);
 
   useEffect(() => {
     fetchData();
+
+    fetch("/api/stats/platform")
+      .then((res) => res.json())
+      .then((data) => setPlatformStats(data));
   }, []);
 
   async function fetchData() {
@@ -132,14 +144,163 @@ export default function ActivityHeatmap() {
 
   const activeDays = sortedData.length;
 
+  // 📈 Monthly Growth Calculation (for trend signal)
+  const monthlyMap: Record<string, number> = {};
+
+  data.forEach((entry) => {
+    if (!entry.activity_date) return;
+
+    const dateObj = new Date(entry.activity_date);
+
+    if (isNaN(dateObj.getTime())) return;
+
+    const month = format(dateObj, "yyyy-MM");
+
+    if (!monthlyMap[month]) {
+      monthlyMap[month] = 0;
+    }
+
+    monthlyMap[month] += entry.intensity;
+  });
+
+  const monthlyValues = Object.values(monthlyMap);
+
+  let growthPercent = 0;
+
+  if (monthlyValues.length >= 2) {
+    const last = monthlyValues[monthlyValues.length - 1];
+    const prev = monthlyValues[monthlyValues.length - 2];
+
+    if (prev !== 0) {
+      growthPercent = ((last - prev) / prev) * 100;
+    }
+  }
+
+  // 🧠 Consistency Score (percentage of active days in last year)
+  const consistencyScore = ((activeDays / 365) * 100).toFixed(1);
+
+  // 🏅 Activity Badge System
+  let badge = "Inactive";
+
+  if (consistencyScore >= 75) badge = "Elite Developer";
+  else if (consistencyScore >= 50) badge = "Highly Consistent";
+  else if (consistencyScore >= 25) badge = "Active Contributor";
+  else if (consistencyScore >= 10) badge = "Emerging Developer";
+
   return (
     <section className="px-6 py-20 max-w-6xl mx-auto">
       <h2 className="text-4xl font-bold text-white mb-2">
         🧬 Digital Activity Genome
       </h2>
 
-      {/* ✅ Updated Stats UI */}
-      <div className="mb-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-sm">
+      {/* 🔥 Platform Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
+        {Object.entries(platformStats).map(
+          ([platform, value]: any) => {
+            const percentage = totalPlatformContributions
+              ? ((value / totalPlatformContributions) * 100).toFixed(1)
+              : 0;
+
+            return (
+              <div
+                key={platform}
+                className="bg-[#161b22] p-6 rounded-xl border border-gray-800"
+              >
+                <p className="text-gray-400 capitalize mb-2">
+                  {platform}
+                </p>
+
+                <p className="text-2xl font-bold text-white">
+                  {value}
+                </p>
+
+                <div className="w-full bg-gray-800 h-2 rounded mt-3">
+                  <div
+                    className="h-2 rounded bg-green-500 transition-all duration-500"
+                    style={{ width: `${percentage}%` }}
+                  />
+                </div>
+
+                <p className="text-xs text-gray-500 mt-2">
+                  {percentage}% of total activity
+                </p>
+              </div>
+            );
+          }
+        )}
+      </div>
+
+      {/* 🥧 PIE CHART */}
+      <div className="mt-10">
+        <PlatformPieChart data={platformStats} />
+      </div>
+
+      {/* 🚀 Developer Intelligence Panel */}
+      <div className="mt-8 bg-[#0e1621] p-6 rounded-xl border border-gray-800">
+        <p className="text-gray-400 mb-2">
+          Developer Activity Index
+        </p>
+
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <p className="text-3xl font-bold text-green-400">
+              <CountUp
+                end={totalPlatformContributions}
+                duration={1.5}
+              />
+            </p>
+            <p className="text-xs text-gray-500 mt-1">
+              Composite cross-platform score
+            </p>
+          </div>
+
+          <div>
+            <p className="text-gray-400 text-sm">
+              Consistency Score
+            </p>
+            <p className="text-xl font-semibold text-white">
+              <CountUp
+                end={Number(consistencyScore)}
+                decimals={1}
+                duration={1.5}
+              />%
+            </p>
+          </div>
+
+          {/* 🆕 Monthly Trend Block */}
+          <div>
+            <p className="text-gray-400 text-sm">
+              Monthly Trend
+            </p>
+
+            <p
+              className={`text-lg font-bold ${
+                growthPercent > 0
+                  ? "text-green-400"
+                  : growthPercent < 0
+                  ? "text-red-400"
+                  : "text-gray-400"
+              }`}
+            >
+              {growthPercent > 0 && "↑ "}
+              {growthPercent < 0 && "↓ "}
+              {growthPercent.toFixed(1)}%
+            </p>
+          </div>
+
+          <div>
+            <p className="text-gray-400 text-sm">
+              Developer Badge
+            </p>
+            <p className="text-lg font-bold text-yellow-400">
+              {badge}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats Section */}
+      <div className="mb-8 mt-10 grid grid-cols-2 md:grid-cols-4 gap-6 text-sm">
         <div>
           <p className="text-gray-400">Total Contributions</p>
           <p className="text-xl font-semibold text-white">
@@ -157,18 +318,21 @@ export default function ActivityHeatmap() {
         <div>
           <p className="text-gray-400">Current Streak</p>
           <p className="text-xl font-semibold text-green-400">
-            {currentStreak} days
+            <CountUp end={currentStreak} duration={1.2} /> days
           </p>
         </div>
 
         <div>
           <p className="text-gray-400">Longest Streak</p>
           <p className="text-xl font-semibold text-green-500">
-            {longestStreak} days
+            <CountUp end={longestStreak} duration={1.2} /> days
           </p>
         </div>
       </div>
 
+      <MonthlyActivityChart data={data} />
+
+      {/* ===== Heatmap ===== */}
       <div className="overflow-x-auto">
         <div className="flex flex-col">
 
@@ -199,10 +363,7 @@ export default function ActivityHeatmap() {
                     return (
                       <div
                         key={day.toISOString()}
-                        title={`${format(
-                          day,
-                          "yyyy-MM-dd"
-                        )} • ${intensity} contributions`}
+                        title={`${format(day,"yyyy-MM-dd")} • ${intensity} contributions`}
                         style={{
                           width: 14,
                           height: 14,
