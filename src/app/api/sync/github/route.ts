@@ -1,71 +1,70 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 
-const GITHUB_API = "https://api.github.com/graphql";
+export async function GET() {
+  try {
+    const username = "chetangadhiya5062";
 
-export async function GET(request: Request) {
+    const res = await fetch(
+      `https://api.github.com/users/${username}/events`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+        },
+      }
+    );
 
-  // ✅ Added protection at top of GET
-  if (process.env.NODE_ENV === "production") {
-    const authHeader = new URL(request.url).searchParams.get("secret");
+    const events = await res.json();
 
-    if (authHeader !== process.env.CRON_SECRET) {
-      return new Response("Unauthorized", { status: 401 });
+    if (!Array.isArray(events)) {
+      return NextResponse.json(
+        { error: "Invalid GitHub response" },
+        { status: 500 }
+      );
     }
-  }
 
-  const query = `
-    query {
-      user(login: "ChetanGadhiya017") {
-        contributionsCollection {
-          contributionCalendar {
-            weeks {
-              contributionDays {
-                date
-                contributionCount
-              }
-            }
+    let insertCount = 0;
+
+    for (const event of events) {
+      if (event.type === "PushEvent" && event.public) {
+        const date = event.created_at.split("T")[0];
+
+        const { error } = await supabaseAdmin
+          .from("activity_logs")
+          .insert({
+            external_id: event.id, // 🔥 duplicate prevention
+            platform: "github",
+            activity_date: date,
+            intensity: 1,
+            title: event.repo?.name ?? "GitHub Push",
+            url: event.repo?.name
+              ? `https://github.com/${event.repo.name}`
+              : null,
+            type: event.type,
+            description: `Pushed to ${event.repo?.name}`,
+            metadata: event,
+          });
+
+        if (error) {
+          // Ignore duplicate errors (unique constraint)
+          if (error.code !== "23505") {
+            console.log("INSERT ERROR:", error);
           }
+        } else {
+          insertCount++;
         }
       }
     }
-  `;
 
-  const res = await fetch(GITHUB_API, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ query }),
-  });
-
-  const json = await res.json();
-
-  const weeks =
-    json.data.user.contributionsCollection.contributionCalendar.weeks;
-
-  const days = weeks.flatMap((week: any) =>
-    week.contributionDays.map((day: any) => ({
-      activity_date: day.date.split("T")[0],
-      intensity: day.contributionCount,
-      platform: "github",
-    }))
-  );
-
-  // Clear old GitHub records
-  await supabaseAdmin
-    .from("activity_logs")
-    .delete()
-    .eq("platform", "github");
-
-  // Insert new
-  await supabaseAdmin
-    .from("activity_logs")
-    .insert(days);
-
-  return NextResponse.json({
-    message: "GitHub activity synced",
-    totalDays: days.length,
-  });
+    return NextResponse.json({
+      message: "GitHub events synced",
+      total: insertCount,
+    });
+  } catch (err: any) {
+    console.log("GLOBAL ERROR:", err);
+    return NextResponse.json(
+      { error: err.message },
+      { status: 500 }
+    );
+  }
 }

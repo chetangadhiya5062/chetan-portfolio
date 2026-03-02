@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import {
   format,
-  subYears,
   eachDayOfInterval,
   startOfWeek,
   getMonth,
@@ -21,6 +20,9 @@ type Activity = {
 export default function ActivityHeatmap() {
   const [data, setData] = useState<Activity[]>([]);
   const [platformStats, setPlatformStats] = useState<any>({});
+  const [selectedYear, setSelectedYear] = useState<number>(
+    new Date().getFullYear()
+  );
 
   const totalPlatformContributions = Object.values(platformStats)
     .reduce((sum: number, val: any) => sum + val, 0);
@@ -41,13 +43,34 @@ export default function ActivityHeatmap() {
     } catch {}
   }
 
-  const today = new Date();
-  const oneYearAgo = subYears(today, 1);
-  const startDate = startOfWeek(oneYearAgo, { weekStartsOn: 0 });
+  // 🔥 Dynamically extract available years
+  const availableYears = Array.from(
+    new Set(
+      data.map((d) =>
+        new Date(d.activity_date).getFullYear()
+      )
+    )
+  ).sort((a, b) => b - a);
+
+  // 🔥 Filter data based on selected year
+  const filteredData =
+    data.filter(
+      (d) =>
+        new Date(d.activity_date).getFullYear() ===
+        selectedYear
+    );
+
+  // ✅ Replace All data References with filteredData
+  const activeYear = selectedYear || new Date().getFullYear();
+  const startDateBound = new Date(activeYear, 0, 1);
+  const endDateBound = new Date(activeYear, 11, 31);
+  
+  // Ensure the grid starts at the beginning of the week for the selected year
+  const calendarStart = startOfWeek(startDateBound, { weekStartsOn: 0 });
 
   const days = eachDayOfInterval({
-    start: startDate,
-    end: today,
+    start: calendarStart,
+    end: endDateBound,
   });
 
   function getIntensity(date: Date) {
@@ -144,54 +167,62 @@ export default function ActivityHeatmap() {
 
   const activeDays = sortedData.length;
 
-  // 📈 Monthly Growth Calculation (for trend signal)
+  // 📈 Monthly Growth Calculation
   const monthlyMap: Record<string, number> = {};
 
   data.forEach((entry) => {
     if (!entry.activity_date) return;
-
     const dateObj = new Date(entry.activity_date);
-
     if (isNaN(dateObj.getTime())) return;
-
     const month = format(dateObj, "yyyy-MM");
-
-    if (!monthlyMap[month]) {
-      monthlyMap[month] = 0;
-    }
-
+    if (!monthlyMap[month]) monthlyMap[month] = 0;
     monthlyMap[month] += entry.intensity;
   });
 
   const monthlyValues = Object.values(monthlyMap);
-
   let growthPercent = 0;
-
   if (monthlyValues.length >= 2) {
     const last = monthlyValues[monthlyValues.length - 1];
     const prev = monthlyValues[monthlyValues.length - 2];
-
     if (prev !== 0) {
       growthPercent = ((last - prev) / prev) * 100;
     }
   }
 
-  // 🧠 Consistency Score (percentage of active days in last year)
   const consistencyScore = ((activeDays / 365) * 100).toFixed(1);
 
-  // 🏅 Activity Badge System
   let badge = "Inactive";
-
-  if (consistencyScore >= 75) badge = "Elite Developer";
-  else if (consistencyScore >= 50) badge = "Highly Consistent";
-  else if (consistencyScore >= 25) badge = "Active Contributor";
-  else if (consistencyScore >= 10) badge = "Emerging Developer";
+  if (Number(consistencyScore) >= 75) badge = "Elite Developer";
+  else if (Number(consistencyScore) >= 50) badge = "Highly Consistent";
+  else if (Number(consistencyScore) >= 25) badge = "Active Contributor";
+  else if (Number(consistencyScore) >= 10) badge = "Emerging Developer";
 
   return (
     <section className="px-6 py-20 max-w-6xl mx-auto">
       <h2 className="text-4xl font-bold text-white mb-2">
         🧬 Digital Activity Genome
       </h2>
+
+      {/* ✅ Add Year Dropdown UI */}
+      <div className="flex justify-between items-center mb-6 mt-4">
+        <p className="text-gray-400 text-sm">
+          Contribution activity for selected year
+        </p>
+
+        <select
+          value={selectedYear ?? ""}
+          onChange={(e) => setSelectedYear(Number(e.target.value))}
+          className="bg-[#161b22] border border-gray-800 text-gray-300 px-3 py-2 rounded-md text-sm focus:outline-none focus:border-green-500"
+        >
+          {[...new Set(data.map((d) => new Date(d.activity_date).getFullYear()))]
+            .sort((a, b) => b - a)
+            .map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+        </select>
+      </div>
 
       {/* 🔥 Platform Cards */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
@@ -209,18 +240,15 @@ export default function ActivityHeatmap() {
                 <p className="text-gray-400 capitalize mb-2">
                   {platform}
                 </p>
-
                 <p className="text-2xl font-bold text-white">
                   {value}
                 </p>
-
                 <div className="w-full bg-gray-800 h-2 rounded mt-3">
                   <div
                     className="h-2 rounded bg-green-500 transition-all duration-500"
                     style={{ width: `${percentage}%` }}
                   />
                 </div>
-
                 <p className="text-xs text-gray-500 mt-2">
                   {percentage}% of total activity
                 </p>
@@ -230,12 +258,10 @@ export default function ActivityHeatmap() {
         )}
       </div>
 
-      {/* 🥧 PIE CHART */}
       <div className="mt-10">
         <PlatformPieChart data={platformStats} />
       </div>
 
-      {/* 🚀 Developer Intelligence Panel */}
       <div className="mt-8 bg-[#0e1621] p-6 rounded-xl border border-gray-800">
         <p className="text-gray-400 mb-2">
           Developer Activity Index
@@ -267,12 +293,10 @@ export default function ActivityHeatmap() {
             </p>
           </div>
 
-          {/* 🆕 Monthly Trend Block */}
           <div>
             <p className="text-gray-400 text-sm">
               Monthly Trend
             </p>
-
             <p
               className={`text-lg font-bold ${
                 growthPercent > 0
@@ -299,7 +323,6 @@ export default function ActivityHeatmap() {
         </div>
       </div>
 
-      {/* Stats Section */}
       <div className="mb-8 mt-10 grid grid-cols-2 md:grid-cols-4 gap-6 text-sm">
         <div>
           <p className="text-gray-400">Total Contributions</p>
@@ -307,21 +330,18 @@ export default function ActivityHeatmap() {
             {totalContributions}
           </p>
         </div>
-
         <div>
           <p className="text-gray-400">Active Days</p>
           <p className="text-xl font-semibold text-white">
             {activeDays}
           </p>
         </div>
-
         <div>
           <p className="text-gray-400">Current Streak</p>
           <p className="text-xl font-semibold text-green-400">
             <CountUp end={currentStreak} duration={1.2} /> days
           </p>
         </div>
-
         <div>
           <p className="text-gray-400">Longest Streak</p>
           <p className="text-xl font-semibold text-green-500">
@@ -332,70 +352,93 @@ export default function ActivityHeatmap() {
 
       <MonthlyActivityChart data={data} />
 
-      {/* ===== Heatmap ===== */}
-      <div className="overflow-x-auto">
-        <div className="flex flex-col">
+      {/* ===== Heatmap Section ===== */}
+      <div className="mt-12">
+        {/* Render year selector */}
+        <div className="flex gap-3 mb-6">
+          {availableYears.map((year) => (
+            <button
+              key={year}
+              onClick={() => setSelectedYear(year)}
+              className={`px-4 py-2 rounded transition-colors ${
+                selectedYear === year
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-800 text-gray-400 hover:bg-gray-700"
+              }`}
+            >
+              {year}
+            </button>
+          ))}
+        </div>
 
-          <div className="flex gap-1 ml-8 mb-2 text-xs text-gray-500">
-            {monthLabels.map((label, i) => (
-              <div key={i} style={{ width: 14 }}>
-                {label}
-              </div>
-            ))}
-          </div>
-
-          <div className="flex gap-2">
-            <div className="flex flex-col gap-1 text-xs text-gray-500">
-              <div style={{ height: 14 }}></div>
-              <div style={{ height: 14 }}>Mon</div>
-              <div style={{ height: 14 }}></div>
-              <div style={{ height: 14 }}>Wed</div>
-              <div style={{ height: 14 }}></div>
-              <div style={{ height: 14 }}>Fri</div>
-              <div style={{ height: 14 }}></div>
-            </div>
-
-            <div className="flex gap-1">
-              {weeks.map((week, i) => (
-                <div key={i} className="flex flex-col gap-1">
-                  {week.map((day) => {
-                    const intensity = getIntensity(day);
-                    return (
-                      <div
-                        key={day.toISOString()}
-                        title={`${format(day,"yyyy-MM-dd")} • ${intensity} contributions`}
-                        style={{
-                          width: 14,
-                          height: 14,
-                          backgroundColor: getColor(intensity),
-                          borderRadius: 2,
-                        }}
-                      />
-                    );
-                  })}
+        <div className="overflow-x-auto">
+          <div className="flex flex-col min-w-max">
+            {/* Month Labels */}
+            <div className="flex gap-1 ml-8 mb-2 text-xs text-gray-500">
+              {monthLabels.map((label, i) => (
+                <div key={i} style={{ width: 14 }}>
+                  {label}
                 </div>
               ))}
             </div>
-          </div>
 
-          <div className="flex items-center gap-2 mt-4 text-xs text-gray-500">
-            <span>Less</span>
-            <div className="flex gap-1">
-              {[0, 1, 3, 6, 10].map((lvl, i) => (
-                <div
-                  key={i}
-                  style={{
-                    width: 14,
-                    height: 14,
-                    backgroundColor: getColor(lvl),
-                    borderRadius: 2,
-                  }}
-                />
-              ))}
+            <div className="flex gap-2">
+              {/* Day Labels */}
+              <div className="flex flex-col gap-1 text-xs text-gray-500">
+                <div style={{ height: 14 }}></div>
+                <div style={{ height: 14 }}>Mon</div>
+                <div style={{ height: 14 }}></div>
+                <div style={{ height: 14 }}>Wed</div>
+                <div style={{ height: 14 }}></div>
+                <div style={{ height: 14 }}>Fri</div>
+                <div style={{ height: 14 }}></div>
+              </div>
+
+              {/* Heatmap Grid */}
+              <div className="flex gap-1">
+                {weeks.map((week, i) => (
+                  <div key={i} className="flex flex-col gap-1">
+                    {week.map((day) => {
+                      const intensity = getIntensity(day);
+                      const isSameYear = day.getFullYear() === selectedYear;
+                      
+                      return (
+                        <div
+                          key={day.toISOString()}
+                          title={`${format(day, "yyyy-MM-dd")} • ${intensity} contributions`}
+                          style={{
+                            width: 14,
+                            height: 14,
+                            backgroundColor: isSameYear ? getColor(intensity) : "transparent",
+                            borderRadius: 2,
+                          }}
+                        />
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
             </div>
-            <span>More</span>
-          </div>
 
+            {/* Legend */}
+            <div className="flex items-center gap-2 mt-4 text-xs text-gray-500">
+              <span>Less</span>
+              <div className="flex gap-1">
+                {[0, 1, 3, 6, 10].map((lvl, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      width: 14,
+                      height: 14,
+                      backgroundColor: getColor(lvl),
+                      borderRadius: 2,
+                    }}
+                  />
+                ))}
+              </div>
+              <span>More</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
