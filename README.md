@@ -1,4 +1,4 @@
-# ✨ Chetan Gadhiya — Engineering Portfolio ✨
+# ✨ Chetan Gadhiya's Engineering Portfolio ✨
 
 This is not a resume website.
 This is a **production-grade engineering profile**.
