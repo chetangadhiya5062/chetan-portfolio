@@ -30,15 +30,17 @@ export default function PlatformPieChart({
       value,
     }));
 
+  if (formatted.length === 0) return null;
+
   return (
     <div className="bg-[#161b22] p-6 rounded-xl border border-gray-800">
       <h3 className="text-white text-lg mb-4">
         Platform Distribution
       </h3>
 
-      {/* 🔥 FIXED CONTAINER */}
-      <div className="w-full h-[300px]">
-        <ResponsiveContainer width="100%" height="100%">
+      {/* Stable Container */}
+      <div className="w-full min-h-[320px]">
+        <ResponsiveContainer width="100%" height={300}>
           <PieChart>
             <Pie
               data={formatted}
@@ -50,9 +52,7 @@ export default function PlatformPieChart({
               {formatted.map((_, index) => (
                 <Cell
                   key={index}
-                  fill={
-                    COLORS[index % COLORS.length]
-                  }
+                  fill={COLORS[index % COLORS.length]}
                 />
               ))}
             </Pie>

@@ -38,19 +38,22 @@ export default function MonthlyActivityChart({ data }: Props) {
     monthlyMap[month] += entry.intensity;
   });
 
-  const formatted = Object.entries(monthlyMap).map(
-    ([month, total]) => ({
+  const formatted = Object.entries(monthlyMap)
+    .map(([month, total]) => ({
       month,
       total,
-    })
-  );
+    }))
+    .sort(
+      (a, b) =>
+        new Date(a.month).getTime() -
+        new Date(b.month).getTime()
+    );
 
-  const bestMonth =
-    formatted.length > 0
-      ? formatted.reduce((prev, curr) =>
-          curr.total > prev.total ? curr : prev
-        )
-      : null;
+  if (formatted.length === 0) return null; // Prevent empty render bug
+
+  const bestMonth = formatted.reduce((prev, curr) =>
+    curr.total > prev.total ? curr : prev
+  );
 
   let growthPercent = 0;
 
@@ -70,24 +73,18 @@ export default function MonthlyActivityChart({ data }: Props) {
       </h3>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 text-sm">
-        {bestMonth && (
-          <div className="bg-[#0e1621] p-4 rounded-lg border border-gray-700">
-            <p className="text-gray-400">
-              Most Productive Month
-            </p>
-            <p className="text-green-400 font-bold text-lg">
-              {bestMonth.month}
-            </p>
-            <p className="text-gray-500 text-xs">
-              {bestMonth.total} contributions
-            </p>
-          </div>
-        )}
+        <div className="bg-[#0e1621] p-4 rounded-lg border border-gray-700">
+          <p className="text-gray-400">Most Productive Month</p>
+          <p className="text-green-400 font-bold text-lg">
+            {bestMonth.month}
+          </p>
+          <p className="text-gray-500 text-xs">
+            {bestMonth.total} contributions
+          </p>
+        </div>
 
         <div className="bg-[#0e1621] p-4 rounded-lg border border-gray-700">
-          <p className="text-gray-400">
-            Monthly Growth
-          </p>
+          <p className="text-gray-400">Monthly Growth</p>
           <p
             className={`font-bold text-lg ${
               growthPercent >= 0
@@ -97,27 +94,19 @@ export default function MonthlyActivityChart({ data }: Props) {
           >
             {growthPercent.toFixed(1)}%
           </p>
-          <p className="text-gray-500 text-xs">
-            Compared to previous month
-          </p>
         </div>
 
         <div className="bg-[#0e1621] p-4 rounded-lg border border-gray-700">
-          <p className="text-gray-400">
-            Active Months
-          </p>
+          <p className="text-gray-400">Active Months</p>
           <p className="text-white font-bold text-lg">
             {formatted.length}
-          </p>
-          <p className="text-gray-500 text-xs">
-            Months with activity
           </p>
         </div>
       </div>
 
-      {/* 🔥 FIXED CONTAINER */}
-      <div className="w-full h-[300px]">
-        <ResponsiveContainer width="100%" height="100%">
+      {/* Stable Container */}
+      <div className="w-full min-h-[320px]">
+        <ResponsiveContainer width="100%" height={300}>
           <BarChart data={formatted}>
             <CartesianGrid stroke="#222" />
             <XAxis

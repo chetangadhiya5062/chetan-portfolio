@@ -9,6 +9,7 @@ export async function GET() {
     .limit(10);
 
   if (error) {
+    console.error("SUPABASE ERROR:", error); // 👈 ADD THIS
     return NextResponse.json(
       { error: error.message },
       { status: 500 }

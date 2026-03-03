@@ -1,86 +1,60 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Github, Linkedin, FileText } from "lucide-react";
 
 export default function Hero() {
   return (
-    <section className="min-h-screen flex flex-col justify-center items-center text-center px-6 relative">
+    <section className="min-h-screen flex items-center px-6 relative">
+      <div className="max-w-6xl mx-auto w-full grid md:grid-cols-[1.2fr_0.8fr] gap-8 items-center">
 
-      <motion.h1
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="text-5xl md:text-7xl font-bold text-white"
-      >
-        Chetan Gadhiya
-      </motion.h1>
+        {/* LEFT SIDE */}
+        <div className="text-center md:text-left">
 
-      {/* NEW: Developer Identity Line */}
-      <motion.p
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.8 }}
-        className="mt-4 text-green-400 text-lg md:text-xl font-medium"
-      >
-        Software Developer • AI Enthusiast • Backend Architect
-      </motion.p>
+          {/* BIG NAME */}
+          <h1 className="text-5xl md:text-7xl font-extrabold text-white leading-tight mb-6">
+            Chetan Gadhiya
+          </h1>
 
-      {/* Refined Academic Info */}
-      <motion.p
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, duration: 0.8 }}
-        className="mt-4 text-gray-400 text-lg max-w-2xl"
-      >
-        B.Tech – Computer Science Engineering <br />
-        CGPA: 8.1 / 10 <br />
-        Focused on building intelligent systems, scalable backend architectures,
-        and high-impact automation tools.
-      </motion.p>
+          {/* STRONG 3-POINT IDENTITY */}
+          <p className="text-green-400 text-lg md:text-xl mb-6">
+            AI & Machine Learning • NLP Enthusiast • Software Engineer
+          </p>
 
-      {/* Action Buttons */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.8 }}
-        className="flex gap-6 mt-10"
-      >
-        <a
-          href="https://github.com/ChetanGadhiya017"
-          target="_blank"
-          className="p-3 bg-[#161b22] rounded-xl hover:bg-[#21262d] transition-all"
-        >
-          <Github />
-        </a>
+          {/* MAIN QUOTE */}
+          <div className="border-l-4 border-green-400 pl-4 mb-10 max-w-xl mx-auto md:mx-0">
+            <p className="text-gray-400 italic text-lg">
+              “Designing intelligent systems that scale seamlessly
+              and transform complex ideas into real-world solutions.”
+            </p>
+          </div>
 
-        <a
-          href="https://www.linkedin.com/in/chetan-gadhiya-4923a6284/"
-          target="_blank"
-          className="p-3 bg-[#161b22] rounded-xl hover:bg-[#21262d] transition-all"
-        >
-          <Linkedin />
-        </a>
+        </div>
 
-        <a
-          href="/resume.pdf"
-          target="_blank"
-          className="p-3 bg-[#161b22] rounded-xl hover:bg-[#21262d] transition-all"
-        >
-          <FileText />
-        </a>
-      </motion.div>
+        {/* RIGHT SIDE IMAGE */}
+        <div className="flex justify-center md:justify-end">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.92 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8 }}
+            className="relative"
+          >
+            {/* Glow */}
+            <div className="absolute inset-0 bg-green-500/20 blur-3xl rounded-full" />
 
-      {/* Scroll Indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2 }}
-        className="absolute bottom-10 text-gray-500 text-sm animate-bounce"
-      >
+            <img
+              src="/profile.jpg"
+              alt="Chetan Gadhiya"
+              className="relative w-80 h-80 md:w-96 md:h-96 object-cover rounded-full border-4 border-gray-800 shadow-xl"
+            />
+          </motion.div>
+        </div>
+
+      </div>
+
+      {/* SCROLL DOWN INDICATOR */}
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-gray-500 text-sm animate-bounce">
         ↓ Scroll to explore
-      </motion.div>
-
+      </div>
     </section>
   );
 }

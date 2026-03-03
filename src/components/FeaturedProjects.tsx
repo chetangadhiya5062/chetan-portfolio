@@ -17,15 +17,26 @@ export default function FeaturedProjects() {
   const [projects, setProjects] = useState<Project[]>([]);
 
   useEffect(() => {
-    fetch("/api/projects/featured")
-      .then((res) => res.json())
-      .then((data) => setProjects(data));
+    async function fetchProjects() {
+      try {
+        const res = await fetch("/api/projects/featured");
+
+        if (!res.ok) return; // ← IMPORTANT
+
+        const data = await res.json();
+        setProjects(data);
+      } catch (err) {
+        console.log("Featured projects not available yet.");
+      }
+    }
+
+    fetchProjects();
   }, []);
 
   return (
     <section className="mt-24">
-      <h2 className="text-3xl font-bold text-white mb-10">
-        🏆 Featured Projects
+      <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-12">
+        Selected Work
       </h2>
 
       <div className="grid md:grid-cols-2 gap-10">
@@ -65,6 +76,7 @@ export default function FeaturedProjects() {
               <a
                 href={project.github_url}
                 target="_blank"
+                rel="noopener noreferrer"
                 className="text-sm text-green-400 hover:underline"
               >
                 View Code →
@@ -74,6 +86,7 @@ export default function FeaturedProjects() {
                 <a
                   href={project.live_url}
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="text-sm text-blue-400 hover:underline"
                 >
                   Live Demo →
@@ -88,6 +101,7 @@ export default function FeaturedProjects() {
         <a
           href="https://github.com/chetangadhiya5062"
           target="_blank"
+          rel="noopener noreferrer"
           className="text-gray-400 hover:text-green-400 transition-all"
         >
           View All Projects on GitHub →

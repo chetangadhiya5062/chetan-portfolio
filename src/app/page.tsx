@@ -4,31 +4,39 @@ import ActivityHeatmap from "@/components/ActivityHeatmap";
 import RecentActivity from "@/components/RecentActivity";
 import FeaturedProjects from "@/components/FeaturedProjects";
 import Contact from "@/components/Contact";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
     <main>
       <Navbar />
 
-      <section id="hero">
-        <Hero />
-      </section>
+      {/* Global Center Container */}
+      <div className="max-w-6xl mx-auto px-6">
 
-      <section id="genome">
-        <ActivityHeatmap />
-      </section>
+        <section id="hero">
+          <Hero />
+        </section>
 
-      <section>
-        <RecentActivity />
-      </section>
+        <section id="genome">
+          <ActivityHeatmap />
+        </section>
 
-      <section id="projects">
-        <FeaturedProjects />
-      </section>
+        <section>
+          <RecentActivity />
+        </section>
 
-      <section id="contact">
-        <Contact />
-      </section>
+        <section id="projects">
+          <FeaturedProjects />
+        </section>
+
+        <section id="contact">
+          <Contact />
+        </section>
+
+      </div>
+
+      <Footer />
     </main>
   );
 }
