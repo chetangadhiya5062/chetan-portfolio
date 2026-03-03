@@ -1,11 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 const sections = [
   { id: "hero", label: "Home" },
-  { id: "genome", label: "Activity" },
+  { id: "experience", label: "Experience" },
   { id: "projects", label: "Projects" },
+  { id: "skills", label: "Skills" },
+  { id: "achievements", label: "Achievements" },
+  { id: "certifications", label: "Certifications" },
+  { id: "activity", label: "Activity" },
   { id: "contact", label: "Contact" },
 ];
 
@@ -14,34 +19,50 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollPosition = window.scrollY + 100;
+      const scrollPosition = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const fullHeight = document.body.scrollHeight;
 
-      sections.forEach((section) => {
+      // 🔥 If user is at bottom of page → activate last section
+      if (scrollPosition + windowHeight >= fullHeight - 5) {
+        setActive(sections[sections.length - 1].id);
+        return;
+      }
+
+      let currentSection = sections[0].id;
+
+      for (let section of sections) {
         const element = document.getElementById(section.id);
         if (element) {
-          if (
-            scrollPosition >= element.offsetTop &&
-            scrollPosition <
-              element.offsetTop + element.offsetHeight
-          ) {
-            setActive(section.id);
+          const sectionTop = element.offsetTop - 120;
+          if (scrollPosition >= sectionTop) {
+            currentSection = section.id;
           }
         }
-      });
+      }
+
+      setActive(currentSection);
     };
 
     window.addEventListener("scroll", handleScroll);
-    return () =>
-      window.removeEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <nav className="fixed top-0 left-0 w-full bg-[#0e1621]/70 backdrop-blur-md border-b border-gray-800 z-50">
       <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
 
-        <h2 className="text-white font-bold text-lg">
+        <Link
+          href="/"
+          onClick={(e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            window.history.replaceState(null, "", "#hero");
+          }}
+          className="text-white font-bold text-lg cursor-pointer"
+        >
           CG.
-        </h2>
+        </Link>
 
         <div className="flex gap-8 text-sm">
 

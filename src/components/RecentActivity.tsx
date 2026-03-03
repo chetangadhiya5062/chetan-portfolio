@@ -35,8 +35,8 @@ function getPlatformStyles(platform: string) {
 export default function RecentActivity() {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [selectedPlatform, setSelectedPlatform] = useState("all");
-  const [visibleCount, setVisibleCount] = useState(5);
   const [loading, setLoading] = useState(true);
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     async function loadRecent() {
@@ -65,7 +65,8 @@ export default function RecentActivity() {
     );
   }, [activities, selectedPlatform]);
 
-  const visible = filtered.slice(0, visibleCount);
+  // 🔥 Show only 5 unless expanded
+  const visible = showAll ? filtered : filtered.slice(0, 5);
 
   return (
     <section className="mt-20">
@@ -80,7 +81,7 @@ export default function RecentActivity() {
             key={platform}
             onClick={() => {
               setSelectedPlatform(platform);
-              setVisibleCount(5);
+              setShowAll(false); // reset when filter changes
             }}
             className={`px-4 py-2 text-sm rounded-full capitalize transition-all
               ${
@@ -129,15 +130,14 @@ export default function RecentActivity() {
         ))}
       </div>
 
-      {visibleCount < filtered.length && (
-        <div className="mt-8">
+      {/* 🔥 Toggle Button */}
+      {filtered.length > 5 && (
+        <div className="mt-10 text-center">
           <button
-            onClick={() =>
-              setVisibleCount((prev) => prev + 5)
-            }
+            onClick={() => setShowAll(!showAll)}
             className="px-6 py-2 bg-green-500 text-black font-semibold rounded-lg hover:bg-green-400 transition-all"
           >
-            View More
+            {showAll ? "Show Less" : "View More"}
           </button>
         </div>
       )}
