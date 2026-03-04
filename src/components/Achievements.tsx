@@ -6,7 +6,7 @@ export default function Achievements() {
       links: [
         {
           label: "View Certificate →",
-          href: "/certificates/code4cause-nsut.pdf",
+          href: "/certificates/code4cause-nsut-hackathon-certificate.pdf",
         },
       ],
     },
@@ -16,7 +16,7 @@ export default function Achievements() {
       links: [
         {
           label: "View Certificate →",
-          href: "/certificates/sih-2024.pdf",
+          href: "/certificates/sih-2024-problem-solution.pdf",
         },
       ],
     },
@@ -26,7 +26,7 @@ export default function Achievements() {
       links: [
         {
           label: "View Certificate →",
-          href: "/certificates/sih-2025.pdf",
+          href: "/certificates/sih-2025-problem-solution.pdf",
         },
       ],
     },
@@ -38,6 +38,10 @@ export default function Achievements() {
         {
           label: "View Project →",
           href: "https://github.com/chetangadhiya5062/Fork_Classroom-Management",
+        },
+        {
+          label: "View Event Photo →",
+          href: "/images/hackout-2024-event-team.jpg",
         },
       ],
     },
@@ -58,7 +62,7 @@ export default function Achievements() {
       links: [
         {
           label: "View Certificate →",
-          href: "/certificates/aincat-rank.pdf",
+          href: "/certificates/naukri-aincat-rank-certificate.pdf",
         },
       ],
     },
@@ -73,7 +77,7 @@ export default function Achievements() {
         },
         {
           label: "View Event Photo →",
-          href: "/images/ieee-aimv-photo.jpg",
+          href: "/images/ieee-aimv-conference-event.jpg",
         },
       ],
     },
@@ -84,7 +88,7 @@ export default function Achievements() {
       links: [
         {
           label: "View Event Photo →",
-          href: "/images/encode-club.jpg",
+          href: "/images/encode-club-ai-ml-team.jpg",
         },
       ],
     },
