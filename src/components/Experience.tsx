@@ -10,7 +10,7 @@ export default function Experience() {
           Python Developer Intern — Cognifyz Technologies
         </h3>
 
-        <p className="text-gray-400 mb-4">December 2023</p>
+        <p className="text-gray-400 mb-4">December 2024</p>
 
         <ul className="text-gray-500 space-y-2 list-disc list-inside">
           <li>Built automation and data-processing scripts</li>
