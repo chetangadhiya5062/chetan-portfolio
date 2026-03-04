@@ -18,7 +18,7 @@ export default function Contact() {
         <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 via-transparent to-blue-500/10 pointer-events-none" />
 
         <h2 className="text-4xl font-bold text-white mb-4 relative z-10">
-          ✨ Let’s Build Something Great ✨
+           Let’s Build Something Great 
         </h2>
 
         <p className="text-gray-400 mb-10 relative z-10">
