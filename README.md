@@ -1,36 +1,222 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ✨ Chetan Gadhiya's Engineering Portfolio ✨
 
-## Getting Started
+This is not a resume website.
+This is a **production-grade engineering profile**.
 
-First, run the development server:
+Built with **Next.js + TypeScript**, this portfolio is designed to demonstrate:
+
+* Real projects
+* Verified achievements
+* Measurable impact
+* Consistent development activity
+
+Everything shown is backed by proof.
+
+---
+
+## 🌐 Live Website
+
+🔗 **Visit Portfolio**
+https://chetan-portfoliodeployedv2.vercel.app/
+
+---
+
+# 🧠 Why This Portfolio Exists
+
+Most portfolios say things.
+
+This one proves them.
+
+It was built on three non-negotiable principles:
+
+### 1️⃣ Proof Over Claims
+
+Every major achievement includes:
+
+* GitHub repositories
+* Certificates
+* Event documentation
+
+No vague statements. No empty highlights.
+
+---
+
+### 2️⃣ Architecture First
+
+The UI is clean because the structure is clean.
+
+* Modular components
+* Scalable layout system
+* Reusable data-driven sections
+* Clear separation of concerns
+
+Engineered — not assembled.
+
+---
+
+### 3️⃣ Dynamic Credibility
+
+This portfolio evolves.
+
+* Live contribution heatmap
+* Real activity timeline
+* API-driven rendering
+* Platform-based filtering
+
+It reflects actual development consistency — not a frozen snapshot.
+
+---
+
+# 🏗 Architecture Overview
+
+Built using **Next.js (App Router)** and structured for long-term scalability.
+
+### Project Structure
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+src/
+ ├── app/
+ │    └── page.tsx
+ ├── components/
+ │    ├── Hero
+ │    ├── Experience
+ │    ├── FeaturedProjects
+ │    ├── TechnicalSkills
+ │    ├── Achievements
+ │    ├── Certifications
+ │    ├── ActivityHeatmap
+ │    ├── RecentActivity
+ │    ├── Contact
+ │    └── Footer
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Key Engineering Decisions
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+* Centralized layout container (`max-w-6xl mx-auto`)
+* Scroll-aware navigation system
+* Modular card-based UI architecture
+* API-based activity rendering
+* Public asset integration for certificates
+* Reusable section-driven design pattern
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Scalable. Maintainable. Extendable.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+# ✨ What You’ll Find Inside
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🔹 Selected Work
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Production-level academic and hackathon projects:
 
-## Deploy on Vercel
+* **AI Truth Detection System**
+* **Microplastic Detection & Data Management System**
+* **Smart Inbox & Behavioral Analytics System**
+* **Cognifyz Internship Work**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Each project includes:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+* Clear problem statement
+* Tech stack used
+* Direct GitHub repository link
+
+No placeholders. No demos without code.
+
+---
+
+## 🔹 Achievements & Participation
+
+* Code4Cause 2.0 Hackathon — Selected among 1200+ teams
+* Smart India Hackathon 2024 & 2025 — Top 25 Teams
+* HACKOUT’24 — Classroom Management System
+* GenAI Exchange Hackathon — Fact Verification System
+* IEEE AIMV 2025 Conference — Lead Student Volunteer (160+ research papers managed)
+* Naukri Campus AINCAT — All India Rank ~27,712
+* Active Member — Encode Club (AI/ML)
+
+Every entry includes:
+
+* Certificate (PDF proof)
+* GitHub repository (where applicable)
+* Supporting documentation
+
+Transparent and verifiable.
+
+---
+
+## 🛠 Tech Stack
+
+* **Next.js (App Router)**
+* **TypeScript**
+* **Tailwind CSS**
+* **Framer Motion**
+* **date-fns**
+
+Chosen for scalability, maintainability, and performance.
+
+---
+
+## 📊 Activity System
+
+This is where the portfolio becomes dynamic.
+
+* Live contribution heatmap
+* Recent activity timeline
+* Progressive load (View More / Show Less)
+* Platform-based filtering
+* API-driven architecture
+
+The site evolves as development continues.
+
+---
+
+## ⚙️ Run Locally
+
+```bash
+git clone https://github.com/YOUR_USERNAME/chetan-portfolio.git
+cd chetan-portfolio
+npm install
+npm run dev
+```
+
+---
+
+# 📌 What This Portfolio Demonstrates
+
+This project showcases:
+
+* Frontend architecture design
+* Modular React development
+* Clean UI/UX execution
+* Scroll state management
+* Dynamic rendering patterns
+* Structured information hierarchy
+* Production-ready deployment
+
+It reflects how I think — and how I build.
+
+---
+
+# 👨‍💻 About Me
+
+**Chetan Gadhiya**
+AI & Machine Learning | NLP | Software Engineering
+
+Focused on building structured, scalable, and proof-driven systems.
+
+---
+
+# 🎯 What Was Intentionally Removed
+
+❌ Generic “passion for coding” paragraphs
+❌ Filler philosophy statements
+❌ Empty buzzwords
+❌ Over-explanation
+
+# ✅ What Was Kept
+
+✔ Architecture
+✔ Proof
+✔ Technical depth
+✔ Measurable achievements
+✔ Structured thinking
