@@ -17,7 +17,7 @@ Everything shown is backed by proof.
 ## 🌐 Live Website
 
 🔗 **Visit Portfolio**
-https://chetan-portfoliodeployedv2.vercel.app/
+https://chetangadhiya.vercel.app/
 
 ---
 
