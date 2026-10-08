@@ -3,13 +3,9 @@ import { timeAgo, type Activity as ActivityData, type Platform } from "@/lib/act
 import type { GithubData, LeetcodeData } from "@/lib/sources/types";
 import SectionHead from "@/components/ui/SectionHead";
 import Reveal from "@/components/ui/Reveal";
+import Heatmap from "./Heatmap";
 
-const CELL = 11;
-const GAP = 3;
-const STEP = CELL + GAP;
-
-const level = (n: number) => (n === 0 ? 0 : n <= 2 ? 1 : n <= 5 ? 2 : n <= 9 ? 3 : 4);
-const OPACITY = [0, 0.28, 0.52, 0.76, 1];
+const OPACITY = [0.7, 0.28, 0.52, 0.76, 1];
 
 const PLATFORM: Record<Platform, { label: string; cls: string }> = {
   github: { label: "GitHub", cls: "text-lime border-lime/40" },
@@ -18,61 +14,6 @@ const PLATFORM: Record<Platform, { label: string; cls: string }> = {
   linkedin: { label: "LinkedIn", cls: "text-muted border-line" },
   x: { label: "X", cls: "text-muted border-line" },
 };
-
-function Heatmap({ days }: { days: ActivityData["days"] }) {
-  const start = new Date(days[0].date + "T00:00:00Z").getUTCDay();
-  const cols = Math.ceil((days.length + start) / 7);
-  const width = cols * STEP;
-  const months: { x: number; label: string }[] = [];
-  let last = "";
-  days.forEach((d, i) => {
-    const m = d.date.slice(0, 7);
-    const col = Math.floor((i + start) / 7);
-    if (m !== last && (i === 0 ? col <= 1 : true)) {
-      last = m;
-      if (!months.length || col - Math.floor(months[months.length - 1].x / STEP) >= 3)
-        months.push({ x: col * STEP, label: new Date(d.date + "T00:00:00Z").toLocaleString("en", { month: "short", timeZone: "UTC" }) });
-    }
-  });
-
-  return (
-    <div className="noscroll-x overflow-x-auto">
-      <svg
-        viewBox={`0 0 ${width} ${7 * STEP + 18}`}
-        role="img"
-        aria-label={`Activity heatmap for the last 365 days: ${days.reduce((s, d) => s + d.total, 0)} contributions across GitHub, LeetCode, Medium and posts.`}
-        className="h-auto min-w-[640px] w-full"
-      >
-        {months.map((m) => (
-          <text key={m.x} x={m.x} y={9} className="fill-muted" fontSize={9} fontFamily="var(--font-jetbrains)">
-            {m.label}
-          </text>
-        ))}
-        {days.map((d, i) => {
-          const col = Math.floor((i + start) / 7);
-          const row = (i + start) % 7;
-          const lv = level(d.total);
-          return (
-            <rect
-              key={d.date}
-              x={col * STEP}
-              y={18 + row * STEP}
-              width={CELL}
-              height={CELL}
-              rx={2.5}
-              className={lv ? "fill-lime" : "fill-line"}
-              fillOpacity={lv ? OPACITY[lv] : 0.7}
-            >
-              <title>
-                {`${d.total} on ${d.date}${d.total ? ` — GitHub ${d.github}, LeetCode ${d.leetcode}, Medium ${d.medium}, posts ${d.posts}` : ""}`}
-              </title>
-            </rect>
-          );
-        })}
-      </svg>
-    </div>
-  );
-}
 
 /** Monthly activity drawn as a smooth, loss-curve-style line. */
 function Curve({ months }: { months: ActivityData["months"] }) {
@@ -191,7 +132,7 @@ export default function ActivitySection({
             <h3 className="font-display text-xl font-medium">Unified heatmap</h3>
             <p className="label">{activity.totals.all} events · 365 days</p>
           </div>
-          <Heatmap days={activity.days} />
+          <Heatmap from={activity.days[0].date} counts={activity.days.map((d) => [d.total, d.github, d.leetcode, d.medium, d.posts])} />
           <div className="mt-5 flex items-center justify-end gap-2 font-mono text-[10px] text-muted" aria-hidden>
             less
             {[0, 1, 2, 3, 4].map((l) => (

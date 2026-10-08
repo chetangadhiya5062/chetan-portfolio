@@ -22,7 +22,8 @@ export default function Hero({ github, status }: { github: GithubData | null; st
 
         <HeroName lines={LINES} />
 
-        <p className="caret mt-6 max-w-3xl font-display text-[clamp(1.25rem,3vw,2.1rem)] font-medium leading-snug text-ink" aria-label={`${profile.headline} — ${profile.tagline}`}>
+        <p className="caret mt-6 max-w-3xl font-display text-[clamp(1.25rem,3vw,2.1rem)] font-medium leading-snug text-ink">
+          <span className="sr-only">{`${profile.headline} — ${profile.tagline}`}</span>
           {TOKENS.map((t, i) => (
             <span key={i} className="tok" style={{ "--i": i } as React.CSSProperties} aria-hidden>
               {t}{" "}
