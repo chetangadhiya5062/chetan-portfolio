@@ -66,3 +66,10 @@ Judgement calls made during the v2 rebuild. Newest at the bottom.
   - Smooth scroll, custom cursor and layer rail mount after idle and only on devices that need them (fine pointer / >=1280px). `will-change` removed from reveals. Sections wrapped in `Suspense` so hydration is split.
   - Remaining simulated LCP ~3.3 s is Lighthouse's pessimistic model on localhost (observed LCP was ~0.4 s).
 - **A11y fixes:** removed an invalid `aria-label` on the token paragraph (sr-only text instead), nav link label now matches its visible text, visible focus ring everywhere, skip link, `prefers-reduced-motion` + manual toggle.
+
+## Phase 7 - "Ask my portfolio" chat (optional)
+- Floating "Ask AI" button + streaming panel. **Hidden entirely** when `GEMINI_API_KEY` is unset: `ChatGate` (server) renders nothing, and `/api/chat` returns 404. The gate is evaluated at build time on static pages, so on Vercel the key must exist in the environment when the deployment is built (redeploy after adding it).
+- Knowledge = the same `src/content/*` that renders the site (`lib/chat-context.ts`), not the resume PDF: no PDF-parsing dependency and the content already mirrors the resume. The system prompt restricts answers to portfolio topics, forbids invention and private details, and treats user text as untrusted.
+- Server route: Gemini `streamGenerateContent` over SSE, re-streamed as plain text; key sent in the `x-goog-api-key` header (never in a URL), model from `GEMINI_MODEL` (default `gemini-2.5-flash`, thinking off for latency), max 400 output tokens, 25 s timeout. Input validated (<=8 messages, <=600 chars each, last must be a user turn). Rate limit 12 requests/min/IP (in-memory, best effort). Upstream failure returns a friendly 502 telling the visitor to email.
+- The chat bundle loads only after idle (`dynamic`, `ssr:false`), so it never touches initial performance.
+- Verified locally: 404 without key; with a fake key: 502 (graceful), 400 on invalid input, 429 after 12 requests. Real streaming needs a real key and is a quick manual check for the owner.
