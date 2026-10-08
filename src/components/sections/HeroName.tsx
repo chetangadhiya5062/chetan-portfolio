@@ -52,40 +52,50 @@ export default function HeroName({ lines }: { lines: string[] }) {
     const cv = canvas.current;
     if (!host || !cv || reduced || lowPower()) return;
 
-    const gl = cv.getContext("webgl", { alpha: true, antialias: false, powerPreference: "low-power", premultipliedAlpha: true });
-    if (!gl) return;
+    // GL objects are created lazily in initGL() (called from setup) so nothing GPU-related runs at hydration
+    let gl!: WebGLRenderingContext;
+    let aPos = 0, aCol = 0;
+    let uRes: WebGLUniformLocation | null = null, uSize: WebGLUniformLocation | null = null;
+    let posBuf: WebGLBuffer | null = null, colBuf: WebGLBuffer | null = null;
+    let hasGL = false;
 
-    const compile = (type: number, src: string) => {
-      const s = gl.createShader(type)!;
-      gl.shaderSource(s, src);
-      gl.compileShader(s);
-      return gl.getShaderParameter(s, gl.COMPILE_STATUS) ? s : null;
+    const initGL = (): boolean => {
+      const ctx = cv.getContext("webgl", { alpha: true, antialias: false, powerPreference: "low-power", premultipliedAlpha: true, failIfMajorPerformanceCaveat: true });
+      if (!ctx) return false;
+      gl = ctx;
+      const compile = (type: number, src: string) => {
+        const sh = gl.createShader(type)!;
+        gl.shaderSource(sh, src);
+        gl.compileShader(sh);
+        return gl.getShaderParameter(sh, gl.COMPILE_STATUS) ? sh : null;
+      };
+      const vs = compile(gl.VERTEX_SHADER, VERT);
+      const fs = compile(gl.FRAGMENT_SHADER, FRAG);
+      if (!vs || !fs) return false;
+      const prog = gl.createProgram()!;
+      gl.attachShader(prog, vs);
+      gl.attachShader(prog, fs);
+      gl.linkProgram(prog);
+      if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return false;
+      gl.useProgram(prog);
+      aPos = gl.getAttribLocation(prog, "a_pos");
+      aCol = gl.getAttribLocation(prog, "a_col");
+      uRes = gl.getUniformLocation(prog, "u_res");
+      uSize = gl.getUniformLocation(prog, "u_size");
+      posBuf = gl.createBuffer();
+      colBuf = gl.createBuffer();
+      gl.enable(gl.BLEND);
+      gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+      hasGL = true;
+      return true;
     };
-    const vs = compile(gl.VERTEX_SHADER, VERT);
-    const fs = compile(gl.FRAGMENT_SHADER, FRAG);
-    if (!vs || !fs) return;
-    const prog = gl.createProgram()!;
-    gl.attachShader(prog, vs);
-    gl.attachShader(prog, fs);
-    gl.linkProgram(prog);
-    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
-    gl.useProgram(prog);
-
-    const aPos = gl.getAttribLocation(prog, "a_pos");
-    const aCol = gl.getAttribLocation(prog, "a_col");
-    const uRes = gl.getUniformLocation(prog, "u_res");
-    const uSize = gl.getUniformLocation(prog, "u_size");
-    const posBuf = gl.createBuffer();
-    const colBuf = gl.createBuffer();
-    gl.enable(gl.BLEND);
-    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
     let W = 0, H = 0, dpr = 1, count = 0;
     let hx = new Float32Array(0), hy = new Float32Array(0);
     let px = new Float32Array(0), py = new Float32Array(0);
     let vx = new Float32Array(0), vy = new Float32Array(0);
     let pos = new Float32Array(0);
-    let raf = 0, visible = true, running = false;
+    let raf = 0, visible = true, running = false, asleep = false, calm = 0;
     const mouse = { x: -9999, y: -9999 };
 
     const build = () => {
@@ -159,6 +169,7 @@ export default function HeroName({ lines }: { lines: string[] }) {
       raf = requestAnimationFrame(frame);
       const R = Math.min(120, Math.max(70, W * 0.09));
       const R2 = R * R;
+      let moving = 0;
       for (let i = 0; i < count; i++) {
         let ax = (hx[i] - px[i]) * 0.045;
         let ay = (hy[i] - py[i]) * 0.045;
@@ -175,6 +186,7 @@ export default function HeroName({ lines }: { lines: string[] }) {
         vy[i] = (vy[i] + ay) * 0.82;
         px[i] += vx[i];
         py[i] += vy[i];
+        moving += Math.abs(vx[i]) + Math.abs(vy[i]);
         pos[i * 2] = px[i];
         pos[i * 2 + 1] = py[i];
       }
@@ -183,6 +195,14 @@ export default function HeroName({ lines }: { lines: string[] }) {
       gl.bindBuffer(gl.ARRAY_BUFFER, posBuf);
       gl.bufferSubData(gl.ARRAY_BUFFER, 0, pos);
       gl.drawArrays(gl.POINTS, 0, count);
+
+      // settled and nobody nearby: stop burning CPU/battery until the pointer returns
+      if (moving / count < 0.004 && mouse.x < -1000) {
+        if (++calm > 40) {
+          asleep = true;
+          stop();
+        }
+      } else calm = 0;
     };
 
     const start = () => {
@@ -201,12 +221,19 @@ export default function HeroName({ lines }: { lines: string[] }) {
       const r = cv.getBoundingClientRect();
       mouse.x = e.clientX - r.left;
       mouse.y = e.clientY - r.top;
+      if (asleep && mouse.x > -40 && mouse.x < W + 40 && mouse.y > -40 && mouse.y < H + 40) {
+        asleep = false;
+        calm = 0;
+        start();
+      }
     };
     const onLeave = () => { mouse.x = mouse.y = -9999; };
     const onVis = () => (document.hidden ? stop() : start());
 
     let resizeT = 0;
+    let roFirst = true;
     const ro = new ResizeObserver(() => {
+      if (roFirst) { roFirst = false; return; }
       window.clearTimeout(resizeT);
       resizeT = window.setTimeout(() => { build(); }, 150);
     });
@@ -217,6 +244,7 @@ export default function HeroName({ lines }: { lines: string[] }) {
     });
 
     const setup = () => {
+      if (!initGL()) return; // no WebGL or software-only rendering: keep the static <h1>
       build();
       setLive(true);
       window.addEventListener("pointermove", onMove, { passive: true });
@@ -226,12 +254,33 @@ export default function HeroName({ lines }: { lines: string[] }) {
       io.observe(host);
       start();
     };
-    // wait for the display font so the sampled glyphs are the real ones
+
+    // First paint stays the plain <h1>. The WebGL field is lazy: it starts on the first interaction,
+    // or ~6s after load (idle visitors), whichever comes first (keeps context creation off the critical path).
     let cancelled = false;
-    (document.fonts?.ready ?? Promise.resolve()).then(() => !cancelled && setup());
+    let armed = false;
+    let timer = 0;
+    const events = ["pointermove", "pointerdown", "keydown", "touchstart"] as const;
+    const disarm = () => events.forEach((e) => window.removeEventListener(e, arm));
+    function arm() {
+      if (armed) return;
+      armed = true;
+      disarm();
+      window.clearTimeout(timer);
+      const idle = (fn: () => void) =>
+        typeof window.requestIdleCallback === "function" ? window.requestIdleCallback(fn, { timeout: 800 }) : window.setTimeout(fn, 100);
+      (document.fonts?.ready ?? Promise.resolve()).then(() => idle(() => !cancelled && setup()));
+    }
+    events.forEach((e) => window.addEventListener(e, arm, { passive: true, once: true }));
+    const schedule = () => { timer = window.setTimeout(arm, 6000); };
+    if (document.readyState === "complete") schedule();
+    else window.addEventListener("load", schedule, { once: true });
 
     return () => {
       cancelled = true;
+      disarm();
+      window.clearTimeout(timer);
+      window.removeEventListener("load", schedule);
       stop();
       ro.disconnect();
       io.disconnect();
@@ -240,7 +289,7 @@ export default function HeroName({ lines }: { lines: string[] }) {
       document.removeEventListener("pointerleave", onLeave);
       document.removeEventListener("visibilitychange", onVis);
       setLive(false);
-      gl.getExtension("WEBGL_lose_context")?.loseContext();
+      if (hasGL) gl.getExtension("WEBGL_lose_context")?.loseContext();
     };
   }, [lines, reduced]);
 

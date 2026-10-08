@@ -12,13 +12,13 @@ export default function Nav() {
             e.preventDefault();
             scrollToId("top");
           }}
-          aria-label="Chetan Gadhiya — back to top"
           className="group flex items-center gap-2 font-display text-lg font-semibold tracking-tight"
         >
-          <span className="grid size-8 place-items-center rounded-md border border-line bg-surface font-mono text-xs text-lime transition-colors group-hover:border-lime">
+          <span className="sr-only">Chetan Gadhiya, back to top</span>
+          <span aria-hidden className="grid size-8 place-items-center rounded-md border border-line bg-surface font-mono text-xs text-lime transition-colors group-hover:border-lime">
             CG
           </span>
-          <span className="hidden sm:inline">Chetan Gadhiya</span>
+          <span aria-hidden className="hidden sm:inline">Chetan Gadhiya</span>
         </a>
 
         <div className="flex items-center gap-2 sm:gap-3">

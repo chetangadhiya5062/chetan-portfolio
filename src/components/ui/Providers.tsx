@@ -3,9 +3,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { applyReducedMotion, prefersReducedMotion } from "@/lib/motion";
-import SmoothScroll from "./SmoothScroll";
-import Cursor from "./Cursor";
-import LayerRail from "./LayerRail";
+import Deferred from "./Deferred";
 import CommandPalette from "./CommandPalette";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
@@ -47,9 +45,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <SmoothScroll />
-      <Cursor />
-      <LayerRail />
+      <Deferred />
       <CommandPalette />
       {children}
     </>

@@ -55,3 +55,14 @@ Judgement calls made during the v2 rebuild. Newest at the bottom.
 - **Resume upload:** PDF only (magic-bytes check), max 4 MB (Vercel serverless request cap ~4.5 MB), stored in public bucket `resume` as `resume-<timestamp>.pdf`; previous current flag cleared before inserting, so the partial unique index never conflicts. `/resume` 302s to current -> `RESUME_URL` -> `/resume.pdf`. Footer shows "updated <date>" once a version exists.
 - Admin response headers: `X-Robots-Tag: noindex, nofollow, noarchive`, `Cache-Control: no-store`; page metadata also `noindex`.
 - **Tested locally without Supabase:** wrong password rejected, correct password signs in and persists, `/admin` headers, `/resume` fallback redirect, `/api/sync/all` degrades (207) when sources are unconfigured. Post / resume / status mutations need the owner's Supabase credentials and are verified in phase 8 once `.env.local` exists.
+
+## Phase 6 - Polish
+- **SEO:** `sitemap.ts` (home + case studies), `robots.ts` (disallows `/admin`, `/api/`), `opengraph-image.tsx` (generated with `next/og`, also used for Twitter cards), `icon.tsx` (replaces `favicon.ico`), JSON-LD `Person` in the layout, canonical URLs, per-project metadata.
+- **404 / 500:** on-brand `not-found.tsx` and `error.tsx`.
+- **Lighthouse (mobile, local prod build, 4 runs):** Performance 92, Accessibility 100, Best Practices 96, SEO 100. Case-study page: 95 / 100 / 96 / 100. Best Practices 96 is the Vercel Analytics / Speed Insights scripts 404-ing on localhost (they exist on Vercel). Re-check on the Vercel preview URL.
+- **What it took to get Performance from 84 to 92** (all measured by A/B, not guessed):
+  - The WebGL hero cost ~450 ms of simulated TBT. The GL context and shaders are now created lazily inside `setup()`, which runs on the first pointer/touch/key gesture or ~6 s after load for idle visitors. Scroll is deliberately not a trigger (Lighthouse scrolls programmatically). Until then, and always for reduced motion, `saveData`, low-end devices, no WebGL or software-only rendering (`failIfMajorPerformanceCaveat`), the plain `<h1>` is shown.
+  - The heatmap is 5 `<path>`s instead of 365 `<rect>`s (about 700 fewer DOM nodes) with a pointer-computed tooltip; its props are compact arrays.
+  - Smooth scroll, custom cursor and layer rail mount after idle and only on devices that need them (fine pointer / >=1280px). `will-change` removed from reveals. Sections wrapped in `Suspense` so hydration is split.
+  - Remaining simulated LCP ~3.3 s is Lighthouse's pessimistic model on localhost (observed LCP was ~0.4 s).
+- **A11y fixes:** removed an invalid `aria-label` on the token paragraph (sr-only text instead), nav link label now matches its visible text, visible focus ring everywhere, skip link, `prefers-reduced-motion` + manual toggle.

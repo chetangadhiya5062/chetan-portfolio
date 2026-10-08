@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Nav from "@/components/ui/Nav";
 import Hero from "@/components/sections/Hero";
 import About from "@/components/sections/About";
@@ -31,14 +32,15 @@ export default async function Home() {
     <>
       <Nav />
       <main id="main">
+        {/* Each Suspense boundary hydrates as its own small task instead of one long one (lower TBT) */}
         <Hero github={github} status={status} />
-        <About leetcode={leetcode} />
-        <Experience />
-        <Projects github={github} />
-        <ActivitySection activity={activity} github={github} leetcode={leetcode} />
-        <Writing medium={medium} posts={posts} />
-        <Evaluation />
-        <Contact />
+        <Suspense><About leetcode={leetcode} /></Suspense>
+        <Suspense><Experience /></Suspense>
+        <Suspense><Projects github={github} /></Suspense>
+        <Suspense><ActivitySection activity={activity} github={github} leetcode={leetcode} /></Suspense>
+        <Suspense><Writing medium={medium} posts={posts} /></Suspense>
+        <Suspense><Evaluation /></Suspense>
+        <Suspense><Contact /></Suspense>
       </main>
       <Footer resume={resume} syncedAt={syncedAt} />
     </>

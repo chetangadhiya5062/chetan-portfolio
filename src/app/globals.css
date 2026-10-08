@@ -88,12 +88,10 @@ body::after {
     opacity 0.9s var(--ease-out-expo),
     transform 0.9s var(--ease-out-expo);
   transition-delay: var(--reveal-delay, 0ms);
-  will-change: opacity, transform;
 }
 [data-reveal].is-in {
   opacity: 1;
   transform: none;
-  will-change: auto;
 }
 
 /* No-JS and reduced-motion: show everything */
