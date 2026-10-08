@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
-const MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+const MODEL = process.env.GEMINI_MODEL || "gemini-flash-latest";
 
 function clean(input: unknown): Msg[] | null {
   if (!Array.isArray(input) || input.length === 0 || input.length > 8) return null;
@@ -40,19 +40,25 @@ export async function POST(req: Request) {
   const messages = clean(body.messages);
   if (!messages) return NextResponse.json({ error: "Bad request." }, { status: 400 });
 
-  const upstream = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:streamGenerateContent?alt=sse`,
-    {
+  const call = () =>
+    fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:streamGenerateContent?alt=sse`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-goog-api-key": key },
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
         contents: messages.map((m) => ({ role: m.role === "user" ? "user" : "model", parts: [{ text: m.content }] })),
-        generationConfig: { temperature: 0.3, maxOutputTokens: 400, thinkingConfig: { thinkingBudget: 0 } },
+        // newer models spend part of this budget on hidden reasoning, so leave headroom for the answer
+        generationConfig: { temperature: 0.3, maxOutputTokens: 1200 },
       }),
       signal: AbortSignal.timeout(25_000),
-    },
-  ).catch(() => null);
+    }).catch(() => null);
+
+  let upstream = await call();
+  // The free tier answers 503/429 during demand spikes: retry twice with a short backoff
+  for (let attempt = 1; attempt <= 2 && upstream && (upstream.status === 503 || upstream.status === 429); attempt++) {
+    await new Promise((r) => setTimeout(r, 600 * attempt));
+    upstream = await call();
+  }
 
   if (!upstream || !upstream.ok || !upstream.body) {
     return NextResponse.json({ error: "The assistant is unavailable right now. Please email me instead." }, { status: 502 });
@@ -66,10 +72,10 @@ export async function POST(req: Request) {
     new TransformStream<Uint8Array, Uint8Array>({
       transform(chunk, controller) {
         buf += dec.decode(chunk, { stream: true });
-        const events = buf.split("\n\n");
+        const events = buf.split(/\r?\n\r?\n/);
         buf = events.pop() ?? "";
         for (const ev of events) {
-          const data = ev.split("\n").find((l) => l.startsWith("data:"))?.slice(5).trim();
+          const data = ev.split(/\r?\n/).find((l) => l.startsWith("data:"))?.slice(5).trim();
           if (!data) continue;
           try {
             const parts = JSON.parse(data)?.candidates?.[0]?.content?.parts as { text?: string }[] | undefined;
