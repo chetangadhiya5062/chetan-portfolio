@@ -46,3 +46,12 @@ Judgement calls made during the v2 rebuild. Newest at the bottom.
 - **Case studies:** `/projects/[slug]` statically generated from `src/content/projects.ts`.
 - **`/resume`** route already added here (302 to current resume, falls back to `RESUME_URL` then `/resume.pdf`); admin upload comes in phase 5.
 - `.claude/` is git-ignored (local preview config only).
+
+## Phase 5 - Admin + resume
+- **Auth:** single password (`ADMIN_PASSWORD`) compared as SHA-256 digests with `timingSafeEqual`; session cookie = `v1.<expiry>.<HMAC-SHA256>` signed with `ADMIN_SESSION_SECRET`, httpOnly, SameSite=Strict, Secure in production, 7 days. Every server action calls `requireAdmin()` first. If either env var is missing, admin shows a "not configured" message and nothing is writable.
+- **Rate limiting:** 5 login attempts / 15 min per IP, in-memory per server instance (best effort on serverless; resets on cold start) plus an 800 ms delay on each failure. Acceptable for a single-user admin behind a long random password.
+- **LinkedIn:** URL parsed for `urn:li:{activity|share|ugcPost}:<id>` (both `/feed/update/...` and `/posts/...-activity-<id>-...` forms). Post date derived from the id (`id >> 22` = creation ms, validated to a sane range); the admin can override the date. Embed is click-to-load.
+- **X:** free oEmbed (`publish.twitter.com/oembed`) fetched once on save for text/author/date; on failure the post is saved anyway as a link card. No paid API, no scraping.
+- **Resume upload:** PDF only (magic-bytes check), max 4 MB (Vercel serverless request cap ~4.5 MB), stored in public bucket `resume` as `resume-<timestamp>.pdf`; previous current flag cleared before inserting, so the partial unique index never conflicts. `/resume` 302s to current -> `RESUME_URL` -> `/resume.pdf`. Footer shows "updated <date>" once a version exists.
+- Admin response headers: `X-Robots-Tag: noindex, nofollow, noarchive`, `Cache-Control: no-store`; page metadata also `noindex`.
+- **Tested locally without Supabase:** wrong password rejected, correct password signs in and persists, `/admin` headers, `/resume` fallback redirect, `/api/sync/all` degrades (207) when sources are unconfigured. Post / resume / status mutations need the owner's Supabase credentials and are verified in phase 8 once `.env.local` exists.
