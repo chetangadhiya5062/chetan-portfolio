@@ -9,6 +9,7 @@ import Writing from "@/components/sections/Writing";
 import Evaluation from "@/components/sections/Evaluation";
 import Contact from "@/components/sections/Contact";
 import Footer from "@/components/sections/Footer";
+import ChatGate from "@/components/ui/ChatGate";
 import { getSource } from "@/lib/sources";
 import { getResume, getSiteStatus, getSocialPosts } from "@/lib/site-data";
 import { buildActivity } from "@/lib/activity";
@@ -43,6 +44,7 @@ export default async function Home() {
         <Suspense><Contact /></Suspense>
       </main>
       <Footer resume={resume} syncedAt={syncedAt} />
+      <ChatGate />
     </>
   );
 }
