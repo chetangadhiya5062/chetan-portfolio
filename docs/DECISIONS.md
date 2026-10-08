@@ -32,3 +32,17 @@ Judgement calls made during the v2 rebuild. Newest at the bottom.
 - `api/sync/all` replaces the self-calling fan-out: runs the sources in parallel in-process, requires `Authorization: Bearer $CRON_SECRET` (503 if unset in production), then `revalidatePath('/')`.
 - Migration `supabase/migrations/0002_v2.sql` is idempotent. `social_posts` RLS exposes only non-hidden rows to the public.
 - One daily cron at 03:00 UTC (`vercel.json`).
+
+## Phase 4 - Design system + sections
+- **Dependencies:** added `lenis`, `@vercel/speed-insights`. Removed `framer-motion`, `recharts`, `react-countup`, `react-icons`, `date-fns`, `clsx` (all unused after the rewrite). Reveals are one IntersectionObserver + CSS, token streaming is pure CSS, charts are server-rendered SVG: zero chart/animation JS shipped. This is what keeps mobile Lighthouse high.
+- **Hero WebGL:** raw WebGL points (no three.js, saves ~150 KB). Name is sampled from an off-screen canvas into <=7000 particles, repelled by the cursor, flowing in from the right. The real `<h1>` always exists and is only made transparent once the canvas draws. Static fallback (the h1 itself) for reduced motion, `saveData`, <=2 CPU cores / <=2 GB RAM, no WebGL. Paused when off-screen or tab hidden. Touch pointers are ignored.
+- **Reduced motion:** honours the OS setting and a palette toggle (stored in localStorage, class `reduce-motion` on `<html>`); Lenis, particles, cursor, count-ups, reveals and carets all respect it.
+- **Attention graph:** one reusable `AttentionGraph` powers both Experience ("hidden layers" -> skills) and Projects ("attention" -> skills). Lines are drawn with measured SVG curves on hover/focus/tap at >=1024px; below that, each card shows its own chips instead.
+- **Skills:** rendered as a six-layer stack inside About (not a tag cloud).
+- **Activity:** heatmap, monthly curve, platform share and feed are server components built from the source data (`lib/activity.ts`), no client fetches. Removed the "top %" text next to the LeetCode contest rating: LeetCode's `topPercentage` is easy to misread, so only rating and contests attended are shown.
+- **LinkedIn posts:** click-to-load iframe so the third-party embed never costs page performance or privacy unless asked. X posts render as custom cards.
+- **Layer rail:** dots only at >=1280px; labels appear on hover/focus so they never cover content.
+- **Custom cursor:** fine pointers only (`hover:hover` + `pointer:fine`), disabled with reduced motion.
+- **Case studies:** `/projects/[slug]` statically generated from `src/content/projects.ts`.
+- **`/resume`** route already added here (302 to current resume, falls back to `RESUME_URL` then `/resume.pdf`); admin upload comes in phase 5.
+- `.claude/` is git-ignored (local preview config only).
