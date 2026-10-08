@@ -73,3 +73,8 @@ Judgement calls made during the v2 rebuild. Newest at the bottom.
 - Server route: Gemini `streamGenerateContent` over SSE, re-streamed as plain text; key sent in the `x-goog-api-key` header (never in a URL), model from `GEMINI_MODEL` (default `gemini-2.5-flash`, thinking off for latency), max 400 output tokens, 25 s timeout. Input validated (<=8 messages, <=600 chars each, last must be a user turn). Rate limit 12 requests/min/IP (in-memory, best effort). Upstream failure returns a friendly 502 telling the visitor to email.
 - The chat bundle loads only after idle (`dynamic`, `ssr:false`), so it never touches initial performance.
 - Verified locally: 404 without key; with a fake key: 502 (graceful), 400 on invalid input, 429 after 12 requests. Real streaming needs a real key and is a quick manual check for the owner.
+
+## Phase 8 - Verification (so far)
+- Crawled every link on `/` and the four case studies against a production build: all internal links and proof files return 200, `/resume` 302s to `/resume.pdf` (fallback), every `mailto:` is `chetan.certi.001@gmail.com`, no `tel:`/phone anywhere. External: all GitHub repos exist (two are served via GitHub's 301 rename redirect); Medium / LeetCode / LinkedIn answer 403 / 999 to scripted requests (bot blocking), the URLs themselves come from their own APIs and the profile.
+- Source-failure test: with no tokens or Supabase configured the build and every page render with empty states; `/api/sync/all` returns 207 with per-source errors instead of crashing.
+- **Pending the owner (needs `.env.local` + migration):** end-to-end `/admin` flows against a real Supabase (add LinkedIn/X post, upload resume, status) and a real GitHub token run.
