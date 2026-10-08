@@ -21,3 +21,14 @@ Judgement calls made during the v2 rebuild. Newest at the bottom.
 - Truth AI has two links: `misinformation_ai` (plan's featured repo) and `GenAI_Truth-AI` (hackathon build, carried over from the old site).
 - Old components with their lint errors (legacy `any`, components defined in render) are still present until phase 4 replaces them. Lint is scoped to new files for this phase commit; full lint must be clean from phase 4 on.
 - IEEE AIMV certificate link dropped (file missing); photo kept as proof.
+
+## Phase 3 - Data layer
+- Legacy components, `api/activity*`, `api/stats`, `api/projects/featured`, `api/sync/{github,leetcode,medium,codeforces,linkedin,test}` and `lib/github.ts` deleted. Reason: they used `any`, failed lint, crashed on import without env vars, and the LinkedIn route only inserted a dummy row. `page.tsx` is a temporary shell until phase 4 so that lint/build pass at this commit.
+- Codeforces dropped (not in the plan's source list).
+- GitHub: one GraphQL query (contributions calendar + public repos + topics + last 3 commits per repo) instead of GraphQL + REST. It returns the same metadata in one round trip and one token scope. Secondary account `ChetanGadhiya017` is fetched separately; its failure is ignored.
+- Supabase clients are lazy and return `null` without env vars, so `next build` and the site work (with empty states) before the owner configures anything.
+- Fallback chain per source: live fetch (ISR 6h) -> `source_cache` last-good JSON -> `null` (UI shows an empty state). `getSource()` never throws.
+- `activity_logs` kept as a history archive (unique `external_id` upsert: per-day rows + recent items). The heatmap and feed are built from source data in `lib/activity.ts` so they need no extra queries. Legacy rows with null `external_id` are left untouched.
+- `api/sync/all` replaces the self-calling fan-out: runs the sources in parallel in-process, requires `Authorization: Bearer $CRON_SECRET` (503 if unset in production), then `revalidatePath('/')`.
+- Migration `supabase/migrations/0002_v2.sql` is idempotent. `social_posts` RLS exposes only non-hidden rows to the public.
+- One daily cron at 03:00 UTC (`vercel.json`).
