@@ -15,6 +15,7 @@ export const FEATURED_REPOS = [
 export const HIDDEN_REPOS = [
   "Jay_Swaminarayan",
   "chetangadhiya5062",
+  "ChetanGadhiya017", // secondary account's profile README repo
   "youtube_video-audio_downloader_Claude",
 ];
 
