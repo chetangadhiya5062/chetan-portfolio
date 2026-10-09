@@ -1,4 +1,4 @@
-import { GITHUB_USER, SECONDARY_USERS } from "@/config/github";
+import { GITHUB_USER, HIDDEN_PATTERNS, HIDDEN_REPOS, SECONDARY_USERS } from "@/config/github";
 import { cacheOpts } from "./types";
 import type { CalendarDay, CommitInfo, GithubData, RepoInfo } from "./types";
 
@@ -94,7 +94,11 @@ export async function fetchGithub(fresh = false): Promise<GithubData> {
   const nodes = [primary, ...others].flatMap((u) => u?.repositories.nodes ?? []);
   const repos = nodes.map(mapRepo).sort((a, b) => b.pushedAt.localeCompare(a.pushedAt));
 
-  const recentCommits: CommitInfo[] = nodes
+  // commits shown publicly skip forks and hidden repos (profile READMEs, scratch scripts)
+  const hidden = new Set(HIDDEN_REPOS.map((r) => r.toLowerCase()));
+  const showable = nodes.filter((r) => !r.isFork && !hidden.has(r.name.toLowerCase()) && !HIDDEN_PATTERNS.some((p) => p.test(r.name)));
+
+  const recentCommits: CommitInfo[] = showable
     .flatMap((r) =>
       (r.defaultBranchRef?.target.history?.nodes ?? []).map((c) => ({
         repo: r.nameWithOwner,
