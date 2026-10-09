@@ -1,58 +1,50 @@
-import Navbar from "@/components/Navbar";
-import Hero from "@/components/Hero";
-import Experience from "@/components/Experience";
-import FeaturedProjects from "@/components/FeaturedProjects";
-import TechnicalSkills from "@/components/TechnicalSkills";
-import Achievements from "@/components/Achievements";
-import Certifications from "@/components/Certifications";
-import ActivityHeatmap from "@/components/ActivityHeatmap";
-import RecentActivity from "@/components/RecentActivity";
-import Contact from "@/components/Contact";
-import Footer from "@/components/Footer";
+import { Suspense } from "react";
+import Nav from "@/components/ui/Nav";
+import Hero from "@/components/sections/Hero";
+import About from "@/components/sections/About";
+import Experience from "@/components/sections/Experience";
+import Projects from "@/components/sections/Projects";
+import ActivitySection from "@/components/sections/Activity";
+import Writing from "@/components/sections/Writing";
+import Evaluation from "@/components/sections/Evaluation";
+import Contact from "@/components/sections/Contact";
+import Footer from "@/components/sections/Footer";
+import ChatGate from "@/components/ui/ChatGate";
+import { getSource } from "@/lib/sources";
+import { getResume, getSiteStatus, getSocialPosts } from "@/lib/site-data";
+import { buildActivity } from "@/lib/activity";
 
-export default function Home() {
+// ISR: fresh at least every 6h; the cron and /admin saves also revalidate on demand.
+export const revalidate = 21600;
+
+export default async function Home() {
+  const [github, leetcode, medium, posts, status, resume] = await Promise.all([
+    getSource("github"),
+    getSource("leetcode"),
+    getSource("medium"),
+    getSocialPosts(),
+    getSiteStatus(),
+    getResume(),
+  ]);
+  const activity = buildActivity(github, leetcode, medium, posts);
+  const syncedAt = [github?.fetchedAt, leetcode?.fetchedAt, medium?.fetchedAt].filter(Boolean).sort().pop();
+
   return (
-    <main>
-      <Navbar />
-
-      <div className="max-w-6xl mx-auto px-6">
-
-        <section id="hero">
-          <Hero />
-        </section>
-
-        <section id="experience">
-          <Experience />
-        </section>
-
-        <section id="projects">
-          <FeaturedProjects />
-        </section>
-
-        <section id="skills">
-          <TechnicalSkills />
-        </section>
-
-        <section id="achievements">
-          <Achievements />
-        </section>
-
-        <section id="certifications">
-          <Certifications />
-        </section>
-
-        <section id="activity">
-          <ActivityHeatmap />
-          <RecentActivity />
-        </section>
-
-        <section id="contact">
-          <Contact />
-        </section>
-
-      </div>
-
-      <Footer />
-    </main>
+    <>
+      <Nav />
+      <main id="main">
+        {/* Each Suspense boundary hydrates as its own small task instead of one long one (lower TBT) */}
+        <Hero github={github} status={status} />
+        <Suspense><About leetcode={leetcode} /></Suspense>
+        <Suspense><Experience /></Suspense>
+        <Suspense><Projects github={github} /></Suspense>
+        <Suspense><ActivitySection activity={activity} github={github} leetcode={leetcode} /></Suspense>
+        <Suspense><Writing medium={medium} posts={posts} /></Suspense>
+        <Suspense><Evaluation /></Suspense>
+        <Suspense><Contact /></Suspense>
+      </main>
+      <Footer resume={resume} syncedAt={syncedAt} />
+      <ChatGate />
+    </>
   );
 }

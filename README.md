@@ -1,222 +1,104 @@
-# ✨ Chetan Gadhiya's Engineering Portfolio ✨
+# Chetan Gadhiya — Portfolio v2
 
-This is not a resume website.
-This is a **production-grade engineering profile**.
+**Live:** https://chetangadhiya.vercel.app
 
-Built with **Next.js + TypeScript**, this portfolio is designed to demonstrate:
+This is not a resume website. It is a **production-grade engineering profile** for an AI / GenAI engineer, built around one idea: **a neural network's forward pass**. Scrolling is data flowing through the model, from *Input* to *Inference*.
 
-* Real projects
-* Verified achievements
-* Measurable impact
-* Consistent development activity
-
-Everything shown is backed by proof.
+> Proof over claims. Every achievement links to a certificate, a repository or a photo. Every number is either from the resume or pulled live.
 
 ---
 
-## 🌐 Live Website
+## The concept: Forward Pass
 
-🔗 **Visit Portfolio**
-https://chetangadhiya.vercel.app/
+| Section | Layer | What it is |
+|---|---|---|
+| Hero | **Input** | The name assembled from a WebGL particle field that reacts to the cursor; headline tokens stream in like LLM output |
+| About | **Embedding** | Bio, key numbers as "vectors", the skill stack as layers |
+| Experience | **Hidden layers** | Each role is a layer; hover to see the skills it activated |
+| Projects | **Attention** | Four case studies; hover to draw attention lines to the skills they use |
+| Live activity | **Training loop** | Unified heatmap (GitHub + LeetCode + Medium + posts), monthly curve, live feed |
+| Writing & posts | **Output logits** | Medium articles (auto) mixed with LinkedIn / X posts (from `/admin`) |
+| Achievements | **Evaluation** | Benchmark-style tables with proof links |
+| Contact | **Inference** | A terminal prompt that opens a pre-filled email |
 
----
+Also: `⌘K / Ctrl+K` command palette, smooth scroll, layer-depth rail, reduced-motion toggle, optional "Ask my portfolio" AI chat.
 
-# 🧠 Why This Portfolio Exists
+## Self-updating
 
-Most portfolios say things.
+| Source | How it updates |
+|---|---|
+| GitHub | GraphQL (contribution calendar, repos, commits). Featured and hidden repos are configured in `src/config/github.ts` |
+| LeetCode | Public GraphQL (solved, streak, contest rating, calendar) |
+| Medium | RSS |
+| LinkedIn / X posts | Added by pasting a URL in `/admin` (no scraping, no paid API) |
+| Resume | Upload a PDF in `/admin`; `/resume` always redirects to the latest |
 
-This one proves them.
+- Pages are ISR (`revalidate` 6 h). A daily Vercel cron (`/api/sync/all`) refreshes every source into Supabase (`source_cache` = last-good copy, `activity_logs` = history). If a source is down the site serves the last good copy and never crashes.
+- Every `/admin` save calls `revalidatePath('/')`, so the live site updates within seconds.
 
-It was built on three non-negotiable principles:
+### Resume workflow
 
-### 1️⃣ Proof Over Claims
+1. Put **`https://chetangadhiya.vercel.app/resume`** in LinkedIn → Featured, once.
+2. When the resume changes: `/admin` → Resume → upload. The portfolio button, the footer date and the LinkedIn link all serve the new file.
 
-Every major achievement includes:
+### Admin (`/admin`)
 
-* GitHub repositories
-* Certificates
-* Event documentation
+Private, `noindex`. A single password (`ADMIN_PASSWORD`) sets an httpOnly, SameSite=Strict, HMAC-signed 7-day cookie (`ADMIN_SESSION_SECRET`). Login is rate limited. All writes are server actions that re-check the cookie and use the Supabase **service-role** key server-side only. From there you can: add / pin / hide / reorder / delete LinkedIn and X posts, upload and switch resumes, and edit the hero "Currently:" line and the "Open to work" toggle.
 
-No vague statements. No empty highlights.
+## Stack
 
----
+Next.js 16 (App Router, React 19, Turbopack) · TypeScript · Tailwind 4 · Supabase · Vercel (Analytics, Speed Insights, Cron) · Lenis · raw WebGL (no three.js). Client JS is kept deliberately small: charts are server-rendered SVG, reveals are CSS, the particle field is lazy.
 
-### 2️⃣ Architecture First
+Measured on a local production build (mobile Lighthouse): **Performance 92 · Accessibility 100 · Best Practices 96 · SEO 100**.
 
-The UI is clean because the structure is clean.
+## Project layout
 
-* Modular components
-* Scalable layout system
-* Reusable data-driven sections
-* Clear separation of concerns
-
-Engineered — not assembled.
-
----
-
-### 3️⃣ Dynamic Credibility
-
-This portfolio evolves.
-
-* Live contribution heatmap
-* Real activity timeline
-* API-driven rendering
-* Platform-based filtering
-
-It reflects actual development consistency — not a frozen snapshot.
-
----
-
-# 🏗 Architecture Overview
-
-Built using **Next.js (App Router)** and structured for long-term scalability.
-
-### Project Structure
-
-```bash
+```
 src/
- ├── app/
- │    └── page.tsx
- ├── components/
- │    ├── Hero
- │    ├── Experience
- │    ├── FeaturedProjects
- │    ├── TechnicalSkills
- │    ├── Achievements
- │    ├── Certifications
- │    ├── ActivityHeatmap
- │    ├── RecentActivity
- │    ├── Contact
- │    └── Footer
+  app/                 page.tsx, projects/[slug], resume (302), admin, api/sync/all, api/chat, sitemap, robots, OG image
+  components/sections/ Hero, About, Experience, Projects, Activity, Writing, Evaluation, Contact, Footer
+  components/ui/       Reveal, AttentionGraph, CommandPalette, LayerRail, SmoothScroll, Chat…
+  content/             all hand-written content (profile, experience, projects, skills, achievements)
+  config/github.ts     featured + hidden repo lists
+  lib/sources/         github.ts, leetcode.ts, medium.ts (+ cache fallback in index.ts)
+supabase/migrations/   0002_v2.sql
+docs/                  PORTFOLIO_V2_PLAN.md (spec) · DECISIONS.md (every judgement call)
 ```
 
-### Key Engineering Decisions
+To change copy, edit `src/content/*`. Nothing hand-written lives inside components.
 
-* Centralized layout container (`max-w-6xl mx-auto`)
-* Scroll-aware navigation system
-* Modular card-based UI architecture
-* API-based activity rendering
-* Public asset integration for certificates
-* Reusable section-driven design pattern
-
-Scalable. Maintainable. Extendable.
-
----
-
-# ✨ What You’ll Find Inside
-
-## 🔹 Selected Work
-
-Production-level academic and hackathon projects:
-
-* **AI Truth Detection System**
-* **Microplastic Detection & Data Management System**
-* **Smart Inbox & Behavioral Analytics System**
-* **Cognifyz Internship Work**
-
-Each project includes:
-
-* Clear problem statement
-* Tech stack used
-* Direct GitHub repository link
-
-No placeholders. No demos without code.
-
----
-
-## 🔹 Achievements & Participation
-
-* Code4Cause 2.0 Hackathon — Selected among 1200+ teams
-* Smart India Hackathon 2024 & 2025 — Top 25 Teams
-* HACKOUT’24 — Classroom Management System
-* GenAI Exchange Hackathon — Fact Verification System
-* IEEE AIMV 2025 Conference — Lead Student Volunteer (160+ research papers managed)
-* Naukri Campus AINCAT — All India Rank ~27,712
-* Active Member — Encode Club (AI/ML)
-
-Every entry includes:
-
-* Certificate (PDF proof)
-* GitHub repository (where applicable)
-* Supporting documentation
-
-Transparent and verifiable.
-
----
-
-## 🛠 Tech Stack
-
-* **Next.js (App Router)**
-* **TypeScript**
-* **Tailwind CSS**
-* **Framer Motion**
-* **date-fns**
-
-Chosen for scalability, maintainability, and performance.
-
----
-
-## 📊 Activity System
-
-This is where the portfolio becomes dynamic.
-
-* Live contribution heatmap
-* Recent activity timeline
-* Progressive load (View More / Show Less)
-* Platform-based filtering
-* API-driven architecture
-
-The site evolves as development continues.
-
----
-
-## ⚙️ Run Locally
+## Run locally
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/chetan-portfolio.git
-cd chetan-portfolio
 npm install
-npm run dev
+cp .env.example .env.local   # then fill in the values
+npm run dev                  # http://localhost:3000
+npm run lint && npm run build
 ```
 
----
+The site builds and renders with **no** env vars (live panels show empty states); add them to light up each feature.
 
-# 📌 What This Portfolio Demonstrates
+### Environment variables
 
-This project showcases:
+| Name | Needed for |
+|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Public reads (posts, resume, cache) |
+| `SUPABASE_SERVICE_ROLE_KEY` | Admin writes and the cron sync (server only) |
+| `GITHUB_TOKEN` | GitHub GraphQL |
+| `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET` | `/admin` (secret: 16+ random characters) |
+| `CRON_SECRET` | Protects `/api/sync/all` (Vercel sends it automatically) |
+| `RESUME_URL` *(optional)* | Fallback resume link |
+| `GEMINI_API_KEY` *(optional)* | Enables the AI chat; unset = feature hidden. Must be present at build time |
+| `NEXT_PUBLIC_SITE_URL` *(optional)* | Canonical / OG base URL |
 
-* Frontend architecture design
-* Modular React development
-* Clean UI/UX execution
-* Scroll state management
-* Dynamic rendering patterns
-* Structured information hierarchy
-* Production-ready deployment
+### Database
 
-It reflects how I think — and how I build.
+Run `supabase/migrations/0002_v2.sql` once in Supabase → SQL Editor. It is idempotent and creates `social_posts`, `resume_versions`, `site_settings`, `source_cache`, upgrades `activity_logs`, enables row-level security (public read, writes only via the service role) and creates the public `resume` storage bucket.
 
----
+## Deploy
 
-# 👨‍💻 About Me
+Branch `v2` → push → Vercel preview URL → review → merge to `master` → production. Add the same env vars in Vercel (Production + Preview).
 
-**Chetan Gadhiya**
-AI & Machine Learning | NLP | Software Engineering
+## Why every decision is written down
 
-Focused on building structured, scalable, and proof-driven systems.
-
----
-
-# 🎯 What Was Intentionally Removed
-
-❌ Generic “passion for coding” paragraphs
-❌ Filler philosophy statements
-❌ Empty buzzwords
-❌ Over-explanation
-
-# ✅ What Was Kept
-
-✔ Architecture
-✔ Proof
-✔ Technical depth
-✔ Measurable achievements
-✔ Structured thinking
+`docs/DECISIONS.md` logs each judgement call (what was cut, what was measured, what was deferred) so the reasoning survives the code.
