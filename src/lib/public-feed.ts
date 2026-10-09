@@ -43,7 +43,7 @@ export function composeFeed(input: {
     ...newest(
       posts.map<FeedItem>((p) => ({
         type: p.platform,
-        title: (p.text || p.note || (p.platform === "x" ? "Post on X" : "Post on LinkedIn")).replace(/s+/g, " ").trim().slice(0, 140),
+        title: (p.text || p.note || (p.platform === "x" ? "Post on X" : "Post on LinkedIn")).replace(/\s+/g, " ").trim().slice(0, 140),
         url: p.url,
         date: p.postedAt ?? p.createdAt,
       })),
