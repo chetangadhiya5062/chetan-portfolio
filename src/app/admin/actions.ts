@@ -6,6 +6,7 @@ import { adminConfigured, createSession, destroySession, passwordMatches, requir
 import { clientIp, hit } from "@/lib/rate-limit";
 import { enrichPost, parsePostUrl } from "@/lib/social";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
+import { notifyProfileRepo } from "@/lib/dispatch";
 
 export type FormState = { ok: boolean; message: string };
 const fail = (message: string): FormState => ({ ok: false, message });
@@ -20,6 +21,8 @@ function db() {
 const refresh = () => {
   revalidatePath("/");
   revalidatePath("/admin");
+  revalidatePath("/api/public/feed");
+  void notifyProfileRepo(); // optional: refresh the GitHub profile README (no-op without GITHUB_DISPATCH_TOKEN)
 };
 
 /* ---------- auth ---------- */

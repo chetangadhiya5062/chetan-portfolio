@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { revalidatePath } from "next/cache";
 import { syncAll } from "@/lib/sources";
+import { notifyProfileRepo } from "@/lib/dispatch";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -18,6 +19,8 @@ export async function GET(req: NextRequest) {
 
   const result = await syncAll();
   revalidatePath("/");
+  revalidatePath("/api/public/feed");
+  await notifyProfileRepo();
   const ok = Object.values(result).every((r) => r.ok);
   return NextResponse.json({ ok, result }, { status: ok ? 200 : 207 });
 }
