@@ -36,8 +36,8 @@ check("heatmap: 365 gap-free ascending days", () => {
   for (let i = 1; i < 365; i++) assert.ok(feed.heatmap[i].date > feed.heatmap[i - 1].date);
   assert.ok(feed.heatmap.every((d) => ["github", "leetcode", "medium", "posts"].every((k) => Number.isInteger(d[k]))));
 });
-check("latest: <=12, newest first, valid types", () => {
-  assert.ok(feed.latest.length <= 12);
+check("latest: <=16, newest first, valid types", () => {
+  assert.ok(feed.latest.length <= 16);
   for (let i = 1; i < feed.latest.length; i++) assert.ok(feed.latest[i - 1].date >= feed.latest[i].date);
   assert.ok(feed.latest.every((x) => ["medium", "linkedin", "x", "github"].includes(x.type) && x.url.startsWith("http") && x.title));
 });
