@@ -43,4 +43,3 @@ Judgement calls for `docs/GITHUB_PROFILE_PLAN.md`. Newest at the bottom.
 - **Training loop:** heatmap columns pop in as a wave, a scan band sweeps the grid every 7 s, the four numbers count up with an eased 14-frame sequence, LeetCode bar segments grow.
 - **Weight:** raw SVG total rises from about 395 KB to about 510 KB (hero 32 to 49 KB, dot paths use relative moves). Over the wire it is roughly a quarter of that, and each graphic is cached by GitHub's image proxy, so the plan's 400 KB figure was relaxed on purpose for the motion.
 - **Verification:** dark and light themes checked in a README preview; fully offline run still leaves files untouched (exit 0); idempotent re-run reports "no changes".
-- **Attribution:** commits and PR bodies carry no Claude co-author trailer (owner request).
