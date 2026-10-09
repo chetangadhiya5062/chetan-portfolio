@@ -36,23 +36,31 @@ export function composeFeed(input: {
   const { github, leetcode, medium, posts, status } = input;
   const activity = buildActivity(github, leetcode, medium, posts);
 
+  // newest few of EACH type, then merged: otherwise frequent commits would push articles and posts out of the list
+  const newest = (items: FeedItem[], n: number) => [...items].sort((x, y) => y.date.localeCompare(x.date)).slice(0, n);
   const latest: FeedItem[] = [
-    ...(medium?.posts ?? []).map<FeedItem>((p) => ({ type: "medium", title: p.title, url: p.url, date: p.date })),
-    ...posts.map<FeedItem>((p) => ({
-      type: p.platform,
-      title: (p.text || p.note || (p.platform === "x" ? "Post on X" : "Post on LinkedIn")).replace(/\s+/g, " ").trim().slice(0, 140),
-      url: p.url,
-      date: p.postedAt ?? p.createdAt,
-    })),
-    ...(github?.recentCommits ?? []).map<FeedItem>((c) => ({
-      type: "github",
-      title: `${c.repo.split("/")[1]}: ${c.message}`.slice(0, 140),
-      url: c.url,
-      date: c.date,
-    })),
+    ...newest((medium?.posts ?? []).map<FeedItem>((p) => ({ type: "medium", title: p.title, url: p.url, date: p.date })), 5),
+    ...newest(
+      posts.map<FeedItem>((p) => ({
+        type: p.platform,
+        title: (p.text || p.note || (p.platform === "x" ? "Post on X" : "Post on LinkedIn")).replace(/s+/g, " ").trim().slice(0, 140),
+        url: p.url,
+        date: p.postedAt ?? p.createdAt,
+      })),
+      6,
+    ),
+    ...newest(
+      (github?.recentCommits ?? []).map<FeedItem>((c) => ({
+        type: "github",
+        title: `${c.repo.split("/")[1]}: ${c.message}`.slice(0, 140),
+        url: c.url,
+        date: c.date,
+      })),
+      5,
+    ),
   ]
-    .sort((a, b) => b.date.localeCompare(a.date))
-    .slice(0, 12);
+    .sort((x, y) => y.date.localeCompare(x.date))
+    .slice(0, 16);
 
   return {
     generatedAt: (input.now ?? new Date()).toISOString(),
