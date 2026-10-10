@@ -3,7 +3,7 @@
 Judgement calls made during the v2 rebuild. Newest at the bottom.
 
 ## Phase 1 - Setup
-- Branch `v2` created from `master` (uncommitted `resume.pdf`, `profile-v2.png`, plan and CLAUDE.md carried over and committed on `v2`).
+- Branch `v2` created from `master` (uncommitted `resume.pdf`, `profile-v2.png`, plan and project notes carried over and committed on `v2`).
 - Line endings: `core.autocrlf=true` locally + `.gitattributes` (`* text=auto eol=lf`).
 - `.gitignore` ignores `.env*`; added `!.env.example` so the template is tracked.
 - Node 22 / npm 10 in use; no package manager change.
@@ -45,7 +45,6 @@ Judgement calls made during the v2 rebuild. Newest at the bottom.
 - **Custom cursor:** fine pointers only (`hover:hover` + `pointer:fine`), disabled with reduced motion.
 - **Case studies:** `/projects/[slug]` statically generated from `src/content/projects.ts`.
 - **`/resume`** route already added here (302 to current resume, falls back to `RESUME_URL` then `/resume.pdf`); admin upload comes in phase 5.
-- `.claude/` is git-ignored (local preview config only).
 
 ## Phase 5 - Admin + resume
 - **Auth:** single password (`ADMIN_PASSWORD`) compared as SHA-256 digests with `timingSafeEqual`; session cookie = `v1.<expiry>.<HMAC-SHA256>` signed with `ADMIN_SESSION_SECRET`, httpOnly, SameSite=Strict, Secure in production, 7 days. Every server action calls `requireAdmin()` first. If either env var is missing, admin shows a "not configured" message and nothing is writable.
