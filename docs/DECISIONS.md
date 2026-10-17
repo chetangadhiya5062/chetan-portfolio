@@ -83,3 +83,29 @@ Judgement calls made during the v2 rebuild. Newest at the bottom.
 - `/admin` (throwaway password on an isolated copy, so the owner's real password and running dev server were not touched): sign-in, add X post (oEmbed text and date fetched), post visible on the public page via anon RLS and `revalidatePath`, status edit visible in the hero, delete. Resume path verified with the same Supabase calls as the upload action: storage upload, `resume_versions` row, `/resume` 302 to the uploaded public URL, public PDF 200. All test rows and files were deleted and status restored afterwards.
 - **GitHub: `GITHUB_TOKEN` in `.env.local` is rejected by GitHub (401 Bad credentials), so it is revoked or expired.** Owner must create a new token (see summary). Until then GitHub panels use the cache/empty state.
 - **Chat fixes found by the real key:** `gemini-2.5-flash` is no longer offered to new keys, so the default is now the rolling alias `gemini-flash-latest` (override with `GEMINI_MODEL`); `thinkingConfig` removed (newer models reject/ignore it) and `maxOutputTokens` raised to 1200 because hidden reasoning uses part of it; Gemini's SSE uses CRLF so the parser now splits on `\r?\n\r?\n`; two retries with backoff on 503/429. Verified: grounded answers, off-topic request refused, no phone number disclosed.
+
+# v3 Elite
+
+Branch `v3-elite`. Guide: `docs/V3_ELITE_PLAN.md`. Approved plan and owner answers: `docs/V3_ELITE_PHASES.md`.
+
+## Phase 1 - Baseline, tokens, serif, numbering
+
+**Lighthouse baseline** (`npx lighthouse@13.4.0`, headless Chrome, 3 runs each, median shown, all four categories):
+
+| Build | Mobile P / A / BP / SEO | Desktop P / A / BP / SEO | Mobile LCP |
+|---|---|---|---|
+| `master`, local `next start` | 92 / 100 / 96 / 100 | 100 / 100 / 96 / 100 | 3.36 s |
+| Live site (chetangadhiya.vercel.app) | 95 / 100 / 100 / 100 | 100 / 100 / 100 / 100 | 2.54 s |
+| **v3 phase 1**, local `next start` | **93 / 100 / 100 / 100** | **100 / 100 / 100 / 100** | 3.23 s |
+
+- **Mobile layout bug found and fixed:** the Activity section's two-column grid had no `minmax(0, …)` track, so on phones its grid items took the min-content width of the feed's no-wrap titles and widened the whole layout viewport to ~630 px (`scrollWidth` 631 at 412 px). That also put the About paragraph "in view" for Lighthouse, which made it the LCP element (it waits for the reveal JS). The grid tracks are now `minmax(0,1fr)`; the page is exactly 360 / 412 px wide again and the LCP element is the hero `<h1>`.
+- **Local Best Practices 96 -> 100:** `<Analytics/>` and `<SpeedInsights/>` render only when `process.env.VERCEL` is set. Their scripts only exist on Vercel, so locally they 404'd and logged console errors; production is unchanged.
+- **Remaining mobile gap (for phase 6):** observed LCP equals FCP (the `<h1>` paints at first paint), but Lighthouse's simulated LCP counts every request that starts before that paint: ~165 KB of JS chunks, three preloaded fonts (~110 KB) and a 255 KB HTML document (34 KB gzipped, mostly the inline RSC payload). Those bytes are the levers for phase 6.
+- **Colour tokens** moved from `@theme inline` to `@theme`, so `--color-*` are real CSS variables used by every utility. Values are unchanged. A light theme (phase 5) can now override them in one place, and the cursor, connector curves and SVG charts follow automatically, with no change to their code.
+- **Serif:** Instrument Serif, italic 400, latin, `display: swap`, `preload: false`, exposed as `--font-serif` and used only through `.editorial em`. A/B measured: mobile Performance is 93 with and without it (simulated LCP +0.1 s), so it stays. Accent words are lime, the single accent colour; one per heading.
+- **Numbering:** `src/lib/nav.ts` is the single source (`001`–`008` for now). `SectionHead` now takes a `section` id and reads its number and layer from there, adds an optional context (`004 — Attention · projects`), and styles one `<em>` accent word. New sections in phase 4 get numbers by being inserted into `nav.ts`; the palette and layer rail pick them up through data only.
+- **Palette kept** (owner): lime + cyan on near-black. Jay's gold was not adopted because the protected particle name is drawn in lime and cyan.
+- **Proof gaps** (owner, 17 Oct): numbers without a proof file link the résumé for now. To close before v3 is final: 15% inference cut, CGPA 8.71, IEEE AIMV certificate, Oracle OCI PDF, AWS Generative AI learning plan, plus checking "Top 25" in the SIH PDFs and "1200+ teams" in the Code4Cause certificate.
+- **Teardown not verified in a browser:** the owner declined the browser visit to jaybutani.com, so its "inferred" items stay unverified. Nothing in v3 depends on them.
+- `docs/V3_ELITE_PLAN.md` moved from `docs/reference/` to the path the guide and prompt use. The pending `CLAUDE.md` edit was committed (owner OK).
+- No new dependencies, no Supabase migrations. Protected files untouched: `HeroName`, `AttentionGraph`, `Cursor`, `CommandPalette`, `LayerRail`, `SmoothScroll`, `Deferred`, chat, `Heatmap`, sources, admin, API.
