@@ -2,6 +2,7 @@ import { profile } from "@/content/profile";
 import type { GithubData } from "@/lib/sources/types";
 import type { SiteStatus } from "@/lib/site-data";
 import { timeAgo } from "@/lib/activity";
+import { sectionOf } from "@/lib/nav";
 import HeroName from "./HeroName";
 
 const TOKENS = ["AI", "Engineer", "—", "GenAI", "&", "agentic", "systems", "built", "to", "run", "in", "production."];
@@ -15,7 +16,7 @@ export default function Hero({ github, status }: { github: GithubData | null; st
     <section id="top" aria-label="Introduction" className="relative flex min-h-[100svh] flex-col justify-center pb-16 pt-24">
       <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6">
         <p className="label mb-4 flex items-center gap-3">
-          <span className="text-lime">01</span>
+          <span className="text-lime">{sectionOf("top").n}</span>
           <span aria-hidden className="h-px w-10 bg-line" />
           <span>Input · the forward pass begins</span>
         </p>

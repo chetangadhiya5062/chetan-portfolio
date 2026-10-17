@@ -17,7 +17,7 @@ export default function About({ leetcode }: { leetcode: LeetcodeData | null }) {
   return (
     <section id="about" aria-labelledby="about-h" className="relative py-24 md:py-36">
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
-        <SectionHead n="02" layer="Embedding" title={<span id="about-h">Compressed into a few honest numbers.</span>} />
+        <SectionHead section="about" context="about me" title={<span id="about-h">Compressed into a few <em>honest</em> numbers.</span>} />
 
         <div className="grid gap-12 lg:grid-cols-[1.35fr_1fr] lg:gap-20">
           <div className="space-y-6">

@@ -81,9 +81,9 @@ export default function Projects({ github }: { github: GithubData | null }) {
     <section id="projects" aria-labelledby="proj-h" className="relative py-24 md:py-36">
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
         <SectionHead
-          n="04"
-          layer="Attention"
-          title={<span id="proj-h">Four systems. Each one attends to a different problem.</span>}
+          section="projects"
+          context="projects"
+          title={<span id="proj-h">Four systems. Each one attends to a <em>different</em> problem.</span>}
           lede="Hover a project to see which skills it pulls weight from."
         />
         <AttentionGraph items={items} rail={rail} railLabel="Attends to" />

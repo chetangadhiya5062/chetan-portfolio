@@ -1,6 +1,6 @@
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import { Instrument_Serif, Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { profile, SITE_URL } from "@/content/profile";
@@ -9,6 +9,15 @@ import Providers from "@/components/ui/Providers";
 const space = Space_Grotesk({ subsets: ["latin"], variable: "--font-space", display: "swap" });
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains", display: "swap" });
+// Editorial accent words only (italic 400, never above the fold), so it stays off the critical path
+const serif = Instrument_Serif({
+  weight: "400",
+  style: "italic",
+  subsets: ["latin"],
+  variable: "--font-instrument",
+  display: "swap",
+  preload: false,
+});
 
 const description = `${profile.name} — ${profile.headline}. ${profile.tagline}. Production-grade GenAI and agentic systems, with live proof: code, certificates and activity.`;
 
@@ -59,7 +68,7 @@ const jsonLd = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${space.variable} ${inter.variable} ${mono.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${space.variable} ${inter.variable} ${mono.variable} ${serif.variable}`} suppressHydrationWarning>
       <head>
         {/* flag JS early so no-JS visitors still see every [data-reveal] element */}
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
@@ -68,8 +77,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <a href="#main" className="skip-link">Skip to content</a>
         <Providers>{children}</Providers>
-        <Analytics />
-        <SpeedInsights />
+        {/* Their scripts only exist on Vercel; locally they 404 and skew Lighthouse Best Practices */}
+        {process.env.VERCEL && (
+          <>
+            <Analytics />
+            <SpeedInsights />
+          </>
+        )}
       </body>
     </html>
   );

@@ -17,9 +17,9 @@ export default function Contact() {
     <section id="contact" aria-labelledby="contact-h" className="relative py-24 md:py-36">
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
         <SectionHead
-          n="08"
-          layer="Inference"
-          title={<span id="contact-h">Ask a question. Get a real answer.</span>}
+          section="contact"
+          context="contact"
+          title={<span id="contact-h">Ask a question. Get a <em>real</em> answer.</span>}
           lede={`I'm open to ${profile.openTo}. Reach out and I'll reply personally.`}
         />
 

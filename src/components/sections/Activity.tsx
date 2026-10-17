@@ -105,9 +105,9 @@ export default function ActivitySection({
     <section id="activity" aria-labelledby="act-h" className="relative py-24 md:py-36">
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
         <SectionHead
-          n="05"
-          layer="Training loop"
-          title={<span id="act-h">It never stops training.</span>}
+          section="activity"
+          context="live data"
+          title={<span id="act-h">It never <em>stops</em> training.</span>}
           lede="GitHub, LeetCode, Medium and posts, merged into one live signal. Refreshed automatically every day."
         />
 
@@ -142,7 +142,7 @@ export default function ActivitySection({
           </div>
         </Reveal>
 
-        <div className="mt-6 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+        <div className="mt-6 grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
           <Reveal className="rounded-2xl border border-line bg-surface p-5 md:p-8">
             <h3 className="font-display text-xl font-medium">Activity / month</h3>
             <p className="label mt-1">loss curve, but upward</p>

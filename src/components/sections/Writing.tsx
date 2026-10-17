@@ -24,9 +24,9 @@ export default function Writing({ medium, posts }: { medium: MediumData | null; 
     <section id="writing" aria-labelledby="write-h" className="relative py-24 md:py-36">
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
         <SectionHead
-          n="06"
-          layer="Output logits"
-          title={<span id="write-h">What I write and say in public.</span>}
+          section="writing"
+          context="writing"
+          title={<span id="write-h">What I write and say in <em>public</em>.</span>}
           lede="Articles from Medium flow in automatically. LinkedIn and X posts are added by me and appear within seconds."
         />
 

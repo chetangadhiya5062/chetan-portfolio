@@ -56,9 +56,9 @@ export default function Experience() {
     <section id="experience" aria-labelledby="exp-h" className="relative py-24 md:py-36">
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
         <SectionHead
-          n="03"
-          layer="Hidden layers"
-          title={<span id="exp-h">Each role is a layer. Each one shipped.</span>}
+          section="experience"
+          context="experience"
+          title={<span id="exp-h">Each role is a layer. Each one <em>shipped</em>.</span>}
           lede="Hover a layer to see which skills it activated."
         />
         <AttentionGraph items={items} rail={rail} railLabel="Skills activated" />

@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
-@theme inline {
+/* Colour tokens are real CSS variables (not inlined), so a theme can override them in one place
+   and everything that reads var(--color-*) — utilities, SVG strokes, the cursor — follows. */
+@theme {
   --color-base: #07080b;
   --color-surface: #0e1117;
   --color-line: #1c2230;
@@ -8,10 +10,13 @@
   --color-muted: #8b93a7;
   --color-lime: #c6ff3d;
   --color-cyan: #3de0ff;
+}
 
+@theme inline {
   --font-display: var(--font-space), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
+  --font-serif: var(--font-instrument), ui-serif, Georgia, serif;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -119,6 +124,19 @@ html.reduce-motion [data-reveal] {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--color-muted);
+}
+
+/* Editorial accent: one italic serif word per heading, e.g. <h2>Benchmarks, with <em>receipts</em>.</h2> */
+.editorial em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  /* Instrument Serif runs small next to Space Grotesk; nudge it up to the same optical size */
+  font-size: 1.1em;
+  line-height: 0.9;
+  color: var(--color-lime);
+  padding-right: 0.04em;
 }
 
 /* Blinking caret for token streaming */
