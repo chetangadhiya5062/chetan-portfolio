@@ -105,8 +105,8 @@ export default function ActivitySection({
     <section id="activity" aria-labelledby="act-h" className="relative py-24 md:py-36">
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
         <SectionHead
-          n="05"
-          layer="Training loop"
+          n="07"
+          layer="Monitor · training telemetry"
           title={<span id="act-h">It never stops training.</span>}
           lede="GitHub, LeetCode, Medium and posts, merged into one live signal. Refreshed automatically every day."
         />

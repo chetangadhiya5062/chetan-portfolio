@@ -1,31 +1,33 @@
 import { profile } from "@/content/profile";
 import type { MediumData } from "@/lib/sources/types";
-import type { SocialPost } from "@/lib/site-data";
+import type { SitePost, SocialPost } from "@/lib/site-data";
 import SectionHead from "@/components/ui/SectionHead";
 import Reveal from "@/components/ui/Reveal";
 import LinkedInEmbed from "./LinkedInEmbed";
 
 type Entry =
   | { kind: "medium"; date: string; title: string; url: string; thumb: string | null; meta: string; tags: string[] }
-  | { kind: "post"; date: string; post: SocialPost };
+  | { kind: "post"; date: string; post: SocialPost }
+  | { kind: "site"; date: string; post: SitePost };
 
 const fmt = (iso: string) =>
   new Date(iso).toLocaleDateString("en", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
 
-export default function Writing({ medium, posts }: { medium: MediumData | null; posts: SocialPost[] }) {
+export default function Writing({ medium, posts, sitePosts = [] }: { medium: MediumData | null; posts: SocialPost[]; sitePosts?: SitePost[] }) {
   const entries: Entry[] = [
     ...(medium?.posts ?? []).slice(0, 6).map<Entry>((p) => ({
       kind: "medium", date: p.date, title: p.title, url: p.url, thumb: p.thumbnail, meta: `${p.readingMinutes} min read`, tags: p.tags,
     })),
     ...posts.map<Entry>((p) => ({ kind: "post", date: p.postedAt ?? p.createdAt, post: p })),
+    ...sitePosts.map<Entry>((p) => ({ kind: "site", date: p.createdAt, post: p })),
   ].sort((a, b) => b.date.localeCompare(a.date));
 
   return (
     <section id="writing" aria-labelledby="write-h" className="relative py-24 md:py-36">
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
         <SectionHead
-          n="06"
-          layer="Output logits"
+          n="08"
+          layer="Output · what I publish"
           title={<span id="write-h">What I write and say in public.</span>}
           lede="Articles from Medium flow in automatically. LinkedIn and X posts are added by me and appear within seconds."
         />
@@ -42,7 +44,7 @@ export default function Writing({ medium, posts }: { medium: MediumData | null; 
         ) : (
           <ul className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {entries.map((e, i) => (
-              <Reveal as="li" key={e.kind === "medium" ? e.url : e.post.id} delay={(i % 3) * 80} className="flex">
+              <Reveal as="li" key={e.kind === "medium" ? e.url : `${e.kind}-${e.post.id}`} delay={(i % 3) * 80} className="flex">
                 {e.kind === "medium" ? (
                   <a
                     href={e.url}
@@ -61,6 +63,23 @@ export default function Writing({ medium, posts }: { medium: MediumData | null; 
                       <p className="mt-auto pt-5 font-mono text-[11px] text-muted">{e.meta}{e.tags.length > 0 && <> · {e.tags.slice(0, 2).join(" · ")}</>}</p>
                     </div>
                   </a>
+                ) : e.kind === "site" ? (
+                  <article className="flex w-full flex-col rounded-2xl border border-line bg-surface p-6">
+                    <p className="label flex items-center justify-between">
+                      <span className="text-lime">Note{e.post.pinned && " · pinned"}</span>
+                      <time dateTime={e.date}>{fmt(e.date)}</time>
+                    </p>
+                    <p className="mt-4 whitespace-pre-line text-[15px] leading-relaxed text-ink">{e.post.body}</p>
+                    {e.post.links.length > 0 && (
+                      <p className="mt-auto flex flex-wrap gap-x-4 pt-5 font-mono text-xs uppercase tracking-wider">
+                        {e.post.links.map((l) => (
+                          <a key={l.url} href={l.url} target="_blank" rel="noopener noreferrer" className="text-cyan hover:underline">
+                            Also on {l.platform === "x" ? "X" : "LinkedIn"} ↗
+                          </a>
+                        ))}
+                      </p>
+                    )}
+                  </article>
                 ) : (
                   <article className="flex w-full flex-col rounded-2xl border border-line bg-surface p-6">
                     <p className="label flex items-center justify-between">

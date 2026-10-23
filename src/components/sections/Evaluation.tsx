@@ -9,8 +9,8 @@ export default function Evaluation() {
     <section id="evaluation" aria-labelledby="eval-h" className="relative py-24 md:py-36">
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
         <SectionHead
-          n="07"
-          layer="Evaluation"
+          n="09"
+          layer="Eval · benchmarks"
           title={<span id="eval-h">Benchmarks, with receipts.</span>}
           lede="Every row with a proof link opens the actual certificate, repository or photo."
         />

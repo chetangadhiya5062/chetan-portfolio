@@ -1,5 +1,6 @@
 import { skillGroups } from "@/content/skills";
 import Reveal from "@/components/ui/Reveal";
+import Rich from "@/components/latent/Rich";
 
 /** Skills as a layer stack, not a tag cloud. Rendered inside the About section. */
 export default function Skills() {
@@ -21,7 +22,7 @@ export default function Skills() {
             <ul className="flex flex-wrap gap-x-5 gap-y-2 text-[15px] text-muted">
               {g.skills.map((s) => (
                 <li key={s} className="relative pl-3 before:absolute before:left-0 before:top-[0.6em] before:size-1 before:rounded-full before:bg-line">
-                  {s}
+                  <Rich text={s} all />
                 </li>
               ))}
             </ul>

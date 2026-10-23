@@ -257,3 +257,259 @@ html.reduce-motion .pulse-dot {
 html.reduce-motion .scroll-hint {
   animation: none;
 }
+
+/* ---------- agent-v1 ---------- */
+
+/* boot overlay: server-rendered so there is no flash, hidden for returning visitors and no-JS */
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: var(--color-base);
+  transition: opacity 0.6s ease;
+}
+.intro-out {
+  opacity: 0;
+  pointer-events: none;
+}
+html:not(.js) .intro,
+html.intro-seen .intro,
+html.reduce-motion .intro {
+  display: none;
+}
+
+/* concept links */
+.term {
+  display: inline;
+  padding: 0 0.05em;
+  margin: 0;
+  background: none;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  cursor: pointer;
+  text-decoration: underline dotted;
+  text-decoration-color: var(--tc, var(--color-cyan));
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.22em;
+  border-radius: 3px;
+  transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.term:hover,
+.term.is-src {
+  color: var(--tc);
+  background: color-mix(in srgb, var(--tc) 14%, transparent);
+  text-decoration-style: solid;
+}
+.term.is-rel,
+[data-concept].is-rel {
+  color: var(--tc, var(--color-ink));
+  background: color-mix(in srgb, var(--tc, var(--color-cyan)) calc(var(--rel, 0.4) * 40%), transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--tc, var(--color-cyan)) 60%, transparent);
+}
+html.latent-on [data-concept]:not(.is-rel):not(.is-src) {
+  opacity: 0.45;
+}
+[data-concept] {
+  transition: opacity 0.25s, background-color 0.25s, box-shadow 0.25s;
+}
+[data-concept].is-src {
+  box-shadow: 0 0 0 1px var(--tc, var(--color-lime));
+}
+
+/* next-token decoding (pure CSS so the HTML is complete without JS and there is no flash) */
+.dec {
+  --base: 2.9s;
+  --step: 0.3s;
+}
+html.intro-seen .dec {
+  --base: 0.35s;
+}
+.dec-tok {
+  position: relative;
+  display: inline-block;
+  white-space: pre;
+  opacity: 0;
+  animation: dec-in 0.14s ease-out forwards;
+  animation-delay: calc(var(--base) + var(--i) * var(--step));
+}
+@keyframes dec-in {
+  to {
+    opacity: 1;
+  }
+}
+.dec-cands {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 0.5rem);
+  z-index: 5;
+  min-width: 11rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--color-line);
+  border-radius: 0.6rem;
+  background: color-mix(in srgb, var(--color-surface) 96%, transparent);
+  backdrop-filter: blur(6px);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.3;
+  color: var(--color-muted);
+  text-transform: none;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+}
+.dec-tok:hover .dec-cands,
+.dec-tok:focus-within .dec-cands {
+  opacity: 1;
+}
+.dec-sample {
+  animation: dec-cands calc(var(--step) * 2.4) ease backwards;
+  animation-delay: calc(var(--base) + var(--i) * var(--step) - var(--step) * 0.9);
+}
+@keyframes dec-cands {
+  0%,
+  100% {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  15%,
+  70% {
+    opacity: 1;
+    transform: none;
+  }
+}
+.dec-bar {
+  display: block;
+  height: 3px;
+  margin-top: 2px;
+  border-radius: 2px;
+  background: var(--color-line);
+  overflow: hidden;
+}
+.dec-bar > i {
+  display: block;
+  height: 100%;
+  background: var(--color-muted);
+}
+.dec-row.top .dec-bar > i {
+  background: var(--color-lime);
+}
+.dec-row.top {
+  color: var(--color-ink);
+}
+.dec-p {
+  position: absolute;
+  left: 0;
+  bottom: -1.05rem;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--color-lime);
+  opacity: 0;
+  animation: dec-in 0.14s ease-out forwards;
+  animation-delay: calc(var(--base) + var(--i) * var(--step) + var(--step) * 0.6);
+  white-space: nowrap;
+}
+html.reduce-motion .dec-tok,
+html.reduce-motion .dec-p {
+  opacity: 1;
+  animation: none;
+}
+html.reduce-motion .dec-sample {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dec-tok,
+  .dec-p {
+    opacity: 1;
+    animation: none;
+  }
+  .dec-sample {
+    display: none;
+  }
+}
+@media (hover: none), (max-width: 640px) {
+  .dec-p {
+    display: none;
+  }
+}
+
+/* trace lines for the agent timeline */
+.trace-step {
+  opacity: 0.25;
+  transform: translateX(-6px);
+  transition: opacity 0.5s var(--ease-out-expo), transform 0.5s var(--ease-out-expo);
+  transition-delay: calc(var(--k, 0) * 140ms);
+}
+.is-in .trace-step,
+html:not(.js) .trace-step,
+html.reduce-motion .trace-step {
+  opacity: 1;
+  transform: none;
+}
+
+/* latent map */
+.latent-map .map-dot text {
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+  paint-order: stroke;
+  stroke: var(--color-surface);
+  stroke-width: 4px;
+}
+.latent-map .map-dot .dot {
+  transition: r 0.2s;
+}
+.latent-map .map-dot:hover text,
+.latent-map .map-dot:focus text,
+.latent-map .map-dot.is-src text,
+.latent-map .map-dot.is-rel text {
+  opacity: 1;
+}
+.latent-map .map-dot.is-src .dot {
+  r: 9;
+}
+.latent-map .map-dot.is-rel .dot {
+  r: 7;
+}
+.latent-map .map-dot:focus {
+  outline: none;
+}
+.latent-map .map-dot.is-rel,
+.latent-map .map-dot.is-src {
+  background: none;
+  box-shadow: none;
+}
+
+/* diagram chips */
+.node-chip {
+  display: block;
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  text-align: left;
+  font: inherit;
+  color: var(--color-ink);
+  background: var(--color-base);
+  border: 1px solid var(--color-line);
+  border-radius: 0.6rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+}
+.node-chip:hover,
+.node-chip.is-src {
+  border-color: var(--tc);
+}
+.node-chip.is-rel {
+  border-color: var(--tc);
+  background: color-mix(in srgb, var(--tc) calc(var(--rel, 0.4) * 35%), var(--color-base));
+  box-shadow: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .intro {
+    display: none;
+  }
+}
