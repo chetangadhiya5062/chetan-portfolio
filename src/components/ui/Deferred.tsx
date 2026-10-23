@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 
 const SmoothScroll = dynamic(() => import("./SmoothScroll"), { ssr: false });
-const Cursor = dynamic(() => import("./Cursor"), { ssr: false });
 const LayerRail = dynamic(() => import("./LayerRail"), { ssr: false });
 
 /**
@@ -40,7 +39,6 @@ export default function Deferred() {
   return (
     <>
       {env.fine && <SmoothScroll />}
-      {env.fine && <Cursor />}
       {env.wide && <LayerRail />}
     </>
   );

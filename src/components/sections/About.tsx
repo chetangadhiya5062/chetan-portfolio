@@ -5,6 +5,8 @@ import SectionHead from "@/components/ui/SectionHead";
 import Reveal from "@/components/ui/Reveal";
 import CountUp from "@/components/ui/CountUp";
 import Skills from "./Skills";
+import LatentMap from "./LatentMap";
+import Rich from "@/components/latent/Rich";
 
 export default function About({ leetcode }: { leetcode: LeetcodeData | null }) {
   const vectors = [
@@ -17,16 +19,16 @@ export default function About({ leetcode }: { leetcode: LeetcodeData | null }) {
   return (
     <section id="about" aria-labelledby="about-h" className="relative py-24 md:py-36">
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
-        <SectionHead n="02" layer="Embedding" title={<span id="about-h">Compressed into a few honest numbers.</span>} />
+        <SectionHead n="02" layer="Embed · text becomes vectors" title={<span id="about-h">What I know, as a map you can walk.</span>} lede="Dotted words are concepts. Hover or tap one and everything related lights up across the page, scored by real cosine similarity from an embedding model." />
 
         <div className="grid gap-12 lg:grid-cols-[1.35fr_1fr] lg:gap-20">
           <div className="space-y-6">
             <Reveal as="p" className="font-display text-2xl font-medium leading-snug text-ink md:text-3xl">
-              {profile.about[0]}
+              <Rich text={profile.about[0]} />
             </Reveal>
             {profile.about.slice(1).map((p, i) => (
               <Reveal as="p" key={i} delay={80 * (i + 1)} className="text-base leading-relaxed text-muted md:text-lg">
-                {p}
+                <Rich text={p} />
               </Reveal>
             ))}
             <Reveal delay={320} className="flex flex-wrap gap-x-6 gap-y-2 pt-2 font-mono text-xs text-muted">
@@ -82,6 +84,8 @@ export default function About({ leetcode }: { leetcode: LeetcodeData | null }) {
             </Reveal>
           ))}
         </ul>
+
+        <LatentMap />
 
         <Skills />
       </div>

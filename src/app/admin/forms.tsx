@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { addPost, login, saveStatus, uploadResume, type FormState } from "./actions";
+import { addPost, composePost, login, saveStatus, uploadResume, type FormState } from "./actions";
 
 const initial: FormState = { ok: false, message: "" };
 
@@ -57,7 +57,32 @@ export function AddPostForm() {
   );
 }
 
-export function ResumeForm() {
+const check = "flex items-center gap-2 font-mono text-xs text-ink";
+
+export function ComposeForm({ linkedin, x }: { linkedin: boolean; x: boolean }) {
+  const [s, action, pending] = useActionState(composePost, initial);
+  return (
+    <form action={action} className="space-y-4">
+      <div>
+        <label className="label mb-2 block" htmlFor="body">Write once, publish everywhere</label>
+        <textarea id="body" name="body" rows={5} maxLength={3000} required placeholder="What did you build or learn?" className="w-full rounded-md border border-line bg-base p-3 font-mono text-sm text-ink placeholder:text-muted focus:border-lime" />
+        <p className="label mt-1">X allows 280 characters. LinkedIn allows 3000.</p>
+      </div>
+      <fieldset className="flex flex-wrap gap-x-6 gap-y-2">
+        <legend className="label mb-2">Publish to</legend>
+        <label className={check}><input type="checkbox" name="t_site" defaultChecked className="size-4 accent-[#c6ff3d]" /> This site</label>
+        <label className={check}><input type="checkbox" name="t_linkedin" disabled={!linkedin} className="size-4 accent-[#c6ff3d]" /> LinkedIn{!linkedin && " (not connected)"}</label>
+        <label className={check}><input type="checkbox" name="t_x" disabled={!x} className="size-4 accent-[#c6ff3d]" /> X{!x && " (keys not set)"}</label>
+      </fieldset>
+      <div className="flex flex-wrap items-center gap-4">
+        <button className={button} disabled={pending}>{pending ? "Publishing…" : "Publish"}</button>
+        <Msg s={s} />
+      </div>
+    </form>
+  );
+}
+
+export function ResumeForm({ linkedin, x, bio }: { linkedin: boolean; x: boolean; bio: boolean }) {
   const [s, action, pending] = useActionState(uploadResume, initial);
   return (
     <form action={action} className="space-y-4">
@@ -65,6 +90,12 @@ export function ResumeForm() {
         <label className="label mb-2 block" htmlFor="file">PDF (max 4 MB)</label>
         <input id="file" name="file" type="file" accept="application/pdf" required className={`${input} pt-2.5 file:mr-4 file:rounded file:border-0 file:bg-line file:px-3 file:py-1 file:font-mono file:text-xs file:text-ink`} />
       </div>
+      <fieldset className="flex flex-wrap gap-x-6 gap-y-2">
+        <legend className="label mb-2">After uploading (optional)</legend>
+        <label className={check}><input type="checkbox" name="ann_linkedin" disabled={!linkedin} className="size-4 accent-[#c6ff3d]" /> Announce on LinkedIn</label>
+        <label className={check}><input type="checkbox" name="ann_x" disabled={!x} className="size-4 accent-[#c6ff3d]" /> Announce on X</label>
+        <label className={check}><input type="checkbox" name="sync_bio" disabled={!bio} className="size-4 accent-[#c6ff3d]" /> Update GitHub bio</label>
+      </fieldset>
       <div className="flex flex-wrap items-center gap-4">
         <button className={button} disabled={pending}>{pending ? "Uploading…" : "Upload & make current"}</button>
         <Msg s={s} />

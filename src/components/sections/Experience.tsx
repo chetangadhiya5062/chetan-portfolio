@@ -1,67 +1,57 @@
 import { experience } from "@/content/experience";
-import { skillGroups } from "@/content/skills";
 import SectionHead from "@/components/ui/SectionHead";
 import Reveal from "@/components/ui/Reveal";
-import AttentionGraph from "@/components/ui/AttentionGraph";
+import Rich from "@/components/latent/Rich";
 
-const usedSkills = new Set(experience.flatMap((r) => r.skills));
-const rail = skillGroups.flatMap((g) => g.skills).filter((s) => usedSkills.has(s));
+type Kind = "plan" | "tool" | "observe" | "output";
+const KIND_COLOR: Record<Kind, string> = {
+  plan: "text-cyan", tool: "text-[#ff9d4d]", observe: "text-[#b78bff]", output: "text-lime",
+};
 
+/** Each role is drawn as an agent run: plan, tool calls, observations, final output. */
 export default function Experience() {
-  const items = experience.map((r, i) => ({
-    id: r.id,
-    skills: r.skills,
-    node: (
-      <Reveal as="article" delay={60} className="group relative rounded-2xl border border-line bg-surface p-6 transition-colors duration-300 hover:border-lime/60 focus-within:border-lime/60 md:p-9">
-        <header className="flex flex-wrap items-start justify-between gap-x-6 gap-y-2">
-          <div>
-            <p className="label text-lime">
-              H{experience.length - i} · {r.period}
-            </p>
-            <h3 className="mt-3 font-display text-2xl font-semibold leading-tight text-ink md:text-3xl">{r.title}</h3>
-            <p className="mt-1 text-base text-muted">
-              {r.org}
-              {r.place && <span> · {r.place}</span>}
-            </p>
-          </div>
-        </header>
-        <ul className="mt-6 space-y-3 text-[15px] leading-relaxed text-muted">
-          {r.bullets.map((b) => (
-            <li key={b} className="flex gap-3">
-              <span aria-hidden className="mt-2.5 size-1 shrink-0 rounded-full bg-lime" />
-              <span>{b}</span>
-            </li>
-          ))}
-        </ul>
-        <ul className="mt-6 flex flex-wrap gap-2 lg:hidden">
-          {r.skills.map((s) => (
-            <li key={s} className="rounded-full border border-line px-3 py-1 font-mono text-[11px] text-muted">{s}</li>
-          ))}
-        </ul>
-        {r.repo && (
-          <a
-            href={r.repo}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-6 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-cyan hover:underline"
-          >
-            View the work <span aria-hidden>↗</span>
-          </a>
-        )}
-      </Reveal>
-    ),
-  }));
-
   return (
     <section id="experience" aria-labelledby="exp-h" className="relative py-24 md:py-36">
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
         <SectionHead
-          n="03"
-          layer="Hidden layers"
-          title={<span id="exp-h">Each role is a layer. Each one shipped.</span>}
-          lede="Hover a layer to see which skills it activated."
+          n="04"
+          layer="Reason · agent traces"
+          title={<span id="exp-h">Every role, as a run that finished.</span>}
+          lede="Plan, act, observe, deliver. Concepts in each trace link to the rest of the page."
         />
-        <AttentionGraph items={items} rail={rail} railLabel="Skills activated" />
+        <div className="grid gap-6 lg:grid-cols-2">
+          {experience.map((r, i) => {
+            const steps = r.bullets.map((b, k) => {
+              const kind = r.bullets.length === 1 ? "output" : k === 0 ? "plan" : k === r.bullets.length - 1 ? "output" : k % 2 ? "tool" : "observe";
+              return { b, kind: kind as Kind };
+            });
+            return (
+              <Reveal as="article" key={r.id} delay={i * 60} className="rounded-2xl border border-line bg-surface p-6 transition-colors hover:border-lime/50 md:p-8">
+                <header className="flex flex-wrap items-start justify-between gap-3 border-b border-line pb-5">
+                  <div>
+                    <p className="label text-lime">run #{String(experience.length - i).padStart(2, "0")} · {r.period}</p>
+                    <h3 className="mt-3 font-display text-2xl font-semibold leading-tight text-ink">{r.title}</h3>
+                    <p className="mt-1 text-[15px] text-muted">{r.org}{r.place && ` · ${r.place}`}</p>
+                  </div>
+                  <span className="rounded-full border border-lime/40 px-3 py-1 font-mono text-[11px] text-lime">status: done</span>
+                </header>
+                <ol className="mt-5 space-y-4">
+                  {steps.map((s, k) => (
+                    <li key={k} className="trace-step grid grid-cols-[4.2rem_1fr] gap-3 text-[15px] leading-relaxed" style={{ "--k": k } as React.CSSProperties}>
+                      <span className={`pt-0.5 font-mono text-[11px] uppercase tracking-wider ${KIND_COLOR[s.kind]}`}>{s.kind}</span>
+                      <span className="text-muted"><Rich text={s.b} /></span>
+                    </li>
+                  ))}
+                </ol>
+                {r.repo && (
+                  <a href={r.repo} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-cyan hover:underline">
+                    View the work <span aria-hidden>↗</span>
+                  </a>
+                )}
+              </Reveal>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

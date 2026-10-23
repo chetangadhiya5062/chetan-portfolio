@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import { applyReducedMotion, prefersReducedMotion } from "@/lib/motion";
 import Deferred from "./Deferred";
 import CommandPalette from "./CommandPalette";
+import Intro from "./Intro";
+import LatentProvider from "@/components/latent/LatentProvider";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -44,10 +46,11 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   }, [pathname]);
 
   return (
-    <>
+    <LatentProvider>
+      <Intro />
       <Deferred />
       <CommandPalette />
       {children}
-    </>
+    </LatentProvider>
   );
 }

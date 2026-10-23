@@ -1,1 +1,5 @@
 * text=auto eol=lf
+
+# Windows scripts must keep CRLF to run when double-clicked
+*.bat text eol=crlf
+*.command text eol=lf

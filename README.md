@@ -8,6 +8,18 @@ This is not a resume website. It is a **production-grade engineering profile** f
 
 ---
 
+## agent-v1: the site as a running model
+
+Branch `agent-v1`. Full design in `docs/AGENT_V1_PLAN.md`.
+
+- **Boot and decode.** A canvas neural net runs once per session, then the name and role are "decoded" token by token with candidate probabilities (a staged visualisation, labelled as such).
+- **Latent links.** Dotted words are concepts. Hover, focus or tap one and every related concept on the page lights up, with a cosine score on each line. Scores come from `all-MiniLM-L6-v2` embeddings of the definitions in `src/content/concepts.ts`, precomputed into `src/content/generated/latent.json` by `scripts/embed-concepts.mjs` (re-run it after editing concepts; the header of the script says how).
+- **Concept map, RAG console, agent traces, platform diagram.** The map is a PCA projection of the same vectors. The console runs BM25 plus query expansion through embedding neighbours over the site's own content, in the browser, and returns an extractive answer with citations.
+- **Admin additions.** `/admin` can compose a post once and publish it to the site, LinkedIn and X, connect LinkedIn (OAuth), and after a resume upload refresh the GitHub profile README, optionally announce it, and optionally update the GitHub bio. Run `supabase/migrations/0003_agent_v1.sql` once. New optional env vars are listed in `.env.example`.
+- **Committing.** Double-click `commit-and-push.bat` (Windows) or `commit-and-push.command` (macOS) to commit and push `agent-v1` with your own git identity.
+
+LinkedIn's API cannot edit profile sections or upload a resume, so keep `https://<your-site>/resume` in LinkedIn Featured: it always serves the latest upload.
+
 ## The concept: Forward Pass
 
 | Section | Layer | What it is |

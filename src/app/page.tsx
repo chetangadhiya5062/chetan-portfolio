@@ -2,6 +2,8 @@ import { Suspense } from "react";
 import Nav from "@/components/ui/Nav";
 import Hero from "@/components/sections/Hero";
 import About from "@/components/sections/About";
+import Ask from "@/components/sections/Ask";
+import SystemDesign from "@/components/sections/SystemDesign";
 import Experience from "@/components/sections/Experience";
 import Projects from "@/components/sections/Projects";
 import ActivitySection from "@/components/sections/Activity";
@@ -11,18 +13,19 @@ import Contact from "@/components/sections/Contact";
 import Footer from "@/components/sections/Footer";
 import ChatGate from "@/components/ui/ChatGate";
 import { getSource } from "@/lib/sources";
-import { getResume, getSiteStatus, getSocialPosts } from "@/lib/site-data";
+import { getResume, getSiteStatus, getSitePosts, getSocialPosts } from "@/lib/site-data";
 import { buildActivity } from "@/lib/activity";
 
 // ISR: fresh at least every 6h; the cron and /admin saves also revalidate on demand.
 export const revalidate = 21600;
 
 export default async function Home() {
-  const [github, leetcode, medium, posts, status, resume] = await Promise.all([
+  const [github, leetcode, medium, posts, sitePosts, status, resume] = await Promise.all([
     getSource("github"),
     getSource("leetcode"),
     getSource("medium"),
     getSocialPosts(),
+    getSitePosts(),
     getSiteStatus(),
     getResume(),
   ]);
@@ -36,10 +39,12 @@ export default async function Home() {
         {/* Each Suspense boundary hydrates as its own small task instead of one long one (lower TBT) */}
         <Hero github={github} status={status} />
         <Suspense><About leetcode={leetcode} /></Suspense>
+        <Suspense><Ask /></Suspense>
         <Suspense><Experience /></Suspense>
         <Suspense><Projects github={github} /></Suspense>
+        <Suspense><SystemDesign /></Suspense>
         <Suspense><ActivitySection activity={activity} github={github} leetcode={leetcode} /></Suspense>
-        <Suspense><Writing medium={medium} posts={posts} /></Suspense>
+        <Suspense><Writing medium={medium} posts={posts} sitePosts={sitePosts} /></Suspense>
         <Suspense><Evaluation /></Suspense>
         <Suspense><Contact /></Suspense>
       </main>

@@ -7,6 +7,10 @@ import { clientIp, hit } from "@/lib/rate-limit";
 import { enrichPost, parsePostUrl } from "@/lib/social";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
 import { notifyProfileRepo } from "@/lib/dispatch";
+import { postToX, type PublishResult } from "@/lib/publish/x";
+import { postToLinkedIn } from "@/lib/publish/linkedin";
+import { updateGithubBio } from "@/lib/publish/github";
+import { profile, SITE_URL } from "@/content/profile";
 
 export type FormState = { ok: boolean; message: string };
 const fail = (message: string): FormState => ({ ok: false, message });
@@ -129,7 +133,53 @@ export async function uploadResume(_prev: FormState, fd: FormData): Promise<Form
   const { error } = await sb.from("resume_versions").insert({ url: pub.publicUrl, path, filename: file.name, is_current: true });
   if (error) return fail(`Saved the file but not its record: ${error.message}`);
   refresh();
-  return done("Resume uploaded and set as current. /resume now serves it.");
+  return done(`Resume uploaded and set as current. ${await syncAfterResume(fd)}`);
+}
+
+/** Everything that should follow a new resume: profile README, optional announcement, optional GitHub bio. */
+async function syncAfterResume(fd: FormData): Promise<string> {
+  const notes: string[] = ["/resume now serves it, so LinkedIn Featured and the GitHub README links are current."];
+  notes.push(process.env.GITHUB_DISPATCH_TOKEN ? "GitHub profile README refresh requested." : "Set GITHUB_DISPATCH_TOKEN to auto-refresh the GitHub profile README.");
+  const text = `Updated my résumé. Latest version: ${SITE_URL}/resume`;
+  if (fd.get("ann_linkedin") === "on") notes.push(describe("LinkedIn", await postToLinkedIn(text)));
+  if (fd.get("ann_x") === "on") notes.push(describe("X", await postToX(text)));
+  if (fd.get("sync_bio") === "on") {
+    const r = await updateGithubBio(`${profile.headline} · ${profile.tagline}`);
+    notes.push(r.ok ? "GitHub bio updated." : `GitHub bio: ${r.error}`);
+  }
+  return notes.join(" ");
+}
+
+const describe = (name: string, r: PublishResult) => (r.ok ? `Posted to ${name}.` : `${name}: ${r.error}`);
+
+/* ---------- compose + cross-post ---------- */
+
+export async function composePost(_prev: FormState, fd: FormData): Promise<FormState> {
+  await requireAdmin();
+  const body = String(fd.get("body") ?? "").trim();
+  if (!body) return fail("Write something first.");
+  if (body.length > 3000) return fail("Posts are limited to 3000 characters (LinkedIn's limit).");
+  const targets = (["site", "linkedin", "x"] as const).filter((t) => fd.get(`t_${t}`) === "on");
+  if (targets.length === 0) return fail("Pick at least one place to publish.");
+
+  const results: Record<string, PublishResult> = {};
+  if (targets.includes("x")) results.x = await postToX(body);
+  if (targets.includes("linkedin")) results.linkedin = await postToLinkedIn(body);
+
+  const { error } = await db().from("site_posts").insert({ body, targets, results, hidden: !targets.includes("site") });
+  if (error) return fail(`Could not save: ${error.message}. Did you run migration 0003?`);
+  refresh();
+
+  const lines = [targets.includes("site") ? "Saved on the site." : "Saved (not shown on the site)."];
+  for (const [name, r] of Object.entries(results)) lines.push(describe(name === "x" ? "X" : "LinkedIn", r));
+  const failed = Object.values(results).some((r) => !r.ok);
+  return { ok: !failed, message: lines.join(" ") };
+}
+
+export async function deleteSitePost(id: string): Promise<void> {
+  await requireAdmin();
+  await db().from("site_posts").delete().eq("id", id);
+  refresh();
 }
 
 export async function makeResumeCurrent(id: string): Promise<void> {

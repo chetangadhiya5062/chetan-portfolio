@@ -73,3 +73,25 @@ export async function getResume(): Promise<ResumeInfo> {
   }
   return { url: process.env.RESUME_URL || "/resume.pdf", uploadedAt: null };
 }
+
+export type SitePost = { id: string; body: string; createdAt: string; pinned: boolean; links: { platform: "linkedin" | "x"; url: string }[] };
+
+type SitePostRow = { id: string; body: string; created_at: string; pinned: boolean; results: Record<string, { ok: boolean; url?: string }> | null };
+
+/** Posts written in /admin. Cross-post links are included only for platforms where publishing succeeded. */
+export async function getSitePosts(): Promise<SitePost[]> {
+  try {
+    const sb = getSupabase();
+    if (!sb) return [];
+    const { data } = await sb.from("site_posts").select("id, body, created_at, pinned, results").order("pinned", { ascending: false }).order("created_at", { ascending: false }).limit(12);
+    return ((data ?? []) as SitePostRow[]).map((r) => ({
+      id: r.id,
+      body: r.body,
+      createdAt: r.created_at,
+      pinned: r.pinned,
+      links: (["linkedin", "x"] as const).flatMap((p) => (r.results?.[p]?.ok && r.results[p].url ? [{ platform: p, url: r.results[p].url as string }] : [])),
+    }));
+  } catch {
+    return [];
+  }
+}
