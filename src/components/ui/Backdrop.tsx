@@ -120,7 +120,7 @@ function Waves() {
  */
 export default function Backdrop({ variant = "net", n, seed = 7, flip = false, className = "inset-0" }: { variant?: Variant; n?: string; seed?: number; flip?: boolean; className?: string }) {
   return (
-    <div aria-hidden className={`pointer-events-none absolute ${className} -z-10 overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,black_14%,black_86%,transparent)]`}>
+    <div aria-hidden className={`pointer-events-none absolute ${className} bd-root -z-10 overflow-hidden`}>
       <div className={`bd-glow absolute -top-24 size-[620px] rounded-full ${flip ? "-left-40" : "-right-40"}`} style={{ background: "radial-gradient(closest-side, rgba(242,176,94,.14), transparent)" }} />
       <div className={`bd-glow absolute bottom-0 size-[560px] rounded-full ${flip ? "-right-32" : "-left-32"}`} style={{ background: "radial-gradient(closest-side, rgba(95,208,184,.11), transparent)", animationDelay: "-5s" }} />
       {variant === "grid" && <div className="bd-grid absolute inset-0" />}

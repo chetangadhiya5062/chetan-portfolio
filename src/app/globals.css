@@ -917,3 +917,18 @@ html.reduce-motion .pipe-label {
 .fx-badge {
   transition: transform 0.6s var(--ease-out-expo), background 0.3s, color 0.3s;
 }
+
+/* the candidate box of a hovered token must sit above the tokens on the lines below it */
+.dec-tok:hover,
+.dec-tok:focus-within {
+  z-index: 40;
+}
+.bd-root {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 14%, black 86%, transparent), linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to bottom, transparent, black 14%, black 86%, transparent), linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  mask-composite: intersect;
+}
+.dec-cands {
+  background: var(--color-surface);
+}
