@@ -103,3 +103,14 @@ Judgement calls made during the v2 rebuild. Newest at the bottom.
 - Monitor: heatmap is a client component with source filters, replay, wave-in, hover tooltip and stats.
 - More work: two opposing marquee rows (pause on hover, scrollable under reduced motion).
 - Proof: bento of metric cards, then credentials. Writing: tabbed feed with a featured card.
+
+## agent-v1 UI round 3
+
+- Intro: the net shows live activation values per node (scramble, then settle), labelled input and output layers, and the output layer lands on the tokens the hero decodes. Duration unchanged (2.6 s).
+- Hero: p-values moved out from under the tokens into a readable chip row; a rotating embedding orb with tool names fills the right side.
+- Backgrounds: every section has a faint pattern (network, orbit, grid or waves), two colour glows and a ghost section number; keyword bands sit between sections.
+- Concept map: now sticky and scroll-driven in four steps (scatter, domain clusters, flagship layer, base layer). Zoom buttons, drag to pan, Ctrl+wheel zoom, pointer parallax. Tier lists live in `LatentMap.tsx`.
+- Learning curve chart reads `src/content/journey.ts` (self-assessed values, edit freely).
+- Hover links: concept-labelled pills with scores, and a card listing every neighbour with a score bar.
+- Side rail: a token travels the rail continuously, ticks swell near it, the current layer is always named.
+- Heatmap: idle snake game spells short messages in pixels; hovering reveals the real data.

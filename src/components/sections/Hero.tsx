@@ -4,6 +4,7 @@ import type { SiteStatus } from "@/lib/site-data";
 import { timeAgo } from "@/lib/activity";
 import Term from "@/components/latent/Term";
 import HeroField from "@/components/ui/HeroField";
+import HeroOrb from "@/components/ui/HeroOrb";
 
 type Cand = [string, number];
 type Tok = { t: string; c: Cand[]; term?: string };
@@ -32,8 +33,7 @@ const ROLE: Tok[] = [
   { t: "production.", term: "production", c: [["production.", 0.86], ["scale.", 0.08], ["real use.", 0.04], ["demos.", 0.02]] },
 ];
 
-function Token({ tok, i, chip = false }: { tok: Tok; i: number; chip?: boolean }) {
-  const top = tok.c[0][1];
+function Token({ tok, i }: { tok: Tok; i: number }) {
   const inner = tok.term ? <Term id={tok.term}>{tok.t}</Term> : tok.t;
   return (
     <span className="dec-tok" style={{ "--i": i } as React.CSSProperties} tabIndex={0}>
@@ -41,7 +41,6 @@ function Token({ tok, i, chip = false }: { tok: Tok; i: number; chip?: boolean }
       <span className="dec-cands dec-sample" aria-hidden>
         <Rows cands={tok.c} />
       </span>
-      {chip && <span className="dec-p" aria-hidden>p={top.toFixed(2)}</span>}
     </span>
   );
 }
@@ -73,7 +72,7 @@ export default function Hero({ github, leetcode, status }: { github: GithubData 
   return (
     <section id="top" aria-label="Introduction" className="relative flex min-h-[100svh] flex-col justify-center overflow-hidden pb-20 pt-28">
       <HeroField />
-      <div className="relative mx-auto grid w-full max-w-[1280px] gap-14 px-4 sm:px-6 lg:grid-cols-[1fr_320px] lg:items-end">
+      <div className="relative mx-auto grid w-full max-w-[1280px] gap-14 px-4 sm:px-6 lg:grid-cols-[1.3fr_1fr] lg:items-center">
         <div className="dec">
           <p className="prompt-line mb-8 font-mono text-[12px] text-muted sm:text-[13px]">
             <span className="text-lime">›</span>{" "}
@@ -83,14 +82,23 @@ export default function Hero({ github, leetcode, status }: { github: GithubData 
           <h1 className="font-serif text-[clamp(3.4rem,12.5vw,10.5rem)] font-normal leading-[0.88] tracking-[-0.02em] text-ink">
             <span className="sr-only">{profile.name}</span>
             <span aria-hidden className="block">
-              {NAME.slice(0, 2).map((t, i) => <Token key={i} tok={t} i={i} chip />)}
+              {NAME.slice(0, 2).map((t, i) => <Token key={i} tok={t} i={i} />)}
             </span>
             <span aria-hidden className="block italic text-lime">
-              {NAME.slice(2).map((t, i) => <Token key={i} tok={{ ...t, t: t.t.trim() }} i={i + 2} chip />)}
+              {NAME.slice(2).map((t, i) => <Token key={i} tok={{ ...t, t: t.t.trim() }} i={i + 2} />)}
             </span>
           </h1>
 
-          <p className="mt-10 max-w-2xl text-[clamp(1.15rem,2.4vw,1.6rem)] leading-snug text-ink/90">
+          <ul aria-hidden className="mt-6 flex flex-wrap gap-2 font-mono text-[11px] sm:text-xs">
+            {NAME.map((t, i) => (
+              <li key={i} className="dec-chip rounded-md border border-line bg-surface/80 px-2.5 py-1 backdrop-blur" style={{ "--i": i } as React.CSSProperties}>
+                <span className="text-ink">{t.t.trim()}</span> <span className="text-cyan">p={t.c[0][1].toFixed(2)}</span>
+              </li>
+            ))}
+            <li className="dec-chip px-1 py-1 text-muted" style={{ "--i": NAME.length } as React.CSSProperties}>← sampled token · probability</li>
+          </ul>
+
+          <p className="mt-8 max-w-2xl text-[clamp(1.15rem,2.4vw,1.6rem)] leading-snug text-ink/90">
             <span className="sr-only">{`${profile.headline} — ${profile.tagline}`}</span>
             {ROLE.map((t, i) => (
               <span key={i}>
@@ -116,7 +124,9 @@ export default function Hero({ github, leetcode, status }: { github: GithubData 
           </div>
         </div>
 
-        <aside aria-label="Live status" className="spot hidden rounded-2xl border border-line bg-surface/70 p-5 backdrop-blur lg:block">
+        <div className="relative hidden aspect-square w-full lg:block">
+          <HeroOrb />
+        <aside aria-label="Live status" className="spot absolute -bottom-4 right-0 hidden w-[290px] rounded-2xl border border-line bg-surface/85 p-5 backdrop-blur lg:block">
           <p className="label flex items-center gap-2"><span aria-hidden className="pulse-dot size-1.5 rounded-full bg-lime" /> live telemetry</p>
           <dl className="mt-4 divide-y divide-line">
             {rows.map(([k, v]) => (
@@ -128,6 +138,7 @@ export default function Hero({ github, leetcode, status }: { github: GithubData 
           </dl>
           <p className="mt-4 font-mono text-[11px] text-muted">{profile.location}</p>
         </aside>
+        </div>
       </div>
     </section>
   );

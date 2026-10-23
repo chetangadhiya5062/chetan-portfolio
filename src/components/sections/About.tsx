@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Backdrop from "@/components/ui/Backdrop";
 import { profile } from "@/content/profile";
 import type { LeetcodeData } from "@/lib/sources/types";
 import SectionHead from "@/components/ui/SectionHead";
@@ -6,6 +7,7 @@ import Reveal from "@/components/ui/Reveal";
 import CountUp from "@/components/ui/CountUp";
 import Skills from "./Skills";
 import LatentMap from "./LatentMap";
+import Journey from "./Journey";
 import Rich from "@/components/latent/Rich";
 
 export default function About({ leetcode }: { leetcode: LeetcodeData | null }) {
@@ -17,11 +19,12 @@ export default function About({ leetcode }: { leetcode: LeetcodeData | null }) {
   ];
 
   return (
-    <section id="about" aria-labelledby="about-h" className="relative py-24 md:py-36">
+    <section id="about" aria-labelledby="about-h" className="relative isolate py-24 md:py-36">
+      <Backdrop variant="orbit" n="02" seed={3} />
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
         <SectionHead n="02" layer="Embed · text becomes vectors" title={<span id="about-h">What I know, as a <em>map</em> you can walk.</span>} lede="Dotted words are concepts. Hover or tap one and everything related lights up across the page, scored by real cosine similarity from an embedding model." />
 
-        <div className="grid gap-12 lg:grid-cols-[1.35fr_1fr] lg:gap-20">
+        <div className="grid gap-12 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
           <div className="space-y-6">
             <Reveal as="p" className="font-display text-2xl font-medium leading-snug text-ink md:text-3xl">
               <Rich text={profile.about[0]} />
@@ -38,15 +41,15 @@ export default function About({ leetcode }: { leetcode: LeetcodeData | null }) {
             </Reveal>
           </div>
 
-          <Reveal delay={120} className="mx-auto w-full max-w-[288px] lg:mx-0 lg:justify-self-end">
+          <Reveal delay={120} className="mx-auto w-full max-w-[300px] lg:max-w-[440px] lg:mx-0 lg:justify-self-end">
             <figure className="relative">
               <div className="relative aspect-square overflow-hidden rounded-2xl border border-line bg-lime">
                 <Image
                   src="/profile-v2.png"
                   alt="Portrait of Chetan Gadhiya"
-                  width={400}
-                  height={400}
-                  sizes="288px"
+                  width={600}
+                  height={600}
+                  sizes="(min-width:1024px) 440px, 300px"
                   className="duotone size-full object-cover mix-blend-multiply"
                 />
                 <span
@@ -86,6 +89,8 @@ export default function About({ leetcode }: { leetcode: LeetcodeData | null }) {
         </ul>
 
         <LatentMap />
+
+        <Journey />
 
         <Skills />
       </div>
