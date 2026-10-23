@@ -1,4 +1,5 @@
 import { experience } from "@/content/experience";
+import Backdrop from "@/components/ui/Backdrop";
 import SectionHead from "@/components/ui/SectionHead";
 import Reveal from "@/components/ui/Reveal";
 import Rich from "@/components/latent/Rich";
@@ -11,7 +12,8 @@ const KIND_COLOR: Record<Kind, string> = {
 /** Each role is drawn as an agent run: plan, tool calls, observations, final output. */
 export default function Experience() {
   return (
-    <section id="experience" aria-labelledby="exp-h" className="relative py-24 md:py-36">
+    <section id="experience" aria-labelledby="exp-h" className="relative isolate py-24 md:py-36">
+      <Backdrop variant="net" n="04" seed={11} />
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
         <SectionHead
           n="04"

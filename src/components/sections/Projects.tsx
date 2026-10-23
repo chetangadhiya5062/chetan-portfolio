@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Backdrop from "@/components/ui/Backdrop";
 import { projects } from "@/content/projects";
 import { GITHUB_USER, FEATURED_REPOS, HIDDEN_PATTERNS, HIDDEN_REPOS } from "@/config/github";
 import type { GithubData, RepoInfo } from "@/lib/sources/types";
@@ -71,7 +72,8 @@ export default function Projects({ github }: { github: GithubData | null }) {
   });
 
   return (
-    <section id="projects" aria-labelledby="proj-h" className="relative py-24 md:py-36">
+    <section id="projects" aria-labelledby="proj-h" className="relative isolate py-24 md:py-36">
+      <Backdrop variant="waves" n="05" seed={13} flip />
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
         <SectionHead
           n="05"

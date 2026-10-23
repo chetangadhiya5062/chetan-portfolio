@@ -1,4 +1,5 @@
 import SectionHead from "@/components/ui/SectionHead";
+import Backdrop from "@/components/ui/Backdrop";
 import Reveal from "@/components/ui/Reveal";
 import Term from "@/components/latent/Term";
 
@@ -14,7 +15,8 @@ const LAYERS: { n: string; name: string; nodes: [string, string][] }[] = [
 /** NeuroFlow AI's six layers as an interactive diagram: every node is a concept in the same latent space. */
 export default function SystemDesign() {
   return (
-    <section id="system" aria-labelledby="sys-h" className="relative py-24 md:py-36">
+    <section id="system" aria-labelledby="sys-h" className="relative isolate py-24 md:py-36">
+      <Backdrop variant="grid" n="06" seed={17} />
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
         <SectionHead
           n="06"

@@ -1,4 +1,5 @@
 import { profile } from "@/content/profile";
+import Backdrop from "@/components/ui/Backdrop";
 import { experience } from "@/content/experience";
 import { projects } from "@/content/projects";
 import { skillGroups } from "@/content/skills";
@@ -27,7 +28,8 @@ function buildChunks(): Chunk[] {
 export default function Ask() {
   const chunks = buildChunks();
   return (
-    <section id="ask" aria-labelledby="ask-h" className="relative py-24 md:py-36">
+    <section id="ask" aria-labelledby="ask-h" className="relative isolate py-24 md:py-36">
+      <Backdrop variant="grid" n="03" seed={5} flip />
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
         <SectionHead
           n="03"

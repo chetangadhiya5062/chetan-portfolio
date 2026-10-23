@@ -456,7 +456,7 @@ html.reduce-motion .trace-step {
 /* latent map */
 .latent-map .map-dot text {
   pointer-events: none;
-  opacity: 0;
+  opacity: var(--lo, 0);
   transition: opacity 0.2s;
   paint-order: stroke;
   stroke: var(--color-surface);
@@ -464,6 +464,13 @@ html.reduce-motion .trace-step {
 }
 .latent-map .map-dot .dot {
   transition: r 0.2s;
+}
+.latent-map {
+  touch-action: pan-y;
+  cursor: grab;
+}
+.latent-map:active {
+  cursor: grabbing;
 }
 .latent-map .map-dot:hover text,
 .latent-map .map-dot:focus text,
@@ -703,4 +710,75 @@ html.reduce-motion .marquee-dupe {
 }
 html.reduce-motion .feed-in > * {
   animation: none;
+}
+
+/* section backdrops */
+.bd-grid {
+  background-image: linear-gradient(var(--color-line) 1px, transparent 1px), linear-gradient(90deg, var(--color-line) 1px, transparent 1px);
+  background-size: 56px 56px;
+  opacity: 0.35;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, black, transparent);
+}
+.bd-num {
+  font-size: clamp(9rem, 26vw, 24rem);
+  line-height: 0.8;
+  color: transparent;
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--color-lime) 22%, transparent);
+  opacity: 0.8;
+  user-select: none;
+}
+.bd-float {
+  animation: bd-float 24s ease-in-out infinite alternate;
+}
+.bd-spin {
+  animation: bd-spin 120s linear infinite;
+}
+.bd-glow {
+  animation: bd-glow 14s ease-in-out infinite alternate;
+}
+.bd-wave {
+  animation: bd-wave 9s ease-in-out infinite alternate;
+}
+@keyframes bd-float {
+  to { transform: translate3d(-18px, 14px, 0) scale(1.03); }
+}
+@keyframes bd-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes bd-glow {
+  to { transform: translate3d(40px, 30px, 0) scale(1.12); opacity: 0.7; }
+}
+@keyframes bd-wave {
+  to { transform: translateY(18px); }
+}
+html.reduce-motion .bd-float,
+html.reduce-motion .bd-spin,
+html.reduce-motion .bd-glow,
+html.reduce-motion .bd-wave {
+  animation: none;
+}
+
+.dec-chip {
+  opacity: 0;
+  animation: dec-in 0.14s ease-out forwards;
+  animation-delay: calc(var(--base) + var(--i) * var(--step) + var(--step) * 0.6);
+}
+html.reduce-motion .dec-chip {
+  opacity: 1;
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dec-chip {
+    opacity: 1;
+    animation: none;
+  }
+}
+
+.chip-pop {
+  animation: chip-pop 0.22s var(--ease-out-expo) backwards;
+}
+@keyframes chip-pop {
+  from {
+    opacity: 0;
+  }
 }

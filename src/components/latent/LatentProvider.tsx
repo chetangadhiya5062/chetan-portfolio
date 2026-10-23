@@ -148,7 +148,6 @@ function Overlay({ concept, geo, onClear, pinned }: { concept: NonNullable<Retur
   const sx = geo.sx + geo.sw / 2;
   const sy = geo.sy + geo.sh / 2;
   const visible = geo.links.filter((l) => l.vis);
-  const hidden = geo.links.filter((l) => !l.vis);
   const W = typeof window === "undefined" ? 1200 : window.innerWidth;
   const cardLeft = Math.min(Math.max(12, geo.sx), W - 300);
   const above = geo.sy > 150;
@@ -162,15 +161,23 @@ function Overlay({ concept, geo, onClear, pinned }: { concept: NonNullable<Retur
           const mx = (sx + tx) / 2;
           const bend = Math.min(80, Math.abs(ty - sy) * 0.25 + 30);
           const d = `M${sx},${sy} Q${mx},${Math.min(sy, ty) - bend} ${tx},${ty}`;
-          const lx = mx;
-          const ly = (sy + ty) / 2 - bend / 2 - 4;
+          const name = getConcept(l.id)?.label ?? l.id;
+          const txt = `${name}  ${l.score.toFixed(2)}`;
+          const pw = txt.length * 7 + 22;
+          const Wv = typeof window === "undefined" ? 1200 : window.innerWidth;
+          const px = Math.min(Math.max(tx, pw / 2 + 8), Wv - pw / 2 - 8);
+          const py = Math.max(l.y - 20, 70);
           return (
             <g key={l.id}>
-              <path d={d} pathLength={1} fill="none" stroke={color} strokeWidth={1 + l.score * 1.6} strokeOpacity={0.35 + l.score * 0.6} className="attn-line" />
-              <circle cx={tx} cy={ty} r={3} fill={color} />
-              <g transform={`translate(${lx},${ly})`}>
-                <rect x={-27} y={-10} width={54} height={20} rx={10} fill="var(--color-base)" stroke={color} strokeOpacity={0.8} />
-                <text textAnchor="middle" y={4} fontSize={11} fontFamily="var(--font-jetbrains), monospace" fill={color}>{l.score.toFixed(2)}</text>
+              <path d={d} pathLength={1} fill="none" stroke={color} strokeWidth={1.4 + l.score * 2.2} strokeOpacity={0.4 + l.score * 0.55} strokeLinecap="round" className="attn-line" />
+              <circle cx={tx} cy={ty} r={4.5} fill={color} />
+              <circle cx={tx} cy={ty} r={11} fill="none" stroke={color} strokeOpacity={0.5} />
+              <g transform={`translate(${px},${py})`} className="chip-pop">
+                <rect x={-pw / 2} y={-13} width={pw} height={26} rx={13} fill="var(--color-base)" stroke={color} strokeWidth={1.4} />
+                <rect x={-pw / 2} y={-13} width={Math.max(26, pw * l.score)} height={26} rx={13} fill={color} fillOpacity={0.18} />
+                <text textAnchor="middle" y={4.5} fontSize={12.5} fontWeight={500} fontFamily="var(--font-jetbrains), monospace" fill="var(--color-ink)">
+                  {name} <tspan fill={color} fontWeight={700}>{l.score.toFixed(2)}</tspan>
+                </text>
               </g>
             </g>
           );
@@ -180,7 +187,7 @@ function Overlay({ concept, geo, onClear, pinned }: { concept: NonNullable<Retur
 
       <div
         role="status"
-        className={`latent-panel ${pinned ? "pointer-events-auto" : "pointer-events-none"} fixed z-[56] w-[min(290px,calc(100vw-24px))] rounded-xl border border-line bg-surface/95 p-3.5 shadow-2xl backdrop-blur`}
+        className={`latent-panel ${pinned ? "pointer-events-auto" : "pointer-events-none"} fixed z-[56] w-[min(310px,calc(100vw-24px))] rounded-xl border border-line bg-surface/95 p-3.5 shadow-2xl backdrop-blur`}
         style={{ left: cardLeft, top: above ? Math.max(64, geo.sy - 10) : geo.sy + geo.sh + 10, transform: above ? "translateY(-100%)" : undefined, borderColor: color }}
       >
         <div className="flex items-start justify-between gap-3">
@@ -188,19 +195,25 @@ function Overlay({ concept, geo, onClear, pinned }: { concept: NonNullable<Retur
           <span className="label shrink-0" style={{ color }}>{clusters[concept.cluster].label}</span>
         </div>
         <p className="mt-1 text-[13px] leading-snug text-muted">{concept.def}.</p>
-        {hidden.length > 0 && (
-          <ul className="mt-3 flex flex-wrap gap-1.5 border-t border-line pt-3">
-            {hidden.map((l) => (
-              <li key={l.id}>
-                <button
-                  type="button"
-                  onClick={() => l.el.scrollIntoView({ behavior: "smooth", block: "center" })}
-                  className="rounded-full border border-line px-2 py-0.5 font-mono text-[11px] text-ink hover:border-lime"
-                >
-                  {getConcept(l.id)?.label} <span style={{ color: clusterColor(l.id) }}>{l.score.toFixed(2)}</span> {l.el.getBoundingClientRect().top > 0 ? "↓" : "↑"}
-                </button>
-              </li>
-            ))}
+        {geo.links.length > 0 && (
+          <ul className="mt-3 space-y-1.5 border-t border-line pt-3">
+            {geo.links.map((l) => {
+              const col = clusterColor(l.id);
+              const row = (
+                <>
+                  <span className="flex items-baseline justify-between font-mono text-[11.5px]">
+                    <span className="text-ink">{getConcept(l.id)?.label}{!l.vis && <span className="text-muted"> {l.el.getBoundingClientRect().top > 0 ? "↓" : "↑"}</span>}</span>
+                    <span className="font-semibold" style={{ color: col }}>{l.score.toFixed(2)}</span>
+                  </span>
+                  <span className="mt-0.5 block h-1 overflow-hidden rounded-full bg-line"><span className="block h-full rounded-full" style={{ width: `${l.score * 100}%`, background: col }} /></span>
+                </>
+              );
+              return (
+                <li key={l.id}>
+                  {l.vis ? <div>{row}</div> : <button type="button" onClick={() => l.el.scrollIntoView({ behavior: "smooth", block: "center" })} className="block w-full text-left hover:opacity-80">{row}</button>}
+                </li>
+              );
+            })}
           </ul>
         )}
         <p className="label mt-3 flex items-center justify-between">

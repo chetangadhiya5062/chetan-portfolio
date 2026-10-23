@@ -1,4 +1,5 @@
 import { profile } from "@/content/profile";
+import Backdrop from "@/components/ui/Backdrop";
 import SectionHead from "@/components/ui/SectionHead";
 import Reveal from "@/components/ui/Reveal";
 import Prompt from "./Prompt";
@@ -14,7 +15,8 @@ const socials = [
 
 export default function Contact() {
   return (
-    <section id="contact" aria-labelledby="contact-h" className="relative py-24 md:py-36">
+    <section id="contact" aria-labelledby="contact-h" className="relative isolate py-24 md:py-36">
+      <Backdrop variant="net" n="10" seed={31} flip />
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
         <SectionHead
           n="10"
