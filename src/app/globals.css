@@ -1,14 +1,15 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-base: #07080b;
-  --color-surface: #0e1117;
-  --color-line: #1c2230;
-  --color-ink: #e8ecf3;
-  --color-muted: #8b93a7;
-  --color-lime: #c6ff3d;
-  --color-cyan: #3de0ff;
+  --color-base: #0d0c0a;
+  --color-surface: #151310;
+  --color-line: #2a2620;
+  --color-ink: #f2ede3;
+  --color-muted: #9b9486;
+  --color-lime: #f2b05e;
+  --color-cyan: #5fd0b8;
 
+  --font-serif: var(--font-serif-src), "Iowan Old Style", Georgia, serif;
   --font-display: var(--font-space), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
@@ -320,11 +321,11 @@ html.latent-on [data-concept]:not(.is-rel):not(.is-src) {
 
 /* next-token decoding (pure CSS so the HTML is complete without JS and there is no flash) */
 .dec {
-  --base: 2.9s;
+  --base: 4.3s;
   --step: 0.3s;
 }
 html.intro-seen .dec {
-  --base: 0.35s;
+  --base: 2.1s;
 }
 .dec-tok {
   position: relative;
@@ -512,4 +513,194 @@ html.reduce-motion .trace-step {
   .intro {
     display: none;
   }
+}
+
+
+/* ---------- warm editorial theme ---------- */
+
+/* soft ambient light behind everything */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(900px 520px at 12% -6%, color-mix(in srgb, var(--color-lime) 10%, transparent), transparent 65%),
+    radial-gradient(800px 480px at 100% 40%, color-mix(in srgb, var(--color-cyan) 7%, transparent), transparent 65%);
+}
+
+/* serif headlines with one italic accent word */
+h2,
+.serif {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+h2 em,
+.serif em {
+  font-style: italic;
+  color: var(--color-lime);
+}
+
+/* cards follow the pointer with a soft light (vars set in ui/Providers) */
+.spot {
+  position: relative;
+}
+.spot::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--color-lime) 10%, transparent), transparent 62%);
+}
+.spot:hover::before {
+  opacity: 1;
+}
+@media (hover: none) {
+  .spot::before {
+    display: none;
+  }
+}
+
+/* the prompt that "asks" before the name is decoded: types itself with steps(), no JS */
+.prompt-type {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  vertical-align: bottom;
+  animation: type-in 1.4s steps(46, end) 0.3s backwards;
+}
+html:not(.intro-seen) .prompt-type {
+  animation-delay: 2.8s;
+}
+@keyframes type-in {
+  from {
+    max-width: 0;
+  }
+}
+html.reduce-motion .prompt-type {
+  animation: none;
+}
+@media (max-width: 640px) {
+  .prompt-type {
+    white-space: normal;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .prompt-type {
+    animation: none;
+  }
+}
+
+/* heatmap */
+.hm-cell {
+  transition: fill-opacity 0.35s, transform 0.2s;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.hm-play .hm-cell {
+  animation: hm-in 0.55s var(--ease-out-expo) backwards;
+  animation-delay: calc(var(--c) * 11ms);
+}
+@keyframes hm-in {
+  from {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+}
+.hm-cell.today {
+  animation: hm-pulse 1.8s ease-in-out infinite;
+}
+@keyframes hm-pulse {
+  50% {
+    transform: scale(1.35);
+  }
+}
+.hm-cell.hot {
+  transform: scale(1.3);
+  stroke: var(--color-ink);
+  stroke-width: 1;
+}
+html.reduce-motion .hm-play .hm-cell,
+html.reduce-motion .hm-cell.today {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hm-play .hm-cell,
+  .hm-cell.today {
+    animation: none;
+  }
+}
+.hm-wait .hm-cell {
+  opacity: 0;
+}
+html:not(.js) .hm-wait .hm-cell,
+html.reduce-motion .hm-wait .hm-cell {
+  opacity: 1;
+}
+
+/* two rows of repositories drifting in opposite directions; pause on hover */
+.marquee {
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, black 7%, black 93%, transparent);
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 1rem;
+  padding: 0.25rem 0;
+  animation: marquee var(--dur, 70s) linear infinite;
+}
+.marquee.rev .marquee-track {
+  animation-direction: reverse;
+}
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(calc(-50% - 0.5rem));
+  }
+}
+html.reduce-motion .marquee {
+  overflow-x: auto;
+  mask-image: none;
+}
+html.reduce-motion .marquee-track {
+  animation: none;
+}
+html.reduce-motion .marquee-dupe {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee {
+    overflow-x: auto;
+    mask-image: none;
+  }
+  .marquee-track {
+    animation: none;
+  }
+  .marquee-dupe {
+    display: none;
+  }
+}
+
+.feed-in > * {
+  animation: feed-in 0.5s var(--ease-out-expo) backwards;
+}
+@keyframes feed-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+html.reduce-motion .feed-in > * {
+  animation: none;
 }

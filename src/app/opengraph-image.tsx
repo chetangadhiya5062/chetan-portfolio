@@ -23,8 +23,8 @@ export default function OgImage() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          background: "#07080b",
-          color: "#e8ecf3",
+          background: "#0d0c0a",
+          color: "#f2ede3",
           padding: 72,
           position: "relative",
         }}
@@ -32,23 +32,23 @@ export default function OgImage() {
         <div style={{ position: "absolute", right: 60, top: 60, display: "flex", flexWrap: "wrap", width: 22 * 22, gap: 0 }}>
           {dots.map((d) => (
             <div key={`${d.x}-${d.y}`} style={{ width: 22, height: 22, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <div style={{ width: 8, height: 8, borderRadius: 8, background: d.y % 4 === 1 && d.x % 5 === 2 ? "#3de0ff" : "#c6ff3d", opacity: d.o }} />
+              <div style={{ width: 8, height: 8, borderRadius: 8, background: d.y % 4 === 1 && d.x % 5 === 2 ? "#5fd0b8" : "#f2b05e", opacity: d.o }} />
             </div>
           ))}
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 16, fontSize: 24, color: "#8b93a7", letterSpacing: 4 }}>
-          <div style={{ width: 14, height: 14, borderRadius: 14, background: "#c6ff3d" }} />
+        <div style={{ display: "flex", alignItems: "center", gap: 16, fontSize: 24, color: "#9b9486", letterSpacing: 4 }}>
+          <div style={{ width: 14, height: 14, borderRadius: 14, background: "#f2b05e" }} />
           INPUT → EMBEDDING → ATTENTION → OUTPUT
         </div>
 
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <div style={{ fontSize: 120, fontWeight: 700, lineHeight: 1, letterSpacing: -4, color: "#e8ecf3" }}>Chetan Gadhiya</div>
-          <div style={{ marginTop: 28, fontSize: 44, color: "#c6ff3d", fontWeight: 600 }}>{profile.headline}</div>
-          <div style={{ marginTop: 12, fontSize: 32, color: "#8b93a7" }}>{profile.tagline}</div>
+          <div style={{ fontSize: 120, fontWeight: 700, lineHeight: 1, letterSpacing: -4, color: "#f2ede3" }}>Chetan Gadhiya</div>
+          <div style={{ marginTop: 28, fontSize: 44, color: "#f2b05e", fontWeight: 600 }}>{profile.headline}</div>
+          <div style={{ marginTop: 12, fontSize: 32, color: "#9b9486" }}>{profile.tagline}</div>
         </div>
 
-        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 24, color: "#8b93a7" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 24, color: "#9b9486" }}>
           <span>chetangadhiya.vercel.app</span>
           <span>Production-grade AI systems</span>
         </div>

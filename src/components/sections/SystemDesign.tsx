@@ -19,12 +19,12 @@ export default function SystemDesign() {
         <SectionHead
           n="06"
           layer="Serve · platform design"
-          title={<span id="sys-h">How an AI platform is put together.</span>}
+          title={<span id="sys-h">How an AI platform is <em>put together</em>.</span>}
           lede="The six-layer architecture behind NeuroFlow AI. Hover or tap any block to see which other concepts it sits close to."
         />
         <Reveal className="space-y-3">
           {LAYERS.map((l) => (
-            <div key={l.n} className="grid gap-3 rounded-2xl border border-line bg-surface p-4 md:grid-cols-[170px_1fr] md:p-5">
+            <div key={l.n} className="grid gap-3 spot rounded-2xl border border-line bg-surface p-4 md:grid-cols-[170px_1fr] md:p-5">
               <p className="flex items-baseline gap-3 md:block">
                 <span className="font-mono text-xs text-lime">{l.n}</span>
                 <span className="block font-display text-lg font-medium text-ink md:mt-1">{l.name}</span>

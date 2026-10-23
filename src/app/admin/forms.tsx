@@ -70,9 +70,9 @@ export function ComposeForm({ linkedin, x }: { linkedin: boolean; x: boolean }) 
       </div>
       <fieldset className="flex flex-wrap gap-x-6 gap-y-2">
         <legend className="label mb-2">Publish to</legend>
-        <label className={check}><input type="checkbox" name="t_site" defaultChecked className="size-4 accent-[#c6ff3d]" /> This site</label>
-        <label className={check}><input type="checkbox" name="t_linkedin" disabled={!linkedin} className="size-4 accent-[#c6ff3d]" /> LinkedIn{!linkedin && " (not connected)"}</label>
-        <label className={check}><input type="checkbox" name="t_x" disabled={!x} className="size-4 accent-[#c6ff3d]" /> X{!x && " (keys not set)"}</label>
+        <label className={check}><input type="checkbox" name="t_site" defaultChecked className="size-4 accent-[#f2b05e]" /> This site</label>
+        <label className={check}><input type="checkbox" name="t_linkedin" disabled={!linkedin} className="size-4 accent-[#f2b05e]" /> LinkedIn{!linkedin && " (not connected)"}</label>
+        <label className={check}><input type="checkbox" name="t_x" disabled={!x} className="size-4 accent-[#f2b05e]" /> X{!x && " (keys not set)"}</label>
       </fieldset>
       <div className="flex flex-wrap items-center gap-4">
         <button className={button} disabled={pending}>{pending ? "Publishing…" : "Publish"}</button>
@@ -92,9 +92,9 @@ export function ResumeForm({ linkedin, x, bio }: { linkedin: boolean; x: boolean
       </div>
       <fieldset className="flex flex-wrap gap-x-6 gap-y-2">
         <legend className="label mb-2">After uploading (optional)</legend>
-        <label className={check}><input type="checkbox" name="ann_linkedin" disabled={!linkedin} className="size-4 accent-[#c6ff3d]" /> Announce on LinkedIn</label>
-        <label className={check}><input type="checkbox" name="ann_x" disabled={!x} className="size-4 accent-[#c6ff3d]" /> Announce on X</label>
-        <label className={check}><input type="checkbox" name="sync_bio" disabled={!bio} className="size-4 accent-[#c6ff3d]" /> Update GitHub bio</label>
+        <label className={check}><input type="checkbox" name="ann_linkedin" disabled={!linkedin} className="size-4 accent-[#f2b05e]" /> Announce on LinkedIn</label>
+        <label className={check}><input type="checkbox" name="ann_x" disabled={!x} className="size-4 accent-[#f2b05e]" /> Announce on X</label>
+        <label className={check}><input type="checkbox" name="sync_bio" disabled={!bio} className="size-4 accent-[#f2b05e]" /> Update GitHub bio</label>
       </fieldset>
       <div className="flex flex-wrap items-center gap-4">
         <button className={button} disabled={pending}>{pending ? "Uploading…" : "Upload & make current"}</button>
@@ -113,7 +113,7 @@ export function StatusForm({ currently, openToWork }: { currently: string; openT
         <input id="currently" name="currently" defaultValue={currently} maxLength={120} placeholder="building agentic systems" className={input} />
       </div>
       <label className="flex items-center gap-3 font-mono text-sm text-ink">
-        <input type="checkbox" name="openToWork" defaultChecked={openToWork} className="size-4 accent-[#c6ff3d]" />
+        <input type="checkbox" name="openToWork" defaultChecked={openToWork} className="size-4 accent-[#f2b05e]" />
         Show “Open to work”
       </label>
       <div className="flex flex-wrap items-center gap-4">

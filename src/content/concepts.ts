@@ -9,12 +9,12 @@ export type Concept = {
 };
 
 export const clusters: Record<Cluster, { label: string; color: string }> = {
-  model: { label: "Models", color: "#c6ff3d" },
-  retrieval: { label: "Retrieval", color: "#3de0ff" },
-  agent: { label: "Agents", color: "#ff9d4d" },
-  platform: { label: "Platform", color: "#b78bff" },
-  data: { label: "Data", color: "#ff6fa5" },
-  craft: { label: "Craft", color: "#8b93a7" },
+  model: { label: "Models", color: "#f2b05e" },
+  retrieval: { label: "Retrieval", color: "#5fd0b8" },
+  agent: { label: "Agents", color: "#ff8a65" },
+  platform: { label: "Platform", color: "#8fa8ff" },
+  data: { label: "Data", color: "#e58fc0" },
+  craft: { label: "Craft", color: "#9b9486" },
 };
 
 export const concepts: Concept[] = [

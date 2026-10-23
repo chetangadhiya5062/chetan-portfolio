@@ -94,3 +94,12 @@ Judgement calls made during the v2 rebuild. Newest at the bottom.
 - Intro state: the decode animation delays are fixed at load. Changing the delay of a running CSS animation froze it in Chromium, so `intro-seen` is only set before first paint.
 - Cross-posting: a post is stored in `site_posts` first (`hidden` when "This site" is not ticked), then sent to each ticked platform; per-platform results are stored and shown. LinkedIn uses OAuth 3-legged with `w_member_social`; the token lives in `integrations`, which has no public RLS policy. X uses OAuth 1.0a user keys from env vars.
 - LinkedIn cannot be written to beyond posts. The resume reaches LinkedIn through the Featured link to `/resume`.
+
+## agent-v1 UI refresh (v2)
+
+- Palette moved to warm charcoal with amber and teal accents; Instrument Serif for headings and the hero name. Token names (`lime`, `cyan`) kept so existing classes still work.
+- Nav now has section links with an active underline, a mobile menu, and a CG logo whose ring fills with scroll progress.
+- Hero: typed prompt line, serif two-line name with p-chips on the decode tokens, drifting node field, live telemetry card.
+- Monitor: heatmap is a client component with source filters, replay, wave-in, hover tooltip and stats.
+- More work: two opposing marquee rows (pause on hover, scrollable under reduced motion).
+- Proof: bento of metric cards, then credentials. Writing: tabbed feed with a featured card.

@@ -5,7 +5,7 @@ import Rich from "@/components/latent/Rich";
 
 type Kind = "plan" | "tool" | "observe" | "output";
 const KIND_COLOR: Record<Kind, string> = {
-  plan: "text-cyan", tool: "text-[#ff9d4d]", observe: "text-[#b78bff]", output: "text-lime",
+  plan: "text-cyan", tool: "text-[#ff8a65]", observe: "text-[#8fa8ff]", output: "text-lime",
 };
 
 /** Each role is drawn as an agent run: plan, tool calls, observations, final output. */
@@ -16,7 +16,7 @@ export default function Experience() {
         <SectionHead
           n="04"
           layer="Reason · agent traces"
-          title={<span id="exp-h">Every role, as a run that finished.</span>}
+          title={<span id="exp-h">Every role, as a run that <em>finished</em>.</span>}
           lede="Plan, act, observe, deliver. Concepts in each trace link to the rest of the page."
         />
         <div className="grid gap-6 lg:grid-cols-2">
@@ -26,7 +26,7 @@ export default function Experience() {
               return { b, kind: kind as Kind };
             });
             return (
-              <Reveal as="article" key={r.id} delay={i * 60} className="rounded-2xl border border-line bg-surface p-6 transition-colors hover:border-lime/50 md:p-8">
+              <Reveal as="article" key={r.id} delay={i * 60} className="spot rounded-2xl border border-line bg-surface p-6 transition-colors hover:border-lime/50 md:p-8">
                 <header className="flex flex-wrap items-start justify-between gap-3 border-b border-line pb-5">
                   <div>
                     <p className="label text-lime">run #{String(experience.length - i).padStart(2, "0")} · {r.period}</p>

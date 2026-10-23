@@ -32,7 +32,7 @@ export default function Ask() {
         <SectionHead
           n="03"
           layer="Retrieve · RAG on my own work"
-          title={<span id="ask-h">Don&apos;t read it. Query it.</span>}
+          title={<span id="ask-h">Don&apos;t read it. <em>Query</em> it.</span>}
           lede="This runs in your browser against everything on this site. See what gets retrieved, how it is scored, and which related concepts widened the search."
         />
         <Reveal><RagConsole chunks={chunks} /></Reveal>

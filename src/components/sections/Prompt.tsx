@@ -15,7 +15,7 @@ export default function Prompt() {
   };
 
   return (
-    <form onSubmit={send} className="overflow-hidden rounded-2xl border border-line bg-surface focus-within:border-lime/60">
+    <form onSubmit={send} className="overflow-hidden spot rounded-2xl border border-line bg-surface focus-within:border-lime/60">
       <div className="flex items-center gap-2 border-b border-line px-4 py-3" aria-hidden>
         <span className="size-2.5 rounded-full bg-line" />
         <span className="size-2.5 rounded-full bg-line" />

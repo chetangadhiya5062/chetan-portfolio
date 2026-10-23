@@ -19,14 +19,14 @@ export default function Contact() {
         <SectionHead
           n="10"
           layer="Deploy · inference"
-          title={<span id="contact-h">Ask a question. Get a real answer.</span>}
+          title={<span id="contact-h">Ask a question. Get a <em>real</em> answer.</span>}
           lede={`I'm open to ${profile.openTo}. Reach out and I'll reply personally.`}
         />
 
         <div className="grid gap-10 lg:grid-cols-[1.2fr_1fr] lg:gap-16">
           <Reveal><Prompt /></Reveal>
           <Reveal delay={100}>
-            <ul className="divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface">
+            <ul className="divide-y divide-line overflow-hidden spot rounded-2xl border border-line bg-surface">
               {socials.map((s) => {
                 const external = !s.href.startsWith("mailto:");
                 return (
