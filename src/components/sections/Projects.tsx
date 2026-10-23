@@ -30,7 +30,7 @@ export default function Projects({ github }: { github: GithubData | null }) {
   const cards = projects.map((p, i) => {
     const repo = meta.get(p.repo.toLowerCase());
     return (
-        <Reveal as="article" key={p.slug} className="group relative overflow-hidden rounded-2xl border border-line bg-surface p-6 transition-colors duration-300 hover:border-lime/60 focus-within:border-lime/60 md:p-10">
+        <Reveal as="article" key={p.slug} className="group relative overflow-hidden spot rounded-2xl border border-line bg-surface p-6 transition-colors duration-300 hover:border-lime/60 focus-within:border-lime/60 md:p-10">
           <span aria-hidden className="pointer-events-none absolute -right-2 -top-6 select-none font-display text-[9rem] font-bold leading-none text-line/60 md:text-[12rem]">
             {String(i + 1).padStart(2, "0")}
           </span>
@@ -76,7 +76,7 @@ export default function Projects({ github }: { github: GithubData | null }) {
         <SectionHead
           n="05"
           layer="Act · attention"
-          title={<span id="proj-h">Four systems. Each one attends to a different problem.</span>}
+          title={<span id="proj-h">Four systems. Each one <em>attends</em> to a different problem.</span>}
           lede="Dotted skills are live links into the same concept space as the rest of the page."
         />
         <div className="grid gap-6 lg:grid-cols-2">{cards}</div>
@@ -84,35 +84,46 @@ export default function Projects({ github }: { github: GithubData | null }) {
         {more.length > 0 && (
           <div className="mt-24 md:mt-32">
             <Reveal className="mb-8 flex items-end justify-between gap-4">
-              <h3 className="font-display text-2xl font-semibold md:text-3xl">More work</h3>
+              <h3 className="font-serif text-3xl md:text-4xl">More <em className="text-lime">work</em>, still moving</h3>
               <a href={`https://github.com/${GITHUB_USER}?tab=repositories`} target="_blank" rel="noopener noreferrer" className="label hover:text-lime">
                 All repositories ↗
               </a>
             </Reveal>
-            <ul className="grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
-              {more.map((r, i) => (
-                <Reveal as="li" key={r.fullName} delay={(i % 3) * 70} className="bg-surface">
-                  <a
-                    href={r.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex h-full flex-col justify-between gap-6 p-6 transition-colors hover:bg-line/50"
-                  >
-                    <div>
-                      <p className="font-display text-lg font-medium text-ink">{r.name}</p>
-                      <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted">
-                        {r.description || "Public repository."}
-                      </p>
+            <div className="space-y-4">
+              {[more.filter((_, i) => i % 2 === 0), more.filter((_, i) => i % 2 === 1)].map((row, ri) => {
+                // repeat short rows so the loop never shows a gap
+                const base = row.length >= 4 ? row : [...row, ...row, ...row].slice(0, Math.max(4, row.length));
+                return (
+                  <div key={ri} className={`marquee ${ri ? "rev" : ""}`}>
+                    <div className="marquee-track" style={{ "--dur": `${base.length * 14}s` } as React.CSSProperties}>
+                      {[0, 1].map((copy) =>
+                        base.map((r) => (
+                          <a
+                            key={`${copy}-${r.fullName}`}
+                            href={r.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-hidden={copy ? true : undefined}
+                            tabIndex={copy ? -1 : undefined}
+                            className={`spot flex h-[170px] w-[300px] shrink-0 flex-col justify-between rounded-2xl border border-line bg-surface p-5 transition-colors hover:border-lime/60 ${copy ? "marquee-dupe" : ""}`}
+                          >
+                            <div className="relative z-10">
+                              <p className="font-display text-base font-medium text-ink">{r.name}</p>
+                              <p className="mt-2 line-clamp-3 text-[13px] leading-relaxed text-muted">{r.description || "Public repository."}</p>
+                            </div>
+                            <p className="relative z-10 flex items-center gap-3 font-mono text-[11px] text-muted">
+                              {r.language && <span className="flex items-center gap-1.5 text-cyan"><span aria-hidden className="size-1.5 rounded-full bg-cyan" />{r.language}</span>}
+                              {r.stars > 0 && <span>★ {r.stars}</span>}
+                              <span className="ml-auto">{timeAgo(r.pushedAt)}</span>
+                            </p>
+                          </a>
+                        )),
+                      )}
                     </div>
-                    <p className="flex flex-wrap gap-x-3 font-mono text-[11px] text-muted">
-                      {r.language && <span className="text-cyan">{r.language}</span>}
-                      {r.stars > 0 && <span>★ {r.stars}</span>}
-                      <span>pushed {timeAgo(r.pushedAt)}</span>
-                    </p>
-                  </a>
-                </Reveal>
-              ))}
-            </ul>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
       </div>

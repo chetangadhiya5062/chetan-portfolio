@@ -78,7 +78,7 @@ export default function Intro() {
           const A = nodes[a], B = nodes[b];
           if (B.l !== A.l + 1) continue;
           const lit = Math.max(0, Math.min(1, front - A.l));
-          ctx.strokeStyle = `rgba(61,224,255,${0.04 + lit * 0.2 * (1 - Math.max(0, front - A.l - 1.2))})`;
+          ctx.strokeStyle = `rgba(95,208,184,${0.04 + lit * 0.2 * (1 - Math.max(0, front - A.l - 1.2))})`;
           ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.stroke();
         }
       }
@@ -87,10 +87,10 @@ export default function Intro() {
         const glow = d < 0 ? 0 : Math.max(0, 1 - d / 1.4);
         const r = 3 + glow * 4;
         if (glow > 0) {
-          ctx.fillStyle = `rgba(198,255,61,${glow * 0.18})`;
+          ctx.fillStyle = `rgba(242,176,94,${glow * 0.18})`;
           ctx.beginPath(); ctx.arc(n.x, n.y, r + 10, 0, 7); ctx.fill();
         }
-        ctx.fillStyle = glow > 0 ? `rgba(198,255,61,${0.45 + glow * 0.55})` : "rgba(139,147,167,0.45)";
+        ctx.fillStyle = glow > 0 ? `rgba(242,176,94,${0.45 + glow * 0.55})` : "rgba(155,148,134,0.45)";
         ctx.beginPath(); ctx.arc(n.x, n.y, r, 0, 7); ctx.fill();
       }
       if (t < 1) raf = requestAnimationFrame(frame);

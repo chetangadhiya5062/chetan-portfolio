@@ -24,6 +24,16 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     };
     mq.addEventListener("change", onChange);
 
+    // feeds the .spot card light: one delegated listener sets the pointer position on the hovered card
+    const onMove = (e: PointerEvent) => {
+      const card = (e.target as HTMLElement | null)?.closest?.<HTMLElement>(".spot");
+      if (!card) return;
+      const r = card.getBoundingClientRect();
+      card.style.setProperty("--mx", `${e.clientX - r.left}px`);
+      card.style.setProperty("--my", `${e.clientY - r.top}px`);
+    };
+    document.addEventListener("pointermove", onMove, { passive: true });
+
     // One observer reveals every [data-reveal] element (server components just set the attribute).
     const io = new IntersectionObserver(
       (entries) => {
@@ -41,6 +51,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 
     return () => {
       mq.removeEventListener("change", onChange);
+      document.removeEventListener("pointermove", onMove);
       io.disconnect();
     };
   }, [pathname]);

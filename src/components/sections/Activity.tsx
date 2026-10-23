@@ -5,7 +5,6 @@ import SectionHead from "@/components/ui/SectionHead";
 import Reveal from "@/components/ui/Reveal";
 import Heatmap from "./Heatmap";
 
-const OPACITY = [0.7, 0.28, 0.52, 0.76, 1];
 
 const PLATFORM: Record<Platform, { label: string; cls: string }> = {
   github: { label: "GitHub", cls: "text-lime border-lime/40" },
@@ -107,7 +106,7 @@ export default function ActivitySection({
         <SectionHead
           n="07"
           layer="Monitor · training telemetry"
-          title={<span id="act-h">It never stops training.</span>}
+          title={<span id="act-h">It never stops <em>training</em>.</span>}
           lede="GitHub, LeetCode, Medium and posts, merged into one live signal. Refreshed automatically every day."
         />
 
@@ -127,30 +126,23 @@ export default function ActivitySection({
           ))}
         </dl>
 
-        <Reveal className="mt-6 rounded-2xl border border-line bg-surface p-5 md:p-8">
+        <Reveal className="mt-6 spot rounded-2xl border border-line bg-surface p-5 md:p-8">
           <div className="mb-5 flex flex-wrap items-baseline justify-between gap-3">
             <h3 className="font-display text-xl font-medium">Unified heatmap</h3>
             <p className="label">{activity.totals.all} events · 365 days</p>
           </div>
           <Heatmap from={activity.days[0].date} counts={activity.days.map((d) => [d.total, d.github, d.leetcode, d.medium, d.posts])} />
-          <div className="mt-5 flex items-center justify-end gap-2 font-mono text-[10px] text-muted" aria-hidden>
-            less
-            {[0, 1, 2, 3, 4].map((l) => (
-              <span key={l} className={`size-3 rounded-[3px] ${l ? "bg-lime" : "bg-line"}`} style={{ opacity: l ? OPACITY[l] : 0.7 }} />
-            ))}
-            more
-          </div>
         </Reveal>
 
         <div className="mt-6 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
-          <Reveal className="rounded-2xl border border-line bg-surface p-5 md:p-8">
+          <Reveal className="spot rounded-2xl border border-line bg-surface p-5 md:p-8">
             <h3 className="font-display text-xl font-medium">Activity / month</h3>
             <p className="label mt-1">loss curve, but upward</p>
             <div className="mt-6"><Curve months={activity.months} /></div>
             <div className="mt-6 border-t border-line pt-6"><Share totals={activity.totals} /></div>
           </Reveal>
 
-          <Reveal delay={80} className="rounded-2xl border border-line bg-surface p-5 md:p-8">
+          <Reveal delay={80} className="spot rounded-2xl border border-line bg-surface p-5 md:p-8">
             <h3 className="font-display text-xl font-medium">Recent activity</h3>
             {activity.feed.length === 0 ? (
               <p className="mt-6 text-sm text-muted">Nothing to show yet.</p>

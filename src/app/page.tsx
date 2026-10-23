@@ -37,7 +37,7 @@ export default async function Home() {
       <Nav />
       <main id="main">
         {/* Each Suspense boundary hydrates as its own small task instead of one long one (lower TBT) */}
-        <Hero github={github} status={status} />
+        <Hero github={github} leetcode={leetcode} status={status} />
         <Suspense><About leetcode={leetcode} /></Suspense>
         <Suspense><Ask /></Suspense>
         <Suspense><Experience /></Suspense>

@@ -19,7 +19,7 @@ export default function About({ leetcode }: { leetcode: LeetcodeData | null }) {
   return (
     <section id="about" aria-labelledby="about-h" className="relative py-24 md:py-36">
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
-        <SectionHead n="02" layer="Embed · text becomes vectors" title={<span id="about-h">What I know, as a map you can walk.</span>} lede="Dotted words are concepts. Hover or tap one and everything related lights up across the page, scored by real cosine similarity from an embedding model." />
+        <SectionHead n="02" layer="Embed · text becomes vectors" title={<span id="about-h">What I know, as a <em>map</em> you can walk.</span>} lede="Dotted words are concepts. Hover or tap one and everything related lights up across the page, scored by real cosine similarity from an embedding model." />
 
         <div className="grid gap-12 lg:grid-cols-[1.35fr_1fr] lg:gap-20">
           <div className="space-y-6">
@@ -51,7 +51,7 @@ export default function About({ leetcode }: { leetcode: LeetcodeData | null }) {
                 />
                 <span
                   aria-hidden
-                  className="absolute inset-0 opacity-30 [background:repeating-linear-gradient(0deg,rgba(7,8,11,.55)_0_1px,transparent_1px_4px)]"
+                  className="absolute inset-0 opacity-30 [background:repeating-linear-gradient(0deg,rgba(13,12,10,.55)_0_1px,transparent_1px_4px)]"
                 />
               </div>
               {(["-left-2 -top-2 border-l border-t", "-right-2 -top-2 border-r border-t", "-bottom-2 -left-2 border-b border-l", "-bottom-2 -right-2 border-b border-r"] as const).map((c) => (

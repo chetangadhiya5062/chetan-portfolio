@@ -1,6 +1,6 @@
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import { Inter, Instrument_Serif, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { profile, SITE_URL } from "@/content/profile";
@@ -8,6 +8,7 @@ import Providers from "@/components/ui/Providers";
 
 const space = Space_Grotesk({ subsets: ["latin"], variable: "--font-space", display: "swap" });
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
+const serif = Instrument_Serif({ subsets: ["latin"], weight: "400", style: ["normal", "italic"], variable: "--font-serif-src", display: "swap" });
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains", display: "swap" });
 
 const description = `${profile.name} — ${profile.headline}. ${profile.tagline}. Production-grade GenAI and agentic systems, with live proof: code, certificates and activity.`;
@@ -35,7 +36,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#07080b",
+  themeColor: "#0d0c0a",
   colorScheme: "dark",
   width: "device-width",
   initialScale: 1,
@@ -59,7 +60,7 @@ const jsonLd = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${space.variable} ${inter.variable} ${mono.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${space.variable} ${inter.variable} ${mono.variable} ${serif.variable}`} suppressHydrationWarning>
       <head>
         {/* flag JS early so no-JS visitors still see every [data-reveal] element */}
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js');try{if(sessionStorage.getItem('intro-seen')==='1')document.documentElement.classList.add('intro-seen')}catch(e){}" }} />

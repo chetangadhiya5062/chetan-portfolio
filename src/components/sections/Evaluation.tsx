@@ -2,74 +2,77 @@ import { achievements, certifications } from "@/content/achievements";
 import SectionHead from "@/components/ui/SectionHead";
 import Reveal from "@/components/ui/Reveal";
 
-const linkCls = "font-mono text-xs uppercase tracking-wider text-cyan hover:underline";
+const link = "font-mono text-[11px] uppercase tracking-wider text-cyan hover:underline";
 
 export default function Evaluation() {
+  const scored = achievements.filter((a) => a.metric);
+  const rest = achievements.filter((a) => !a.metric);
+
   return (
     <section id="evaluation" aria-labelledby="eval-h" className="relative py-24 md:py-36">
-      <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
+      <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
         <SectionHead
           n="09"
-          layer="Eval · benchmarks"
-          title={<span id="eval-h">Benchmarks, with receipts.</span>}
-          lede="Every row with a proof link opens the actual certificate, repository or photo."
+          layer="Eval · proof"
+          title={<span id="eval-h">Numbers that open to a <em>receipt</em>.</span>}
+          lede="Every figure links to the certificate, photo or repository behind it. Where there is no file yet, there is no figure."
         />
 
-        <Reveal className="overflow-hidden rounded-2xl border border-line bg-surface">
-          <table className="w-full border-collapse text-left">
-            <caption className="sr-only">Achievements and leadership</caption>
-            <thead className="hidden border-b border-line md:table-header-group">
-              <tr className="label">
-                <th scope="col" className="px-7 py-4 font-normal">Event</th>
-                <th scope="col" className="px-4 py-4 font-normal">Result</th>
-                <th scope="col" className="px-7 py-4 font-normal">Proof</th>
-              </tr>
-            </thead>
-            <tbody>
-              {achievements.map((a) => (
-                <tr key={a.id} className="block border-b border-line p-5 last:border-b-0 hover:bg-line/30 md:table-row md:p-0">
-                  <th scope="row" className="block text-left align-top font-normal md:table-cell md:px-7 md:py-5 md:w-[34%]">
-                    <span className="block font-display text-lg font-medium text-ink">{a.title}</span>
-                    <span className="label mt-1 block">{a.event}</span>
-                  </th>
-                  <td className="mt-2 block text-[15px] leading-relaxed text-muted md:mt-0 md:table-cell md:px-4 md:py-5">{a.result}</td>
-                  <td className="mt-3 block md:mt-0 md:table-cell md:px-7 md:py-5 md:w-[24%]">
-                    {a.proof.length === 0 ? (
-                      <span className="font-mono text-xs text-muted/60">—</span>
-                    ) : (
-                      <ul className="flex flex-wrap gap-x-4 gap-y-1 md:flex-col">
-                        {a.proof.map((p) => (
-                          <li key={p.href}>
-                            <a href={p.href} target="_blank" rel="noopener noreferrer" className={linkCls}>{p.label} ↗</a>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Reveal>
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
+          {scored.map((a, i) => (
+            <Reveal as="li" key={a.id} delay={i * 70} className={`spot flex flex-col justify-between rounded-2xl border border-line bg-surface p-6 transition-colors hover:border-lime/60 ${i < 2 ? "lg:col-span-3" : "lg:col-span-2"}`}>
+              <div className="relative z-10">
+                <p className="font-serif text-[clamp(3rem,6vw,4.6rem)] leading-none text-lime">{a.metric!.value}</p>
+                <p className="mt-2 font-mono text-[11px] uppercase tracking-wider text-muted">{a.metric!.caption}</p>
+              </div>
+              <div className="relative z-10 mt-8">
+                <h3 className="font-display text-lg font-medium leading-snug text-ink">{a.title}</h3>
+                <p className="mt-1 text-sm text-muted">{a.event}</p>
+                <ul className="mt-4 flex flex-wrap gap-x-4 gap-y-1">
+                  {a.proof.map((p) => (
+                    <li key={p.href}><a href={p.href} target="_blank" rel="noopener noreferrer" className={link}>{p.label} ↗</a></li>
+                  ))}
+                </ul>
+              </div>
+            </Reveal>
+          ))}
+        </ul>
 
-        <Reveal as="h3" className="mb-6 mt-20 font-display text-2xl font-semibold md:text-3xl">Certifications</Reveal>
-        <Reveal className="overflow-hidden rounded-2xl border border-line bg-surface">
-          <ul className="divide-y divide-line">
-            {certifications.map((c) => (
-              <li key={c.id} className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 p-5 hover:bg-line/30 md:px-7 md:py-5">
-                <div>
-                  <p className="font-display text-lg font-medium text-ink">{c.title}</p>
-                  <p className="label mt-1">{c.issuer}{c.detail && ` · ${c.detail}`}</p>
-                </div>
-                {c.proof ? (
-                  <a href={c.proof} target="_blank" rel="noopener noreferrer" className={linkCls}>Certificate ↗</a>
-                ) : (
-                  <span className="font-mono text-xs text-muted/70">credential on request</span>
-                )}
-              </li>
-            ))}
-          </ul>
-        </Reveal>
+        <Reveal as="h3" className="mb-5 mt-20 font-serif text-3xl md:text-4xl">Built and <em className="text-lime">shipped</em> under pressure</Reveal>
+        <ul className="grid gap-4 md:grid-cols-2">
+          {rest.map((a, i) => (
+            <Reveal as="li" key={a.id} delay={i * 60} className="spot rounded-2xl border border-line bg-surface p-6">
+              <div className="relative z-10 flex flex-wrap items-baseline justify-between gap-2">
+                <h4 className="font-display text-lg font-medium text-ink">{a.title}</h4>
+                <span className="label">{a.event}</span>
+              </div>
+              <p className="relative z-10 mt-2 text-[15px] leading-relaxed text-muted">{a.result}</p>
+              {a.proof.length > 0 && (
+                <ul className="relative z-10 mt-4 flex flex-wrap gap-x-4 gap-y-1">
+                  {a.proof.map((p) => (
+                    <li key={p.href}><a href={p.href} target="_blank" rel="noopener noreferrer" className={link}>{p.label} ↗</a></li>
+                  ))}
+                </ul>
+              )}
+            </Reveal>
+          ))}
+        </ul>
+
+        <Reveal as="h3" className="mb-5 mt-20 font-serif text-3xl md:text-4xl">Credentials</Reveal>
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {certifications.map((c, i) => (
+            <Reveal as="li" key={c.id} delay={i * 60} className="spot flex flex-col justify-between rounded-2xl border border-line bg-surface p-5">
+              <div className="relative z-10">
+                <span aria-hidden className="grid size-8 place-items-center rounded-full border border-cyan/50 text-cyan">✓</span>
+                <p className="mt-4 font-display text-base font-medium leading-snug text-ink">{c.title}</p>
+                <p className="label mt-2">{c.issuer}{c.detail && ` · ${c.detail}`}</p>
+              </div>
+              <p className="relative z-10 mt-5">
+                {c.proof ? <a href={c.proof} target="_blank" rel="noopener noreferrer" className={link}>Certificate ↗</a> : <span className="font-mono text-[11px] text-muted/70">credential on request</span>}
+              </p>
+            </Reveal>
+          ))}
+        </ul>
       </div>
     </section>
   );

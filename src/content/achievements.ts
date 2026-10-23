@@ -5,11 +5,14 @@ export type Achievement = {
   event: string;
   result: string;
   proof: Proof[];
+  /** headline number shown big in the Proof section, only where the resume or certificate states one */
+  metric?: { value: string; caption: string };
 };
 
 export const achievements: Achievement[] = [
   {
     id: "ieee-aimv",
+    metric: { value: "160+", caption: "research papers, 35 volunteers" },
     title: "IEEE AIMV 2025 — Lead Student Volunteer",
     event: "PDEU",
     result: "160+ papers, 35-member team; presented two papers on behalf of authors.",
@@ -17,6 +20,7 @@ export const achievements: Achievement[] = [
   },
   {
     id: "code4cause",
+    metric: { value: "1200+", caption: "teams, selected nationwide" },
     title: "Code4Cause 2.0 Hackathon",
     event: "NSUT",
     result: "Selected among 1200+ teams nationwide.",
@@ -24,6 +28,7 @@ export const achievements: Achievement[] = [
   },
   {
     id: "sih-2024",
+    metric: { value: "Top 25", caption: "internal rounds, 2024" },
     title: "Smart India Hackathon 2024",
     event: "Internal rounds",
     result: "Top 25 in internal rounds.",
@@ -31,6 +36,7 @@ export const achievements: Achievement[] = [
   },
   {
     id: "sih-2025",
+    metric: { value: "Top 25", caption: "internal rounds, 2025" },
     title: "Smart India Hackathon 2025",
     event: "Internal rounds",
     result: "Top 25 again — consistent national-level performance.",
@@ -56,6 +62,7 @@ export const achievements: Achievement[] = [
   },
   {
     id: "aincat",
+    metric: { value: "27,712", caption: "All India Rank" },
     title: "Naukri Campus AINCAT",
     event: "National test",
     result: "All India Rank 27,712.",
