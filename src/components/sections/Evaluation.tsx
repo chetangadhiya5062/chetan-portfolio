@@ -12,7 +12,7 @@ export default function Evaluation() {
 
   return (
     <section id="evaluation" aria-labelledby="eval-h" className="relative isolate py-24 md:py-36">
-      <Backdrop variant="waves" n="09" seed={29} />
+      <Backdrop variant="grid" n="09" seed={29} />
       <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
         <SectionHead
           n="09"
@@ -21,6 +21,8 @@ export default function Evaluation() {
           lede="Every figure links to the certificate, photo or repository behind it. Where there is no file yet, there is no figure."
         />
 
+        <div className="relative isolate">
+        <Backdrop variant="orbit" seed={71} className="-inset-x-10 -inset-y-12" />
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
           {scored.map((a, i) => (
             <Reveal as="li" key={a.id} delay={i * 70} className={i < 2 ? "lg:col-span-3" : "lg:col-span-2"}>
@@ -42,7 +44,10 @@ export default function Evaluation() {
             </Reveal>
           ))}
         </ul>
+        </div>
 
+        <div className="relative isolate">
+        <Backdrop variant="circuit" seed={73} flip className="-inset-x-10 -inset-y-10" />
         <Reveal as="h3" className="mb-5 mt-20 font-serif text-3xl md:text-4xl">Built and <em className="text-lime">shipped</em> under pressure</Reveal>
         <ul className="grid gap-4 md:grid-cols-2">
           {rest.map((a, i) => (
@@ -64,7 +69,10 @@ export default function Evaluation() {
             </Reveal>
           ))}
         </ul>
+        </div>
 
+        <div className="relative isolate">
+        <Backdrop variant="hex" seed={79} className="-inset-x-10 -inset-y-10" />
         <Reveal as="h3" className="mb-5 mt-20 font-serif text-3xl md:text-4xl">Credentials</Reveal>
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {certifications.map((c, i) => (
@@ -82,6 +90,7 @@ export default function Evaluation() {
             </Reveal>
           ))}
         </ul>
+        </div>
       </div>
     </section>
   );
