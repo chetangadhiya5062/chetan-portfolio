@@ -10,7 +10,8 @@ import ActivitySection from "@/components/sections/Activity";
 import Writing from "@/components/sections/Writing";
 import Evaluation from "@/components/sections/Evaluation";
 import Contact from "@/components/sections/Contact";
-import TickerBand from "@/components/ui/TickerBand";
+import SimilarityStream from "@/components/ui/SimilarityStream";
+import PipelineBand from "@/components/ui/PipelineBand";
 import Footer from "@/components/sections/Footer";
 import ChatGate from "@/components/ui/ChatGate";
 import { getSource } from "@/lib/sources";
@@ -42,10 +43,10 @@ export default async function Home() {
         <Suspense><About leetcode={leetcode} /></Suspense>
         <Suspense><Ask /></Suspense>
         <Suspense><Experience /></Suspense>
-        <TickerBand words={["LangGraph", "RAG", "MCP", "Llama 3", "Qdrant", "FastAPI", "Kafka", "Gemini", "CrewAI", "Docker"]} />
+        <SimilarityStream />
         <Suspense><Projects github={github} /></Suspense>
         <Suspense><SystemDesign /></Suspense>
-        <TickerBand reverse words={["agents", "embeddings", "evaluation", "gateways", "knowledge graphs", "observability", "deploy"]} />
+        <PipelineBand />
         <Suspense><ActivitySection activity={activity} github={github} leetcode={leetcode} /></Suspense>
         <Suspense><Writing medium={medium} posts={posts} sitePosts={sitePosts} /></Suspense>
         <Suspense><Evaluation /></Suspense>

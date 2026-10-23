@@ -21,7 +21,8 @@ export default function About({ leetcode }: { leetcode: LeetcodeData | null }) {
   return (
     <section id="about" aria-labelledby="about-h" className="relative isolate py-24 md:py-36">
       <Backdrop variant="orbit" n="02" seed={3} />
-      <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
+      <div className="relative isolate mx-auto max-w-[1200px] px-4 sm:px-6">
+        <Backdrop variant="circuit" seed={41} flip className="inset-x-0 -top-10 h-[760px]" />
         <SectionHead n="02" layer="Embed · text becomes vectors" title={<span id="about-h">What I know, as a <em>map</em> you can walk.</span>} lede="Dotted words are concepts. Hover or tap one and everything related lights up across the page, scored by real cosine similarity from an embedding model." />
 
         <div className="grid gap-12 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
@@ -43,25 +44,26 @@ export default function About({ leetcode }: { leetcode: LeetcodeData | null }) {
 
           <Reveal delay={120} className="mx-auto w-full max-w-[300px] lg:max-w-[440px] lg:mx-0 lg:justify-self-end">
             <figure className="relative">
-              <div className="relative aspect-square overflow-hidden rounded-2xl border border-line bg-lime">
+              <div tabIndex={0} className="group relative aspect-square overflow-hidden rounded-2xl border border-line bg-surface outline-none">
                 <Image
                   src="/profile-v2.png"
                   alt="Portrait of Chetan Gadhiya"
                   width={600}
                   height={600}
                   sizes="(min-width:1024px) 440px, 300px"
-                  className="duotone size-full object-cover mix-blend-multiply"
+                  className="size-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:opacity-0 group-focus:opacity-0"
                 />
-                <span
-                  aria-hidden
-                  className="absolute inset-0 opacity-30 [background:repeating-linear-gradient(0deg,rgba(13,12,10,.55)_0_1px,transparent_1px_4px)]"
-                />
+                <div aria-hidden className="absolute inset-0 bg-lime opacity-0 transition-opacity duration-700 group-hover:opacity-100 group-focus:opacity-100">
+                  <Image src="/profile-v2.png" alt="" width={600} height={600} sizes="(min-width:1024px) 440px, 300px" className="duotone size-full scale-105 object-cover mix-blend-multiply" />
+                  <span className="absolute inset-0 opacity-30 [background:repeating-linear-gradient(0deg,rgba(13,12,10,.55)_0_1px,transparent_1px_4px)]" />
+                </div>
+                <span aria-hidden className="pointer-events-none absolute inset-x-0 -top-1/3 h-1/3 bg-gradient-to-b from-transparent via-lime/25 to-transparent opacity-0 group-hover:animate-[scan_1.4s_ease-in-out] group-hover:opacity-100" />
               </div>
               {(["-left-2 -top-2 border-l border-t", "-right-2 -top-2 border-r border-t", "-bottom-2 -left-2 border-b border-l", "-bottom-2 -right-2 border-b border-r"] as const).map((c) => (
                 <span key={c} aria-hidden className={`absolute size-4 border-lime ${c}`} />
               ))}
               <figcaption className="label mt-5 flex justify-between">
-                <span>x ∈ ℝ⁷⁶⁸</span>
+                <span>hover · x ∈ ℝ⁷⁶⁸</span>
                 <span>{profile.location.split(",")[0]}</span>
               </figcaption>
             </figure>

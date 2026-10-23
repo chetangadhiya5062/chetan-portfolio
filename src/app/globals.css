@@ -782,3 +782,138 @@ html.reduce-motion .dec-chip {
     opacity: 0;
   }
 }
+.bd-dots {
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--color-lime) 38%, transparent) 1.3px, transparent 1.6px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(ellipse 60% 55% at 30% 40%, black, transparent);
+  animation: bd-dots 18s ease-in-out infinite alternate;
+}
+@keyframes bd-dots {
+  to {
+    mask-position: 40% 20%;
+    background-position: 14px 14px;
+  }
+}
+html.reduce-motion .bd-dots {
+  animation: none;
+}
+@keyframes scan {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(400%);
+  }
+}
+
+/* pipeline band */
+.pipe-packet {
+  animation: pipe-run 8s linear infinite;
+}
+@keyframes pipe-run {
+  from {
+    left: 3rem;
+  }
+  to {
+    left: calc(100% - 3rem);
+  }
+}
+.pipe-dot {
+  animation: pipe-dot 8s linear infinite;
+  animation-delay: calc(var(--i) * 1.1429s - 0.3s);
+}
+.pipe-label {
+  animation: pipe-label 8s linear infinite;
+  animation-delay: calc(var(--i) * 1.1429s - 0.3s);
+}
+@keyframes pipe-dot {
+  0%,
+  14%,
+  100% {
+    border-color: var(--color-lime);
+    background: var(--color-lime);
+    box-shadow: 0 0 16px rgba(242, 176, 94, 0.6);
+    transform: scale(1.25);
+  }
+  18%,
+  96% {
+    border-color: var(--color-line);
+    background: var(--color-base);
+    box-shadow: none;
+    transform: none;
+  }
+}
+@keyframes pipe-label {
+  0%,
+  14%,
+  100% {
+    color: var(--color-ink);
+  }
+  18%,
+  96% {
+    color: var(--color-muted);
+  }
+}
+html.reduce-motion .pipe-packet,
+html.reduce-motion .pipe-dot,
+html.reduce-motion .pipe-label {
+  animation: none;
+}
+
+/* proof card hover effects */
+.fx {
+  --rx: 0deg;
+  --ry: 0deg;
+  --gx: 50%;
+  --gy: 50%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.35s var(--ease-out-expo), border-color 0.3s, box-shadow 0.35s;
+}
+.fx-glare {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  background: radial-gradient(420px circle at var(--gx) var(--gy), rgba(242, 176, 94, 0.2), transparent 60%);
+}
+.fx:hover .fx-glare {
+  opacity: 1;
+}
+@media (hover: hover) {
+  .fx-tilt:hover,
+  .fx-soft:hover {
+    transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)) scale(1.025);
+    transition: transform 0.12s linear, border-color 0.3s, box-shadow 0.35s;
+    border-color: color-mix(in srgb, var(--color-lime) 60%, transparent);
+    box-shadow: 0 24px 50px -24px rgba(242, 176, 94, 0.35);
+  }
+  .fx-tilt:hover .fx-pop {
+    transform: translateZ(46px);
+  }
+  .fx-soft:hover .fx-pop {
+    transform: translateZ(22px);
+  }
+  .fx-cred:hover {
+    transform: translateY(-8px);
+    border-color: var(--color-cyan);
+    box-shadow: 0 18px 40px -22px rgba(95, 208, 184, 0.5);
+  }
+  .fx-cred .fx-glare {
+    background: radial-gradient(260px circle at var(--gx) var(--gy), rgba(95, 208, 184, 0.22), transparent 65%);
+  }
+  .fx-cred:hover .fx-badge {
+    transform: rotate(360deg) scale(1.15);
+    background: var(--color-cyan);
+    color: var(--color-base);
+  }
+}
+.fx-pop {
+  transition: transform 0.35s var(--ease-out-expo);
+}
+.fx-badge {
+  transition: transform 0.6s var(--ease-out-expo), background 0.3s, color 0.3s;
+}

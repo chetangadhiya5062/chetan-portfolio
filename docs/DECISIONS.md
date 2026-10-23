@@ -114,3 +114,12 @@ Judgement calls made during the v2 rebuild. Newest at the bottom.
 - Hover links: concept-labelled pills with scores, and a card listing every neighbour with a score bar.
 - Side rail: a token travels the rail continuously, ticks swell near it, the current layer is always named.
 - Heatmap: idle snake game spells short messages in pixels; hovering reveals the real data.
+
+## agent-v1 UI round 4
+
+- Intro net is now a spiking network: irregular neuron positions, random wiring (skip, sideways and feedback links), spikes travelling curved fibres with random delays. The schedule is simulated up front so the outputs always land before the end (still 2.6 s).
+- Live telemetry card sits under the hero orb.
+- Every block in About (header, concept map, learning curve, parameters) has its own backdrop; each section uses a different pattern (orbit, circuit, net, hex, grid, contour, dots, waves). Project cards carry their own corner art.
+- The scrolling keyword bands were replaced by two different bands: a stream of real nearest-neighbour pairs, and a RAG pipeline strip with a travelling packet.
+- Proof cards react to the pointer: 3-D tilt with glare (metrics), gentler lean (shipped), lift and spotlight (credentials).
+- Portrait shows in natural colour and switches to the amber scan effect on hover or focus.

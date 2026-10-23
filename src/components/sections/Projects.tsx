@@ -6,6 +6,7 @@ import type { GithubData, RepoInfo } from "@/lib/sources/types";
 import { timeAgo } from "@/lib/activity";
 import SectionHead from "@/components/ui/SectionHead";
 import Reveal from "@/components/ui/Reveal";
+import CardArt from "@/components/ui/CardArt";
 import Rich from "@/components/latent/Rich";
 
 /** "More work": every public, non-fork, non-hidden, non-featured repo, newest push first. */
@@ -32,6 +33,7 @@ export default function Projects({ github }: { github: GithubData | null }) {
     const repo = meta.get(p.repo.toLowerCase());
     return (
         <Reveal as="article" key={p.slug} className="group relative overflow-hidden spot rounded-2xl border border-line bg-surface p-6 transition-colors duration-300 hover:border-lime/60 focus-within:border-lime/60 md:p-10">
+          <CardArt i={i} />
           <span aria-hidden className="pointer-events-none absolute -right-2 -top-6 select-none font-display text-[9rem] font-bold leading-none text-line/60 md:text-[12rem]">
             {String(i + 1).padStart(2, "0")}
           </span>
@@ -73,7 +75,7 @@ export default function Projects({ github }: { github: GithubData | null }) {
 
   return (
     <section id="projects" aria-labelledby="proj-h" className="relative isolate py-24 md:py-36">
-      <Backdrop variant="waves" n="05" seed={13} flip />
+      <Backdrop variant="hex" n="05" seed={13} flip />
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
         <SectionHead
           n="05"

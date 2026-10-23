@@ -124,9 +124,9 @@ export default function Hero({ github, leetcode, status }: { github: GithubData 
           </div>
         </div>
 
-        <div className="relative hidden aspect-square w-full lg:block">
-          <HeroOrb />
-        <aside aria-label="Live status" className="spot absolute -bottom-4 right-0 hidden w-[290px] rounded-2xl border border-line bg-surface/85 p-5 backdrop-blur lg:block">
+        <div className="relative hidden w-full flex-col items-center lg:flex">
+          <div className="aspect-square w-full max-w-[540px]"><HeroOrb /></div>
+        <aside aria-label="Live status" className="spot relative z-10 -mt-10 hidden w-[310px] rounded-2xl border border-line bg-surface/85 p-5 backdrop-blur lg:block">
           <p className="label flex items-center gap-2"><span aria-hidden className="pulse-dot size-1.5 rounded-full bg-lime" /> live telemetry</p>
           <dl className="mt-4 divide-y divide-line">
             {rows.map(([k, v]) => (
