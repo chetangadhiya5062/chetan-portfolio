@@ -29,7 +29,7 @@ export default function Ask() {
   const chunks = buildChunks();
   return (
     <section id="ask" aria-labelledby="ask-h" className="relative isolate py-24 md:py-36">
-      <Backdrop variant="grid" n="03" seed={5} flip />
+      <Backdrop variant="circuit" n="03" seed={5} flip />
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
         <SectionHead
           n="03"

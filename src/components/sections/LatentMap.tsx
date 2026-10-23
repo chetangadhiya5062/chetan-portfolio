@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLatent } from "@/components/latent/LatentProvider";
 import { concepts, clusters, type Cluster } from "@/content/concepts";
+import Backdrop from "@/components/ui/Backdrop";
 import { latentDim, latentModel, latentNodes } from "@/lib/latent";
 
 const W = 1000, H = 620, PAD = 60;
@@ -109,7 +110,8 @@ export default function LatentMap() {
 
   return (
     <div ref={wrap} className="relative mt-20 md:mt-28 h-[340vh]">
-      <div className="sticky top-20 h-[calc(100svh-6rem)] min-h-[520px]">
+      <div className="sticky top-20 isolate h-[calc(100svh-6rem)] min-h-[520px]">
+        <Backdrop variant="net" seed={53} flip className="-inset-x-8 -inset-y-6" />
         <p className="label mb-4">Latent space · {concepts.length} concepts · {latentModel} · {latentDim}-d → 2-d (PCA)</p>
         <div className="grid h-[calc(100%-2rem)] gap-4 lg:grid-cols-[300px_1fr]">
           <div className="order-2 flex flex-col justify-between gap-4 lg:order-1">

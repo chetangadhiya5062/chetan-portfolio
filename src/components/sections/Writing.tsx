@@ -22,7 +22,7 @@ export default function Writing({ medium, posts, sitePosts = [] }: { medium: Med
 
   return (
     <section id="writing" aria-labelledby="write-h" className="relative isolate py-24 md:py-36">
-      <Backdrop variant="orbit" n="08" seed={23} flip />
+      <Backdrop variant="dots" n="08" seed={23} flip />
       <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
         <SectionHead
           n="08"

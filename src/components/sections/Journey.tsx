@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { journeyMilestones, journeySeries, journeyYears } from "@/content/journey";
+import Backdrop from "@/components/ui/Backdrop";
 import Reveal from "@/components/ui/Reveal";
 
 const W = 900, H = 380, L = 44, R = 24, T = 24, B = 40;
@@ -35,7 +36,8 @@ export default function Journey() {
 
   const year = journeyYears[yr];
   return (
-    <div className="mt-20 md:mt-28">
+    <div className="relative isolate mt-20 md:mt-28">
+      <Backdrop variant="waves" seed={61} className="-inset-x-8 -inset-y-10" />
       <Reveal as="h3" className="label mb-3">Learning curve · {journeyYears[0]} to {journeyYears[journeyYears.length - 1]} · self-assessed</Reveal>
       <Reveal as="p" className="mb-6 max-w-2xl font-serif text-3xl leading-tight text-ink md:text-4xl">Four years, one direction: from <em className="text-lime">fundamentals</em> to systems that run themselves.</Reveal>
       <Reveal className="spot rounded-2xl border border-line bg-surface/80 p-4 md:p-7">

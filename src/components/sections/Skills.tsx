@@ -1,11 +1,13 @@
 import { skillGroups } from "@/content/skills";
+import Backdrop from "@/components/ui/Backdrop";
 import Reveal from "@/components/ui/Reveal";
 import Rich from "@/components/latent/Rich";
 
 /** Skills as a layer stack, not a tag cloud. Rendered inside the About section. */
 export default function Skills() {
   return (
-    <div className="mt-20 md:mt-28">
+    <div className="relative isolate mt-20 md:mt-28">
+      <Backdrop variant="hex" seed={67} flip className="-inset-x-8 -inset-y-10" />
       <Reveal as="h3" className="label mb-6">Parameters · the layer stack</Reveal>
       <ol className="divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface">
         {skillGroups.map((g, i) => (
