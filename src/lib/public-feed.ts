@@ -84,7 +84,7 @@ export function composeFeed(input: {
     latest,
     featured: projects.map((p) => ({
       name: p.title.split(" — ")[0],
-      repo: p.repo,
+      repo: p.repo ?? "",
       oneLiner: p.summary,
       stack: p.stack.slice(0, 4),
     })),

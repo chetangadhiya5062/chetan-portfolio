@@ -63,7 +63,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${space.variable} ${inter.variable} ${mono.variable} ${serif.variable}`} suppressHydrationWarning>
       <head>
         {/* flag JS early so no-JS visitors still see every [data-reveal] element */}
-        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js');try{if(sessionStorage.getItem('intro-seen')==='1')document.documentElement.classList.add('intro-seen')}catch(e){}" }} />
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js');try{var n=navigator,c=n.connection;if(sessionStorage.getItem('intro-seen')==='1'||matchMedia('(pointer:coarse)').matches||innerWidth<768||(c&&c.saveData)||(n.deviceMemory&&n.deviceMemory<=4)||(n.hardwareConcurrency&&n.hardwareConcurrency<=4))document.documentElement.classList.add('intro-seen')}catch(e){}" }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </head>
       <body>

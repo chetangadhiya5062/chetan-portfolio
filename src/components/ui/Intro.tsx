@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { lowPowerDevice } from "@/lib/motion";
 
 const LAYERS = [5, 9, 11, 9, 5];
 const INPUTS = ["who", "builds", "RAG", "agents", "?"];
@@ -26,7 +27,7 @@ export default function Intro() {
     const reduce = root.classList.contains("reduce-motion") || window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let seen = false;
     try { seen = sessionStorage.getItem("intro-seen") === "1"; } catch { /* ignore */ }
-    if (reduce || seen) {
+    if (reduce || seen || lowPowerDevice()) {
       root.classList.add("intro-seen"); // CSS hides the overlay
       return;
     }

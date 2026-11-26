@@ -50,3 +50,20 @@ export function scrollToId(id: string) {
   }
   history.replaceState(null, "", id === "top" ? location.pathname : `#${id}`);
 }
+
+/**
+ * True on phones, tablets and weak machines: touch-first input, a narrow viewport, Data Saver, or little memory / few cores.
+ * Heavy ornamental effects (the boot intro, drifting-node canvas at full rate) are skipped there. Keep in sync with the
+ * inline script in app/layout.tsx, which makes the same call before first paint.
+ */
+export function lowPowerDevice(): boolean {
+  if (typeof window === "undefined") return false;
+  const nav = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
+  return (
+    window.matchMedia("(pointer: coarse)").matches ||
+    window.innerWidth < 768 ||
+    !!nav.connection?.saveData ||
+    (nav.deviceMemory !== undefined && nav.deviceMemory <= 4) ||
+    (nav.hardwareConcurrency !== undefined && nav.hardwareConcurrency <= 4)
+  );
+}

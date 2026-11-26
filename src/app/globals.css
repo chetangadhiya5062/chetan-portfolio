@@ -325,7 +325,9 @@ html.latent-on [data-concept]:not(.is-rel):not(.is-src) {
   --step: 0.3s;
 }
 html.intro-seen .dec {
-  --base: 2.1s;
+  /* no boot overlay to wait for (returning visit, phone, weak device): decode starts at once so the name is not invisible for seconds */
+  --base: 0.25s;
+  --step: 0.16s;
 }
 .dec-tok {
   position: relative;
@@ -931,4 +933,51 @@ html.reduce-motion .pipe-label {
 }
 .dec-cands {
   background: var(--color-surface);
+}
+
+/* ---------- performance ---------- */
+
+/* The tail of the page is skipped by the renderer until it is near the viewport (layout, paint and its animations).
+   `auto` in contain-intrinsic-size remembers the real height once seen, so the scrollbar does not jump. */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+}
+
+/* Ambient animation has no value on a phone and costs battery: keep the pictures, stop them moving. */
+@media (hover: none), (pointer: coarse), (max-width: 767px) {
+  .bd-float,
+  .bd-spin,
+  .bd-glow,
+  .bd-wave,
+  .bd-dots,
+  .pipe-packet,
+  .pipe-dot,
+  .pipe-label,
+  .pulse-dot,
+  .scroll-hint {
+    animation: none;
+  }
+}
+
+/* Touch: inline concept links are small, so give them an invisible, larger hit area. */
+@media (pointer: coarse) {
+  .term {
+    position: relative;
+  }
+  .term::after {
+    content: "";
+    position: absolute;
+    inset: -0.5em -0.15em;
+  }
+}
+
+/* Blur behind translucent panels forces an offscreen pass on every scroll frame; on touch / small screens the panels are
+   opaque enough without it. */
+@media (hover: none), (pointer: coarse), (max-width: 767px) {
+  [class*="backdrop-blur"],
+  .latent-panel {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
 }

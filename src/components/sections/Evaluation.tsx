@@ -11,7 +11,7 @@ export default function Evaluation() {
   const rest = achievements.filter((a) => !a.metric);
 
   return (
-    <section id="evaluation" aria-labelledby="eval-h" className="relative isolate py-24 md:py-36">
+    <section id="evaluation" aria-labelledby="eval-h" className="cv-auto relative isolate py-24 md:py-36">
       <Backdrop variant="grid" n="09" seed={29} />
       <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
         <SectionHead

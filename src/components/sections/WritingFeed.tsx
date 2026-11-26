@@ -38,7 +38,7 @@ function Card({ e, big = false }: { e: FeedEntry; big?: boolean }) {
         {e.thumb && (
           // remote Medium CDN image; fixed ratio avoids layout shift
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={e.thumb} alt="" width={640} height={320} loading="lazy" decoding="async" className={`object-cover opacity-80 transition-opacity group-hover:opacity-100 ${big ? "aspect-[2/1] w-full md:aspect-auto md:w-1/2" : "aspect-[2/1] w-full"}`} />
+          <img src={e.thumb} alt="" width={640} height={320} loading="lazy" decoding="async" fetchPriority="low" className={`object-cover opacity-80 transition-opacity group-hover:opacity-100 ${big ? "aspect-[2/1] w-full md:aspect-auto md:w-1/2" : "aspect-[2/1] w-full"}`} />
         )}
         <div className="relative flex flex-1 flex-col p-6 md:p-7">
           {head}

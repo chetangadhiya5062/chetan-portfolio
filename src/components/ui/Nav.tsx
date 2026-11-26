@@ -69,7 +69,7 @@ export default function Nav() {
   };
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-line/60 bg-base/75 backdrop-blur-md">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-line/60 bg-base/95 md:bg-base/75 md:backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-[1280px] items-center justify-between gap-4 px-4 sm:px-6">
         <a href="#top" onClick={go("top")} className="group flex shrink-0 items-center gap-3" title={`${pct}% through the page`}>
           <span className="sr-only">Chetan Gadhiya, back to top</span>
@@ -106,12 +106,12 @@ export default function Nav() {
           >
             <kbd className="rounded border border-line px-1.5 py-px text-[10px] text-ink">Ctrl K</kbd>
           </button>
-          <a href="/resume" target="_blank" rel="noopener" className="flex h-9 items-center rounded-md bg-lime px-4 font-mono text-xs font-medium uppercase tracking-wider text-base transition-transform hover:-translate-y-0.5">
+          <a href="/resume" target="_blank" rel="noopener" className="flex h-11 items-center rounded-md bg-lime px-4 font-mono text-xs font-medium uppercase tracking-wider text-base transition-transform hover:-translate-y-0.5">
             Resume
           </a>
           <button
             type="button"
-            className="grid size-9 place-items-center rounded-md border border-line xl:hidden"
+            className="grid size-11 place-items-center rounded-md border border-line xl:hidden"
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? "Close menu" : "Open menu"}

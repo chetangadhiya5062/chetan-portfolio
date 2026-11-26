@@ -123,7 +123,7 @@ export default function LatentMap() {
                 {STAGES.map((s, i) => (
                   <li key={s.t}>
                     <button type="button" onClick={() => jump(i)} aria-label={`Show: ${s.t}`} aria-current={i === stage ? "step" : undefined}
-                      className={`h-1.5 rounded-full transition-all ${i === stage ? "w-10 bg-lime" : "w-5 bg-line hover:bg-muted"}`} />
+                      className={`relative h-1.5 rounded-full transition-all after:absolute after:-inset-x-1 after:-inset-y-5 after:content-[''] ${i === stage ? "w-10 bg-lime" : "w-5 bg-line hover:bg-muted"}`} />
                   </li>
                 ))}
               </ol>
@@ -209,9 +209,9 @@ export default function LatentMap() {
 
             <div className="absolute right-3 top-3 flex flex-col gap-1.5">
               {([["+", 1.2, "Zoom in"], ["−", 1 / 1.2, "Zoom out"]] as const).map(([l, d, a]) => (
-                <button key={a} type="button" aria-label={a} onClick={() => zoom(d)} className="grid size-8 place-items-center rounded-md border border-line bg-base/80 font-mono text-sm text-ink backdrop-blur hover:border-lime">{l}</button>
+                <button key={a} type="button" aria-label={a} onClick={() => zoom(d)} className="grid size-11 place-items-center sm:size-8 rounded-md border border-line bg-base/80 font-mono text-sm text-ink backdrop-blur hover:border-lime">{l}</button>
               ))}
-              <button type="button" aria-label="Reset view" onClick={() => setView({ k: 1, x: 0, y: 0 })} className="grid size-8 place-items-center rounded-md border border-line bg-base/80 font-mono text-[11px] text-muted backdrop-blur hover:border-lime hover:text-ink">⟲</button>
+              <button type="button" aria-label="Reset view" onClick={() => setView({ k: 1, x: 0, y: 0 })} className="grid size-11 place-items-center sm:size-8 rounded-md border border-line bg-base/80 font-mono text-[11px] text-muted backdrop-blur hover:border-lime hover:text-ink">⟲</button>
             </div>
             <p className="pointer-events-none absolute bottom-3 left-4 hidden font-mono text-[10px] text-muted sm:block">scroll = regroup · drag = pan · ± = zoom · hover a dot = neighbours</p>
             <ul className="pointer-events-none absolute bottom-3 right-4 hidden gap-x-4 font-mono text-[10px] text-muted md:flex">

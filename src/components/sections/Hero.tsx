@@ -108,7 +108,7 @@ export default function Hero({ github, leetcode, status }: { github: GithubData 
           </p>
 
           <p className="mt-5 font-mono text-[11px] text-muted/80">
-            Decoding is a staged visualisation. Hover a token for its candidates · hover a dotted word to see what it connects to.
+            Decoding is a staged visualisation. Hover or tap a token for its candidates · a dotted word shows what it connects to.
           </p>
 
           <div className="mt-9 flex flex-wrap items-center gap-3">
