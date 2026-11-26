@@ -46,7 +46,7 @@ export default function Experience() {
                   ))}
                 </ol>
                 {r.repo && (
-                  <a href={r.repo} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-cyan hover:underline">
+                  <a href={r.repo} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex min-h-11 items-center gap-2 font-mono text-xs uppercase tracking-wider text-cyan hover:underline">
                     View the work <span aria-hidden>↗</span>
                   </a>
                 )}

@@ -135,13 +135,13 @@ export default function Heatmap({ from, counts }: { from: string; counts: number
               type="button"
               aria-pressed={metric === f.id}
               onClick={() => { setMetric(f.id); setRun((r) => r + 1); }}
-              className={`rounded-full border px-3 py-1 font-mono text-[11px] transition-colors ${metric === f.id ? "border-lime bg-lime/10 text-lime" : "border-line text-muted hover:text-ink"}`}
+              className={`rounded-full border px-3.5 py-2.5 font-mono text-[11px] transition-colors sm:px-3 sm:py-1 ${metric === f.id ? "border-lime bg-lime/10 text-lime" : "border-line text-muted hover:text-ink"}`}
             >
               {f.label}
             </button>
           ))}
         </div>
-        <button type="button" onClick={() => { setPlay(true); setRun((r) => r + 1); }} className="rounded-full border border-line px-3 py-1 font-mono text-[11px] text-muted transition-colors hover:border-lime hover:text-ink">
+        <button type="button" onClick={() => { setPlay(true); setRun((r) => r + 1); }} className="rounded-full border border-line px-3.5 py-2.5 font-mono text-[11px] text-muted transition-colors hover:border-lime hover:text-ink sm:px-3 sm:py-1">
           ↻ replay
         </button>
       </div>

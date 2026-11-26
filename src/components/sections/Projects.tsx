@@ -106,7 +106,7 @@ export default function Projects({ github }: { github: GithubData | null }) {
           <div className="mt-24 md:mt-32">
             <Reveal className="mb-8 flex items-end justify-between gap-4">
               <h3 className="font-serif text-3xl md:text-4xl">More <em className="text-lime">work</em>, still moving</h3>
-              <a href={`https://github.com/${GITHUB_USER}?tab=repositories`} target="_blank" rel="noopener noreferrer" className="label hover:text-lime">
+              <a href={`https://github.com/${GITHUB_USER}?tab=repositories`} target="_blank" rel="noopener noreferrer" className="label inline-flex min-h-11 items-center hover:text-lime">
                 All repositories ↗
               </a>
             </Reveal>

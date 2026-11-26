@@ -70,7 +70,7 @@ export default function RagConsole({ chunks }: { chunks: Chunk[] }) {
         </form>
         <ul className="mt-4 flex flex-wrap gap-2">
           {SUGGEST.map((s) => (
-            <li key={s}><button type="button" onClick={() => run(s)} className="rounded-full border border-line px-3 py-1 font-mono text-[11px] text-muted transition-colors hover:border-lime hover:text-ink">{s}</button></li>
+            <li key={s}><button type="button" onClick={() => run(s)} className="rounded-full border border-line px-3.5 py-2.5 font-mono text-[11px] text-muted transition-colors hover:border-lime hover:text-ink sm:px-3 sm:py-1">{s}</button></li>
           ))}
         </ul>
 

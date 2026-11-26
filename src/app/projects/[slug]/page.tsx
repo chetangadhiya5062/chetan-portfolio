@@ -32,7 +32,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
 
   return (
     <main id="main" className="mx-auto max-w-[900px] px-4 pb-32 pt-28 sm:px-6">
-      <Link href="/#projects" className="label hover:text-lime">← All projects</Link>
+      <Link href="/#projects" className="label inline-flex min-h-11 items-center hover:text-lime">← All projects</Link>
 
       <p className="label mt-12 text-lime">{p.kicker}</p>
       <h1 className="mt-4 font-display text-[clamp(2.2rem,6vw,4.2rem)] font-semibold leading-[1.02] tracking-tight">{p.title}</h1>
@@ -132,9 +132,9 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         </ul>
       </section>
 
-      <nav className="mt-24 flex items-center justify-between border-t border-line pt-8" aria-label="Next project">
-        <a href={`mailto:${profile.email}`} className="label hover:text-lime">Discuss this project</a>
-        <Link href={`/projects/${next.slug}`} className="font-display text-lg hover:text-lime">
+      <nav className="mt-24 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-line pt-8" aria-label="Next project">
+        <a href={`mailto:${profile.email}`} className="label inline-flex min-h-11 items-center hover:text-lime">Discuss this project</a>
+        <Link href={`/projects/${next.slug}`} className="inline-flex min-h-11 items-center font-display text-lg hover:text-lime">
           Next: {next.title.split(" — ")[0]} →
         </Link>
       </nav>

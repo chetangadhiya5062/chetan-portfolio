@@ -136,7 +136,7 @@ export default function ActivitySection({
           <Heatmap from={activity.days[0].date} counts={activity.days.map((d) => [d.total, d.github, d.leetcode, d.medium, d.posts])} />
         </Reveal>
 
-        <div className="mt-6 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+        <div className="mt-6 grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[1.4fr_1fr]">
           <Reveal className="spot rounded-2xl border border-line bg-surface p-5 md:p-8">
             <h3 className="font-display text-xl font-medium">Activity / month</h3>
             <p className="label mt-1">loss curve, but upward</p>
