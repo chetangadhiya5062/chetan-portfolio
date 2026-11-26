@@ -18,6 +18,7 @@ function buildChunks(): Chunk[] {
   for (const p of projects) {
     out.push({ id: `${p.slug}-s`, source: "Project", title: p.title, text: `${p.summary} ${p.problem}`, href: `/projects/${p.slug}` });
     p.approach.forEach((a, i) => out.push({ id: `${p.slug}-a${i}`, source: "Project", title: p.title, text: `${a} Stack: ${p.stack.join(", ")}.`, href: `/projects/${p.slug}` }));
+    p.results?.forEach((r, i) => out.push({ id: `${p.slug}-r${i}`, source: "Project", title: p.title, text: r, href: `/projects/${p.slug}` }));
   }
   for (const g of skillGroups) out.push({ id: `skills-${g.id}`, source: "Skills", title: g.label, text: `${g.label}: ${g.skills.join(", ")}.`, href: "#about" });
   for (const a of achievements) out.push({ id: a.id, source: "Achievement", title: a.title, text: `${a.title}. ${a.result}`, href: "#evaluation" });

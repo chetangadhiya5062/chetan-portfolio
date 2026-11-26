@@ -11,6 +11,14 @@ export type Achievement = {
 
 export const achievements: Achievement[] = [
   {
+    id: "iccmse-gams",
+    metric: { value: "0.695", caption: "ROC-AUC, 14,038 held-out patients" },
+    title: "ICCMSE 2026 & 28th GAMS — co-authored paper",
+    event: "PDEU, Nov 2026",
+    result: "Patient-Level Evaluation of Gradient-Boosted Ensembles for Diabetic Readmission Prediction (V. Pandya, D. P. Singh, C. Gadhiya).",
+    proof: [{ label: "Case study", href: "/projects/readmission-prediction" }],
+  },
+  {
     id: "ieee-aimv",
     metric: { value: "160+", caption: "research papers, 35 volunteers" },
     title: "IEEE AIMV 2025 — Lead Student Volunteer",

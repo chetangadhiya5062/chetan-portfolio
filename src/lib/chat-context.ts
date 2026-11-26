@@ -15,7 +15,7 @@ export function buildKnowledge(): string {
   }
   lines.push("", "## Projects");
   for (const p of projects) {
-    lines.push(`- ${p.title}: ${p.summary}`, `  Problem: ${p.problem}`, ...p.approach.map((a) => `  • ${a}`), `  Stack: ${p.stack.join(", ")}`, `  Code: ${p.proof[0]?.href}`);
+    lines.push(`- ${p.title}: ${p.summary}`, `  Problem: ${p.problem}`, ...p.approach.map((a) => `  • ${a}`), `  Stack: ${p.stack.join(", ")}`, ...(p.role ? [`  Role: ${p.role}`] : []), ...(p.results ?? []).map((r) => `  Result: ${r}`), ...(p.limits ?? []).map((l) => `  Limit: ${l}`), `  Code: ${p.proof[0]?.href ?? p.note ?? "private"}`);
   }
   lines.push("", "## Skills", ...skillGroups.map((g) => `- ${g.label}: ${g.skills.join(", ")}`));
   lines.push("", "## Achievements", ...achievements.map((a) => `- ${a.title} (${a.event}): ${a.result}`));

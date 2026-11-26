@@ -16,5 +16,5 @@ export const journeyMilestones: Record<number, string> = {
   2023: "Core CS, DSA and first ML / deep learning courses",
   2024: "Smart India Hackathon, HACKOUT'24, Encode PDEU, first RAG builds",
   2025: "Agents in production work, IEEE AIMV lead volunteer, SIH 2025, Cognifyz",
-  2026: "NeuroFlow AI: gateway, RAG runtime and agent platform design",
+  2026: "NeuroFlow AI platform work; Freight Exception Copilot, VulnRefine and an ICCMSE paper",
 };

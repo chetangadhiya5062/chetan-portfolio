@@ -15,7 +15,8 @@ export const profile = {
   about: [
     "I engineer AI systems designed to run in production, not just perform well in a demo.",
     "At HNNOIX's NeuroFlow AI — a production-grade AI Operating Platform supporting autonomous agents, RAG and knowledge graphs at enterprise scale — I built core infrastructure: a provider-agnostic LLM Gateway, RAG Runtime, AI Memory Layer and modular agent-execution runtimes, following Clean Architecture and SOLID with structured observability, automated testing and containerized deployment.",
-    "Before that, as a freelance GenAI engineer, I built two AI systems for automated fact verification and knowledge-grounded QA. On the side I build things I'm curious about — an RL agent that teaches itself to clean data, and an autonomous email agent on a Kafka/Spark pipeline.",
+    "Outside work I build and measure things end to end: Freight Exception Copilot, an AI-assisted customs and demurrage platform where code computes the money and humans approve every write; VulnRefine, a local fine-tuned LLM that finds a vulnerability, patches it and verifies the patch; and a co-authored ICCMSE 2026 paper on leakage-free readmission prediction.",
+    "Before that, as a freelance GenAI engineer, I built two AI systems for automated fact verification and knowledge-grounded QA, plus an RL agent that teaches itself to clean data and an autonomous email agent on a Kafka/Spark pipeline.",
     "I'm looking for roles where I can keep building systems that hold up outside a notebook.",
   ],
   links: {
@@ -33,7 +34,7 @@ export const profile = {
   /** Static numbers for the "Embedding" section. Live ones (LeetCode) are merged in at runtime. */
   stats: [
     { value: 8.71, decimals: 2, label: "CGPA / 10", note: "B.Tech CSE, PDEU" },
-    { value: 15, suffix: "%", label: "inference overhead cut", note: "multi-agent fact verification" },
+    { value: 0.889, decimals: 3, label: "detection F1", note: "VulnRefine, up from 0.745" },
     { value: 160, suffix: "+", label: "papers handled", note: "IEEE AIMV 2025, 35-member team" },
     { value: 1200, suffix: "+", label: "teams outranked", note: "Code4Cause 2.0, NSUT" },
   ],

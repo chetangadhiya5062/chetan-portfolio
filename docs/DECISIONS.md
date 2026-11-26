@@ -123,3 +123,18 @@ Judgement calls made during the v2 rebuild. Newest at the bottom.
 - The scrolling keyword bands were replaced by two different bands: a stream of real nearest-neighbour pairs, and a RAG pipeline strip with a travelling packet.
 - Proof cards react to the pointer: 3-D tilt with glare (metrics), gentler lean (shipped), lift and spotlight (credentials).
 - Portrait shows in natural colour and switches to the amber scan effect on hover or focus.
+
+## feat/new-projects-perf-mobile
+
+### New projects and resume
+- **Base branch:** `origin/master` (it already contains `agent-v1`, PRs #7 to #11). The local `master` was stale.
+- **Three new featured projects** go first in `src/content/projects.ts`, rendered as wide cards with a metrics strip: Freight Exception Copilot, VulnRefine, and the ICCMSE 2026 readmission paper. The four older projects keep their cards below. `Project` gained optional `featured`, `role`, `metrics`, `flow`, `results`, `limits`, `note`; `repo` is now optional.
+- **Private repositories:** `VulnRefine`, `freight-exception-copilot` and `freight-exception-copilot-v2` are private on GitHub, and the readmission code lives in a co-author's repository, not the owner's. Linking them would give visitors 404s, so those projects have no proof link. They show a "Private repository" note with an "Ask for it" mailto instead. **Owner:** when a repo goes public, add it to `proof` and `repo` (and to `FEATURED_REPOS` in `src/config/github.ts`).
+- **Numbers and where they come from:**
+  - VulnRefine: every figure checked against `prep/REPORT.md` (F1 0.745 to 0.889, FPR 0.263 to 0.025, real AUC 0.533 to 0.677, verified-and-changed 0.06 to 0.28 on 109 Python cases, 26,226 records, 3.4 h).
+  - Readmission paper: figures checked against `results/table2_main_results.csv`, `table3_ablations.csv` and the draft abstract (0.695, CI 0.680 to 0.708, 14,038 patients, 0.682 to 0.691, +0.002). The paper draft says history features lift LightGBM to 0.693 (full feature set); the resume and the ablation table quote 0.691 for "base + patient history", which is what the site uses.
+  - Freight: the folder holds the docs and progress log only up to milestone M9. The OCR comparison (0.987 vs 0.882, 2,570 fields, 494 pages) and the 83 CBP rulings were confirmed there. The later figures (18/83 vs 8/83, 32 of 33 planted errors, 0 duplicate writes at 3 kill points, 365 injection tests, 2,600+ tests) come only from the owner's new resume and could not be re-checked; they are used as written. **Owner: confirm them before sharing widely.**
+- **Authorship:** the paper lists V. Pandya first, then D. P. Singh, then C. Gadhiya. The site says "Co-author" and credits the other authors; it does not claim sole work. VulnRefine is credited as a team of two with Meet Vyas.
+- **Not added:** no new concepts in `concepts.ts` (they need the embedding script and model download to place them on the map), so terms like QLoRA are plain text in the cards, not concept links. Resume bullets for the older roles were already equivalent, so `experience.ts` is unchanged.
+- **Resume PDF:** `public/resume.pdf` replaced with "Resume Core (Last Updated 25-11-26)". The `/resume` route still prefers a file uploaded through `/admin` (Supabase), so upload the new PDF there too if one is stored. The PDF carries the owner's phone number, as the old one did.
+- **Profile edits:** about text now mentions the three projects; the "15% inference overhead" stat became "0.889 detection F1" (the 15% figure is still in the freelance role and the Truth AI case study); skills gained MCP, Ollama, QLoRA/LoRA, Hugging Face, LLM evaluation, pgvector, Temporal, CI; a publication entry leads the Proof section.
