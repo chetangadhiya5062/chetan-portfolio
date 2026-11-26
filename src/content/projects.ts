@@ -25,11 +25,36 @@ export type Project = {
   limits?: string[];
   /** Shown instead of a link when the source is not public. */
   note?: string;
+  /** Visual explanations rendered on the case study page. Data only: see components/ui/ProjectViz.tsx. */
+  viz?: Viz[];
 };
+
+type Tone = "lime" | "cyan" | "ink" | "muted";
+export type Viz =
+  | { kind: "flow"; title: string; caption?: string; nodes: { label: string; sub?: string; tone?: Tone; branches?: string[] }[]; loop?: string }
+  | { kind: "bars"; title: string; caption?: string; min?: number; max: number; format?: "int" | "dec"; rows: { label: string; items: { name: string; value: number; tone?: Tone; shown?: string }[] }[] }
+  | { kind: "split"; title: string; caption?: string; parts: { label: string; value: number; sub: string; tone?: Tone }[] }
+  | { kind: "ledger"; title: string; caption?: string; rows: { label: string; value: string; tone?: Tone; note?: string }[] };
 
 export const projects: Project[] = [
   {
     slug: "freight-exception-copilot",
+    viz: [
+      { kind: "flow", title: "One exception, end to end", caption: "A held container becomes a proposal with evidence. Nothing is written to a real system until a person approves the exact payload.",
+        nodes: [
+          { label: "Sense", sub: "carrier, terminal and customs events", tone: "cyan" },
+          { label: "Understand", sub: "read documents; keep page and box for every value", tone: "cyan" },
+          { label: "Decide", sub: "rules and tested maths; AI proposes a fix with evidence", tone: "lime" },
+          { label: "Human approves", sub: "approval bound to the payload hash", tone: "lime" },
+          { label: "Act", sub: "idempotent, audited write through MCP tools" },
+          { label: "Verify", sub: "re-read the system; hash-chained audit record" },
+        ],
+        loop: "Crash-safe: a worker killed mid-case resumes from durable state, and the idempotency key means the same fee is never paid twice." },
+      { kind: "bars", title: "Every AI part had to beat a baseline", caption: "Tariff classification: 83 public CBP rulings, correct code in the top 3 at the full 10 digits.", max: 83,
+        rows: [{ label: "Correct in top-3 (out of 83)", items: [{ name: "LLM tree navigator", value: 8, shown: "8" }, { name: "BM25 (shipped)", value: 18, shown: "18" }] }] },
+      { kind: "bars", title: "Reading documents: vision model vs OCR", caption: "Normalised field accuracy on 2,570 fields from 494 pages. The model's own confidence was unusable, so review is routed by OCR disagreement, which caught 32 of 33 planted errors.", max: 1, format: "dec",
+        rows: [{ label: "Field accuracy", items: [{ name: "Tesseract", value: 0.882 }, { name: "qwen3-vl:4b", value: 0.987 }] }] },
+    ],
     featured: true,
     title: "Freight Exception Copilot — AI-assisted customs & demurrage platform",
     kicker: "Agentic platform · Logistics · Evaluation-first",
@@ -68,6 +93,24 @@ export const projects: Project[] = [
   },
   {
     slug: "vulnrefine",
+    viz: [
+      { kind: "flow", title: "Find it, fix it, prove the fix", caption: "Everything runs locally; no source code leaves the machine.",
+        nodes: [
+          { label: "Detector", sub: "static rules for 16 languages plus an LLM judge", tone: "cyan" },
+          { label: "Analyst", sub: "CWE, root cause, severity, fix strategy", tone: "cyan" },
+          { label: "Remediator", sub: "writes the full patched code", tone: "lime" },
+          { label: "Verifier", sub: "syntax check, re-scan, LLM judge, sandboxed exploit", tone: "lime" },
+          { label: "Report", sub: "CLI, REST, SARIF, dashboard" },
+        ],
+        loop: "If the Verifier rejects a patch, its concrete evidence (for example \"B608 still on line 12\") goes back to the Remediator, up to three rounds. The best patch is kept." },
+      { kind: "bars", title: "What fine-tuning changed", caption: "Base Qwen2.5-Coder-7B against the QLoRA model. Higher is better except false positives.", max: 1, format: "dec",
+        rows: [
+          { label: "Detection F1 (16-language benchmark)", items: [{ name: "Base 7B", value: 0.745 }, { name: "Fine-tuned", value: 0.889 }] },
+          { label: "False-positive rate (lower is better)", items: [{ name: "Base 7B", value: 0.263 }, { name: "Fine-tuned", value: 0.025 }] },
+          { label: "Correct code-changing fixes, 109 real Python bugs", items: [{ name: "Base 7B", value: 0.06 }, { name: "Fine-tuned", value: 0.28 }] },
+          { label: "AUC on real held-out code", items: [{ name: "Base 7B", value: 0.533 }, { name: "Fine-tuned", value: 0.677 }, { name: "UniXcoder", value: 0.699, tone: "cyan" }] },
+        ] },
+    ],
     featured: true,
     title: "VulnRefine — Local LLM vulnerability detection & verified repair",
     kicker: "Security · QLoRA fine-tuning · Multi-agent",
@@ -106,6 +149,26 @@ export const projects: Project[] = [
   },
   {
     slug: "readmission-prediction",
+    viz: [
+      { kind: "split", title: "Split by patient, not by row", caption: "46.2% of encounters come from patients admitted more than once, so a row split leaks identity. Here no patient appears on both sides, and every internal fold is grouped the same way.",
+        parts: [
+          { label: "Training", value: 55952, sub: "patients, 79,625 encounters: tuning, out-of-fold stacking, calibration, thresholds", tone: "lime" },
+          { label: "Held-out test", value: 14038, sub: "unseen patients, 19,718 encounters: used once", tone: "cyan" },
+        ] },
+      { kind: "flow", title: "The pipeline",
+        nodes: [
+          { label: "Features", sub: "encounter fields plus patient history from earlier stays only", tone: "cyan" },
+          { label: "Base learners", sub: "tuned with Optuna", branches: ["XGBoost", "LightGBM", "CatBoost"] },
+          { label: "Grouped out-of-fold stack", sub: "logistic meta-learner on log-odds, 4 parameters", tone: "lime" },
+          { label: "Calibration check", sub: "Brier 0.092" },
+          { label: "Exact SHAP", sub: "base SHAP combined with meta weights" },
+        ] },
+      { kind: "bars", title: "Where the gain actually came from", caption: "Test ROC-AUC. Features move it more than stacking does.", min: 0.65, max: 0.7, format: "dec",
+        rows: [
+          { label: "LightGBM by feature set", items: [{ name: "base", value: 0.682 }, { name: "+ ICD-9 3-digit", value: 0.686 }, { name: "+ patient history", value: 0.691 }, { name: "full", value: 0.693, tone: "lime" }] },
+          { label: "Model comparison", items: [{ name: "Logistic reg.", value: 0.677 }, { name: "Random forest", value: 0.684 }, { name: "XGBoost", value: 0.69 }, { name: "LightGBM", value: 0.693 }, { name: "CatBoost", value: 0.693 }, { name: "Simple average", value: 0.695, tone: "cyan" }, { name: "Stack", value: 0.695, tone: "lime" }] },
+        ] },
+    ],
     featured: true,
     title: "Diabetic Readmission Prediction — Patient-level evaluation of boosted ensembles",
     kicker: "Research paper · ICCMSE 2026 & 28th GAMS · PDEU",
@@ -144,6 +207,23 @@ export const projects: Project[] = [
   },
   {
     slug: "openenv",
+    viz: [
+      { kind: "flow", title: "The agent–environment loop", caption: "Each step the agent sees the table state and its own action and reward history, and must answer in structured JSON.",
+        nodes: [
+          { label: "Observation", sub: "table state, history", tone: "cyan" },
+          { label: "Llama 3 agent", sub: "picks an action as JSON", tone: "lime" },
+          { label: "Environment", sub: "validates (Pydantic) and applies it", tone: "cyan" },
+          { label: "Reward", sub: "shaped score for the step" },
+        ],
+        loop: "Malformed model output is parsed with fallbacks instead of crashing the episode. The environment is served over REST and WebSocket (FastAPI) from a multi-stage Docker image on HuggingFace Spaces." },
+      { kind: "ledger", title: "Reward shaping", caption: "What the agent is paid for, and what it is penalised for.",
+        rows: [
+          { value: "+2", label: "Reduce missing values" },
+          { value: "+3", label: "Remove duplicate rows" },
+          { value: "+5", label: "Finish the task" },
+          { value: "−", tone: "cyan", label: "Repeat a redundant action", note: "Anti-loop penalties and step limits stop the agent from cycling." },
+        ] },
+    ],
     title: "OpenEnv — Data-Cleaning RL Agent",
     kicker: "Reinforcement learning · LLM agents",
     summary:
@@ -162,6 +242,22 @@ export const projects: Project[] = [
   },
   {
     slug: "aethermail",
+    viz: [
+      { kind: "flow", title: "How an email request is handled", caption: "A stateful LangGraph agent on Gemini 2.5 Flash decides which of six tools to call and reasons over the results across several steps.",
+        nodes: [
+          { label: "Request", sub: "for example: find and draft a reply", tone: "cyan" },
+          { label: "LangGraph agent", sub: "multi-step reasoning with memory of the run", tone: "lime" },
+          { label: "Six tools", sub: "search, organise, draft, bulk actions", tone: "lime" },
+          { label: "RAG over email", sub: "Ollama embeddings (768-dim) in Qdrant", tone: "cyan" },
+          { label: "Action or answer" },
+        ] },
+      { kind: "flow", title: "The pipeline behind it", caption: "Bulk tasks are delegated to the data pipeline instead of looping through the model. Email content and metadata are stored encrypted.",
+        nodes: [
+          { label: "Kafka", sub: "email events stream", tone: "cyan" },
+          { label: "Spark", sub: "distributed processing and embedding", tone: "lime" },
+          { label: "Storage", sub: "three stores, one job each", branches: ["HDFS", "PostgreSQL (metadata)", "Qdrant (vectors)"] },
+        ] },
+    ],
     title: "AetherMail — Autonomous AI Email Agent",
     kicker: "Agents · RAG · Streaming data",
     summary:

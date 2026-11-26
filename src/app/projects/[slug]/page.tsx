@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { projects } from "@/content/projects";
 import { profile, SITE_URL } from "@/content/profile";
+import ProjectViz from "@/components/ui/ProjectViz";
 
 export const revalidate = 21600;
 export const dynamicParams = false;
@@ -67,7 +68,14 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         </ol>
       </section>
 
-      {p.flow && (
+      {p.viz && (
+        <section className="mt-14" aria-labelledby="viz">
+          <h2 id="viz" className="label">See how it works</h2>
+          <div className="mt-5"><ProjectViz viz={p.viz} /></div>
+        </section>
+      )}
+
+      {p.flow && !p.viz && (
         <section className="mt-14" aria-labelledby="flow">
           <h2 id="flow" className="label">Pipeline</h2>
           <ol className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-3 font-mono text-xs">

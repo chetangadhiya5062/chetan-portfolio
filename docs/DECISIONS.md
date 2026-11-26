@@ -157,3 +157,7 @@ Judgement calls made during the v2 rebuild. Newest at the bottom.
 
 ### Learning curve years
 - The degree runs Jul 2023 to May 2027, so the chart is now 2023 (first year) to 2027 (final year, concluding May 2027). Existing values were kept for the years they described (2023 to 2026); 2027 is a target (88/82/92/94), flagged in its milestone text. Milestones were re-dated to when events actually happened. Edit `src/content/journey.ts` to change any value.
+
+### Case-study visuals
+- Five case studies (Freight, VulnRefine, readmission, OpenEnv, AetherMail) got a "See how it works" section: pipeline diagrams, before/after bars, a patient-split bar and a reward ledger. They are server-rendered HTML/CSS from a `viz` array in `src/content/projects.ts` (renderer: `components/ui/ProjectViz.tsx`), so no client JS and no new dependency. Pipelines stack vertically on phones.
+- Every number comes from the same sources as the write-ups. The readmission AUC bars start at 0.65 because the differences are small; the chart says so under it. The OpenEnv ledger shows the stated reward values only; the penalty size is not given in the source, so it is shown as "−" without a number. The AetherMail diagrams only use components named in the resume and existing write-up.
