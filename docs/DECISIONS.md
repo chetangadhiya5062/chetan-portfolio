@@ -161,3 +161,7 @@ Judgement calls made during the v2 rebuild. Newest at the bottom.
 ### Case-study visuals
 - Five case studies (Freight, VulnRefine, readmission, OpenEnv, AetherMail) got a "See how it works" section: pipeline diagrams, before/after bars, a patient-split bar and a reward ledger. They are server-rendered HTML/CSS from a `viz` array in `src/content/projects.ts` (renderer: `components/ui/ProjectViz.tsx`), so no client JS and no new dependency. Pipelines stack vertically on phones.
 - Every number comes from the same sources as the write-ups. The readmission AUC bars start at 0.65 because the differences are small; the chart says so under it. The OpenEnv ledger shows the stated reward values only; the penalty size is not given in the source, so it is shown as "−" without a number. The AetherMail diagrams only use components named in the resume and existing write-up.
+
+### Mobile "Something broke on my side"
+- Reported after PR #12 went live: phone shows the error page repeatedly, desktop is fine. Not reproduced: an Android-Chrome emulation (touch, 375 px) scrolled and tapped through the whole page with no console or runtime errors, and the live HTML for an iPhone user agent is healthy (200, no error markup).
+- Most likely cause (unconfirmed): a phone tab or cached page from before the deploy asking for JS chunks that no longer exist. `app/error.tsx` now reloads once on chunk-load errors (guarded by sessionStorage, so a genuine repeating error cannot loop) and "Try again" does a real reload for them.
