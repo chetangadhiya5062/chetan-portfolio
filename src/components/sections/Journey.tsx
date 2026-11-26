@@ -105,7 +105,7 @@ export default function Journey() {
         </div>
         <ol className="mt-4 flex flex-wrap gap-2 lg:hidden" aria-label="Pick a year">
           {journeyYears.map((yy, i) => (
-            <li key={yy}><button type="button" aria-pressed={i === yr} onClick={() => setYr(i)} className={`rounded-full border px-3 py-1 font-mono text-[11px] ${i === yr ? "border-lime text-lime" : "border-line text-muted"}`}>{yy}</button></li>
+            <li key={yy}><button type="button" aria-pressed={i === yr} onClick={() => setYr(i)} className={`rounded-full border px-4 py-2.5 font-mono text-[11px] sm:px-3 sm:py-1 ${i === yr ? "border-lime text-lime" : "border-line text-muted"}`}>{yy}</button></li>
           ))}
         </ol>
       </Reveal>

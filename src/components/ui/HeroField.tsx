@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { lowPowerDevice } from "@/lib/motion";
 
 type P = { x: number; y: number; vx: number; vy: number; hue: 0 | 1 };
 
@@ -18,7 +19,9 @@ export default function HeroField() {
     const root = document.documentElement;
     const reduce = () => root.classList.contains("reduce-motion") || window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const AMBER = "242,176,94", TEAL = "95,208,184";
-    let w = 0, h = 0, dpr = 1, raf = 0, visible = true;
+    let lastW = 0;
+    const lite = lowPowerDevice(); // fewer nodes, 30 fps, no pointer tracking
+    let w = 0, h = 0, dpr = 1, raf = 0, visible = true, tick = 0;
     let pts: P[] = [];
     const mouse = { x: -999, y: -999 };
 
@@ -28,7 +31,7 @@ export default function HeroField() {
       w = r.width; h = r.height;
       c.width = w * dpr; c.height = h * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const n = Math.round(Math.min(70, Math.max(26, (w * h) / 22000)));
+      const n = lite ? Math.round(Math.min(34, Math.max(18, (w * h) / 16000))) : Math.round(Math.min(70, Math.max(26, (w * h) / 22000)));
       pts = Array.from({ length: n }, (_, i) => ({
         x: Math.random() * w, y: Math.random() * h,
         vx: (Math.random() - 0.5) * 0.28, vy: (Math.random() - 0.5) * 0.28, hue: (i % 3 === 0 ? 1 : 0) as 0 | 1,
@@ -67,15 +70,17 @@ export default function HeroField() {
     const loop = () => {
       raf = 0;
       if (!visible || reduce()) return;
-      draw(true);
+      if (!lite || (tick++ & 1) === 0) draw(true);
       raf = requestAnimationFrame(loop);
     };
     const kick = () => { if (!raf && visible && !reduce()) raf = requestAnimationFrame(loop); };
 
     resize();
+    lastW = w;
     draw(false);
     kick();
-    const onResize = () => { resize(); draw(false); };
+    // mobile browsers fire resize while the URL bar slides; only a width change needs a new canvas
+    const onResize = () => { const nw = c.getBoundingClientRect().width; if (Math.abs(nw - lastW) < 1) return; lastW = nw; resize(); draw(false); };
     const onMove = (e: PointerEvent) => {
       const r = c.getBoundingClientRect();
       mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top;
@@ -84,8 +89,10 @@ export default function HeroField() {
     const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) kick(); });
     io.observe(c);
     window.addEventListener("resize", onResize);
-    window.addEventListener("pointermove", onMove, { passive: true });
-    document.addEventListener("pointerleave", onLeave);
+    if (!lite) {
+      window.addEventListener("pointermove", onMove, { passive: true });
+      document.addEventListener("pointerleave", onLeave);
+    }
     return () => {
       if (raf) cancelAnimationFrame(raf);
       io.disconnect();

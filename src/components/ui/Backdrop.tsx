@@ -11,7 +11,7 @@ function rng(seed: number) {
 
 function Net({ seed }: { seed: number }) {
   const r = rng(seed);
-  const pts = Array.from({ length: 22 }, () => ({ x: r() * 1000, y: r() * 600, t: r() > 0.7 }));
+  const pts = Array.from({ length: 22 }, () => ({ x: Math.round(r() * 1000), y: Math.round(r() * 600), t: r() > 0.7 }));
   const edges: [number, number][] = [];
   pts.forEach((a, i) => pts.forEach((b, j) => {
     if (j > i && Math.hypot(a.x - b.x, a.y - b.y) < 230) edges.push([i, j]);
@@ -67,19 +67,26 @@ function Circuit({ seed }: { seed: number }) {
   );
 }
 
+/** One hexagon tile repeated by an SVG pattern (a few hundred bytes), plus a handful of filled cells. */
 function Hex({ seed }: { seed: number }) {
   const r = rng(seed);
   const filled = Array.from({ length: 14 }, () => [Math.floor(r() * 20), Math.floor(r() * 9)]);
-  const hexes = [];
-  for (let row = 0; row < 9; row++) for (let col = 0; col < 20; col++) {
-    const cx = col * 52 + (row % 2 ? 26 : 0), cy = row * 45;
-    const on = filled.some(([c, rr]) => c === col && rr === row);
-    const pts = Array.from({ length: 6 }, (_, k) => `${cx + 29 * Math.cos((Math.PI / 3) * k + Math.PI / 6)},${cy + 29 * Math.sin((Math.PI / 3) * k + Math.PI / 6)}`).join(" ");
-    hexes.push(<polygon key={`${row}-${col}`} points={pts} fill={on ? "var(--color-lime)" : "none"} fillOpacity={on ? 0.09 : 0} stroke="var(--color-line)" strokeOpacity={0.7} />);
-  }
+  const hexPts = (cx: number, cy: number) =>
+    Array.from({ length: 6 }, (_, k) => `${(cx + 29 * Math.cos((Math.PI / 3) * k + Math.PI / 6)).toFixed(1)},${(cy + 29 * Math.sin((Math.PI / 3) * k + Math.PI / 6)).toFixed(1)}`).join(" ");
+  const id = `hexp-${seed}`;
   return (
     <svg viewBox="0 0 1040 400" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 size-full [mask-image:radial-gradient(ellipse_75%_65%_at_50%_45%,black,transparent)]">
-      {hexes}
+      <defs>
+        <pattern id={id} width={52} height={90} patternUnits="userSpaceOnUse">
+          {[[0, 0], [52, 0], [0, 90], [52, 90], [26, 45], [-26, 45], [78, 45]].map(([x, y]) => (
+            <polygon key={`${x},${y}`} points={hexPts(x, y)} fill="none" stroke="var(--color-line)" strokeOpacity={0.7} />
+          ))}
+        </pattern>
+      </defs>
+      <rect x={-30} y={-30} width={1100} height={420} fill={`url(#${id})`} />
+      {filled.map(([col, row]) => (
+        <polygon key={`${row}-${col}`} points={hexPts(col * 52 + (row % 2 ? 26 : 0), row * 45)} fill="var(--color-lime)" fillOpacity={0.09} />
+      ))}
     </svg>
   );
 }

@@ -102,7 +102,7 @@ export default function ActivitySection({
   ];
 
   return (
-    <section id="activity" aria-labelledby="act-h" className="relative isolate py-24 md:py-36">
+    <section id="activity" aria-labelledby="act-h" className="cv-auto relative isolate py-24 md:py-36">
       <Backdrop variant="contour" n="07" seed={19} flip />
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
         <SectionHead
